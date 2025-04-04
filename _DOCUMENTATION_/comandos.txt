@@ -1,0 +1,26 @@
+Lista de comandos úteis a usar:
+
+:::Forçar localhost:::
+REACT_NATIVE_PACKAGER_HOSTNAME=localhost npx expo start
+
+
+:::Criar iOS:::
+npx react-native bundle --platform='ios' --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --assets-dest='./ios'
+
+
+:::Correr android:::
+react-native run-android
+
+
+:::Iniciar react native:::
+npx react-native start
+
+
+:::Limpar cache:::
+cd android
+./gradlew clean
+
+
+:::Definir pasta Node JS e abrir Android Studio:::
+export PATH=$HOME/.nvm/versions/node/v20.11.1/bin:$PATH
+open -a "Android Studio"
