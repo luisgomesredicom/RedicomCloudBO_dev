@@ -1,5 +1,10 @@
 Lista de comandos úteis a usar:
 
+
+:::Correr após PUSH:::
+npm install
+
+
 :::Forçar localhost:::
 REACT_NATIVE_PACKAGER_HOSTNAME=localhost npx expo start
 
