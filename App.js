@@ -8,7 +8,7 @@ export default function App() {
       <Text style={{ color: '#000', fontSize: 50, marginTop: 30, marginBottom: 30, fontWeight: 'bold' }}>Hello World!</Text>
 
       <Text>::: REDICOM :::</Text>
-      <Text style={{ color: '#999999', fontSize: 10, marginTop: 0, marginBottom: 10 }}>version 0.0.1</Text>
+      <Text style={{ color: '#999999', fontSize: 10, marginTop: 0, marginBottom: 10 }}>version 0.0.2</Text>
       
       <StatusBar style="auto" />
     </View>
