@@ -1,0 +1,1 @@
+{"version":3,"names":["default","Tabs","TabScreen","useTabNavigation","useTabIndex","TabsContext","TabsProvider"],"sourceRoot":"../../src","sources":["index.tsx"],"mappings":"AAAA,SAASA,OAAO,IAAIC,IAAI,QAAQ,QAAQ;AACxC,SAASD,OAAO,IAAIE,SAAS,QAAQ,aAAa;AAClD,SAASC,gBAAgB,EAAEC,WAAW,EAAEC,WAAW,QAAQ,WAAW;AACtE,SAASC,YAAY,QAAQ,gBAAgB"}

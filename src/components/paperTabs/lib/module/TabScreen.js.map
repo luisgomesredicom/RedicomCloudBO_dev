@@ -1,0 +1,1 @@
+{"version":3,"names":["React","TabScreen","_ref","children","Children","only"],"sourceRoot":"../../src","sources":["TabScreen.tsx"],"mappings":"AAAA,OAAO,KAAKA,KAAK,MAAM,OAAO;AAc9B,eAAe,SAASC,SAASA,CAAAC,IAAA,EAA+B;EAAA,IAA9B;IAAEC;EAAyB,CAAC,GAAAD,IAAA;EAC5D,OAAOF,KAAK,CAACI,QAAQ,CAACC,IAAI,CAACF,QAAQ,CAAC;AACtC"}
