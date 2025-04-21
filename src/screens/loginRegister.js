@@ -132,6 +132,7 @@ export function LoginRegisterScreen({ navigation }) {
                                                         label="Código de acesso"
                                                         returnKeyType="next"
                                                         autoCapitalize="none"
+                                                        autoCorrect={false}
                                                         autoComplete="off"
                                                         onChangeText={(text) => setRemoteToken({ value: text, error: false, errorText: '' })}
                                                         value={remoteToken.value}
@@ -149,6 +150,7 @@ export function LoginRegisterScreen({ navigation }) {
                                                         label="Utilizador"
                                                         returnKeyType="next"
                                                         autoCapitalize="none"
+                                                        autoCorrect={false}
                                                         autoComplete="off"
                                                         onChangeText={(text) => setUsername({ value: text, error: false, errorText: '' })}
                                                         value={username.value}
@@ -162,10 +164,13 @@ export function LoginRegisterScreen({ navigation }) {
                                         <View style={theme.formField}>
                                             <TextInput
                                                 label="Password"
+                                                autoCapitalize="none"
                                                 returnKeyType="done"
                                                 onChangeText={(text) => setPassword({ value: text, error: false, errorText: '' })}
                                                 secureTextEntry
                                                 autoComplete="off"
+                                                autoCorrect={false}
+                                                textContentType="password"
                                                 value={password.value}
                                                 error={password.error}
                                                 errorText={password.errorText}
