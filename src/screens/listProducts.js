@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useReducer} from 'react';
-import { ScrollView, StatusBar, View, FlatList, TouchableOpacity } from 'react-native';
+import React, {useState, useEffect, useReducer, useCallback} from 'react';
+import { ScrollView, StatusBar, View, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Octicons } from '@expo/vector-icons';
 import { remoteAPI } from '../core/utils';
@@ -16,6 +16,7 @@ export function ListProducts() {
     const [items, setItems] = useState([]);
     const [resultsLength, setResultsLength] = useState(null);
     const [nextPageLoading, setNextPageLoading] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
     const insets = useSafeAreaInsets();
 
     const updateItem = (item) => {
@@ -28,6 +29,14 @@ export function ListProducts() {
 
         setItems(updatedList);
     };
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        endList = false;
+        currentPage = null;
+        nextPage = '';
+        loadResults();
+    }, []);
 
     useEffect(() => {
         currentPage = null,
@@ -146,7 +155,7 @@ export function ListProducts() {
             nextPage = data.response.nextPage.substring(1);
             setResultsLength(parseInt(data.response.total));
             setNextPageLoading(false);
-
+            
             if(data.response.nextPage == '') {
                 endList = true;
             }
@@ -158,7 +167,7 @@ export function ListProducts() {
             }
 
             setPageStatus(1);
-
+            setRefreshing(false);
         } catch (e) {
             console.warn(e);
         }
@@ -213,6 +222,9 @@ export function ListProducts() {
                                                 onEndReachedThreshold={ 0.15 }
                                                 ListFooterComponent={ <FooterList load={nextPageLoading} /> }
                                                 style={[theme.wrapperContainerList, {paddingBottom: Math.max(insets.bottom)}]}
+                                                refreshControl={
+                                                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                                                }
                                             />
                                         )}
                                         </>
