@@ -1,11 +1,8 @@
-import React, {useState, useEffect} from 'react';
-import { ScrollView, StatusBar, View, Image, StyleSheet } from 'react-native';
+import React, {useState, useEffect, useCallback} from 'react';
+import { ScrollView, StatusBar, View, Image, StyleSheet, RefreshControl } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Text, Switch } from 'react-native-paper';
-import { MaterialIcons } from '@expo/vector-icons';
-import { Octicons } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
 import { remoteAPI } from '../core/utils';
 import Button from '../components/buttons'
 import { Icon, LoadingFullscreen } from '../components/elements';
@@ -19,14 +16,22 @@ export function DetProduct() {
     const [pageIsReady, setPageIsReady] = useState(false);
     const [product, setProduct] = useState(route.params.product);
     const [dataMatiz, setDataMatiz] = useState([]);
-    //const [isEnabled, setIsEnabled] = useState(product.active);
+    const [refreshing, setRefreshing] = useState(false);
+
+    const fetchData = async () => {
+        const data = await remoteAPI({request: `catalog/products/skugroup/${product.skuGroup}`, method: 'GET'});
+        setDataMatiz(data.response.results);
+        setPageIsReady(true);
+    };
 
     useEffect(() => {
-        (async () => {
-            const data = await remoteAPI({request: `catalog/products/skugroup/${product.skuGroup}`, method: 'GET'});
-            setDataMatiz(data.response.results);
-            setPageIsReady(true);
-        })();
+        fetchData();
+    }, []);
+
+    const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+        await fetchData();
+        setRefreshing(false);
     }, []);
 
     const SwitchGlobal = (item) => {
@@ -91,7 +96,11 @@ export function DetProduct() {
             {
                 pageIsReady ? (
                     <>
-                        <ScrollView style={theme.wrapperPage} contentContainerStyle={[theme.wrapperContentStyle, {paddingTop: 30}]}>
+                        <ScrollView style={theme.wrapperPage} contentContainerStyle={[theme.wrapperContentStyle, {paddingTop: 30}]}
+                        refreshControl={
+                            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                        }
+                        >
                             <View style={{marginBottom: 30}}><Text style={theme.listNavSubtitle}>Detalhe de Produto</Text></View>
 
                             <View style={{flexDirection: 'row',gap: 10,alignItems: 'flex-start'}}>
