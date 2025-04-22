@@ -19,6 +19,17 @@ export function ListProducts() {
     const [refreshing, setRefreshing] = useState(false);
     const insets = useSafeAreaInsets();
 
+    useEffect(() => {
+        currentPage = null,
+        nextPage    = '',
+        endList     = false,
+        searchValue = '',
+        searchSubmited = false,
+        filtersApplied = null;
+
+        loadResults();
+    }, []);
+
     const updateItem = (item) => {
         const updatedList = items.map((_item) => {
             if (_item.id === item.id) {
@@ -35,17 +46,6 @@ export function ListProducts() {
         endList = false;
         currentPage = null;
         nextPage = '';
-        loadResults();
-    }, []);
-
-    useEffect(() => {
-        currentPage = null,
-        nextPage    = '',
-        endList     = false,
-        searchValue = '',
-        searchSubmited = false,
-        filtersApplied = null;
-
         loadResults();
     }, []);
 
@@ -116,7 +116,7 @@ export function ListProducts() {
 
             if(nextPage != '') {
                 setNextPageLoading(true);
-            } else if(pageStatus == 1) {
+            } else if(pageStatus == 1 && !refreshing) {
                 setPageStatus(-1);
             }
 

@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import { StatusBar, View, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import React, {useState, useEffect, useCallback} from 'react';
+import { StatusBar, View, FlatList, TouchableOpacity, StyleSheet, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { remoteAPI } from '../core/utils';
@@ -13,21 +13,11 @@ export function ListCampaignSMS() {
     const [items, setItems] = useState([]);
     const [resultsLength, setResultsLength] = useState(null);
     const [nextPageLoading, setNextPageLoading] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
     const [tab, setTab] = useState(0);
     const [info, setInfo] = useState([]);
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
-
-    const updateItem = (item) => {
-        const updatedList = items.map((_item) => {
-            if (_item.id === item.id) {
-                return { ..._item, ...item };
-            }
-            return _item;
-        });
-
-        setItems(updatedList);
-    };
 
     const CardItem = ({index, item, updateItem}) => {
         return (
@@ -144,6 +134,25 @@ export function ListCampaignSMS() {
         fetchData();
     }, []);
 
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        endList = false;
+        currentPage = null;
+        nextPage = '';
+        loadResults();
+    }, []);
+
+    const updateItem = (item) => {
+        const updatedList = items.map((_item) => {
+            if (_item.id === item.id) {
+                return { ..._item, ...item };
+            }
+            return _item;
+        });
+
+        setItems(updatedList);
+    };
+
     async function loadResults() {
         try {
             if(endList || nextPage == currentPage) return;
@@ -151,7 +160,7 @@ export function ListCampaignSMS() {
 
             if(nextPage != '') {
                 setNextPageLoading(true);
-            } else if(pageStatus == 1) {
+            } else if(pageStatus == 1 && !refreshing) {
                 setPageStatus(-1);
             }
 
@@ -179,7 +188,7 @@ export function ListCampaignSMS() {
             }
 
             setPageStatus(1);
-
+            setRefreshing(false);
         } catch (e) {
             console.warn(e);
         }
@@ -209,6 +218,9 @@ export function ListCampaignSMS() {
                                             onEndReached={loadResults}
                                             onEndReachedThreshold={ 0.15 }
                                             ListFooterComponent={ <FooterList load={nextPageLoading} />}
+                                            refreshControl={
+                                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                                            }
                                         />
                                     ) : (
                                     <Noresults/>
