@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useContext} from 'react';
-import { ScrollView, View, Pressable, TouchableOpacity, StatusBar, StyleSheet } from 'react-native';
+import React, {useState, useEffect, useContext, useCallback} from 'react';
+import { ScrollView, View, Pressable, TouchableOpacity, StatusBar, StyleSheet, RefreshControl } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native'
 import { remoteAPI, AuthContext } from '../core/utils';
@@ -14,34 +14,40 @@ export function DashboardScreen() {
     const [pageIsReady, setPageIsReady] = useState(null);
     const [dataDash, setDataDash] = useState(null);
     const [visible, setVisible] = useState(true);
-
+    const [refreshing, setRefreshing] = useState(false);
     const insets = useSafeAreaInsets();
 
-    useEffect(() => {
-        async function prepare() {
-            try {
-                const dataDash = await remoteAPI({request: 'dashboard', method: 'GET'});
-                
-                if(dataDash == false) {
-                    signOut();
-                    return false;
-                }
-                
-                dataDash.response.stats.graphDays.totalValues = 0;
-                dataDash.response.stats.graphDays.list.map((item) => (
-                    dataDash.response.stats.graphDays.totalValues += parseInt(item.value)
-                ));
-
-                setDataDash(dataDash.response);
-                
-                setPageIsReady(true);
-            } catch (e) {
-                console.warn(e);
+    const fetchData = async () => {
+        try {
+            const dataDash = await remoteAPI({request: 'dashboard', method: 'GET'});
+            
+            if(dataDash == false) {
                 signOut();
+                return false;
             }
-        }
+            
+            dataDash.response.stats.graphDays.totalValues = 0;
+            dataDash.response.stats.graphDays.list.map((item) => (
+                dataDash.response.stats.graphDays.totalValues += parseInt(item.value)
+            ));
 
-        prepare();
+            setDataDash(dataDash.response);
+            
+            setPageIsReady(true);
+        } catch (e) {
+            console.warn(e);
+            signOut();
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+        await fetchData();
+        setRefreshing(false);
     }, []);
 
     const renderGraphInformation = (item, index) => {
@@ -134,7 +140,10 @@ export function DashboardScreen() {
                         </View>
 
                         <View style={[theme.wrapperPage]}>
-                            <ScrollView style={[theme.wrapperContainerPage, {paddingBottom: 50}]} contentContainerStyle={theme.wrapperContentStyle}>
+                            <ScrollView style={[theme.wrapperContainerPage, {paddingBottom: 50}]} contentContainerStyle={theme.wrapperContentStyle}
+                            refreshControl={
+                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                            }>
                                 <View style={{display: 'flex',alignItems: 'center',flexDirection: 'row',justifyContent: 'space-between',gap: 10,marginBottom: 15}} /*onPress={() => {setVisible(true)}}*/>
                                     <View><Text style={[theme.listNavSubtitle]}>{dataDash.stats.informations.title}</Text></View>
                                     {dataDash.stats.graphDays.totalValues > 0 && (
@@ -200,6 +209,8 @@ export function DashboardScreen() {
                             </TouchableOpacity>
                             <View style={[styles.footerColumn, {width: 58,flexShrink: 0}]}>
                                 <Pressable 
+                                    onPress={onRefresh}
+                                    disabled={refreshing}
                                     style={({ pressed }) => [
                                         {alignItems: 'center',justifyContent: 'center',borderRadius: 150,width: 58,height: 58,position: 'absolute',top: -28},
                                         {backgroundColor: pressed ? '#fdb126' : theme.colors.linklight },
