@@ -29,6 +29,7 @@ export const SearchBar = ({onChangeText}) => {
                 height: 42,
                 minHeight: 42,
             }}
+            allowFontScaling={false}
         />
     );
 }

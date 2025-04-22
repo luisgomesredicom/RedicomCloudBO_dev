@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useReducer, useMemo } from 'react';
-import { View, LogBox } from 'react-native';
+import { Text, View, LogBox } from 'react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import 'react-native-gesture-handler';
@@ -10,6 +10,9 @@ import { Routes } from "./src/routes";
 import { GlobalState, AuthContext, UserContext } from './src/core/utils';
 import { theme } from './src/styles/styles';
 
+Text.defaultProps = Text.defaultProps || {};
+Text.defaultProps.allowFontScaling = false;
+
 // Ignore log notification by message
 LogBox.ignoreLogs(['Warning: ...']);
 
@@ -17,6 +20,7 @@ LogBox.ignoreLogs(['Warning: ...']);
 LogBox.ignoreAllLogs();
 
 GlobalState();
+
 
 export default function App() {  
     const [appIsReady, setAppIsReady] = useState(null);

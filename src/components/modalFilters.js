@@ -202,13 +202,13 @@ export const ModalFilters = (aux) => {
                                                 else
                                                     return null;
                                             }}
-                                            textStyle={
-                                                [
-                                                    stylesFilters.optionButtonText, {
-                                                        color: theme.colors.black
-                                                    },
-                                                ]
-                                            }
+                                            textStyle={[
+                                                stylesFilters.optionButtonText,
+                                                {
+                                                    color: theme.colors.black,
+                                                    allowFontScaling: false,
+                                                },
+                                            ]}                                              
                                             selected={isSelected}
                                             onPress={() => handleFilterToggle(data.filters[filterCatrgoryActiveIndex].type, option.value)}>
                                             {option.name}

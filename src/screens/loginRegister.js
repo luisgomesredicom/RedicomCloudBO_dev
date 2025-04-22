@@ -187,7 +187,7 @@ export function LoginRegisterScreen({ navigation }) {
 
                                 <View style={{marginTop: 'auto',paddingHorizontal: theme.containerPadding,paddingBottom: theme.containerPadding + Math.max(insets.bottom)}}>
                                     <View>
-                                        <Text style={[theme.subtitle, {textAlign: 'center',marginBottom: 12}]}>Não consegue entrar?</Text>
+                                        <Text allowFontScaling={false} style={[theme.subtitle, {textAlign: 'center',marginBottom: 12}]}>Não consegue entrar?</Text>
                                         <Text style={[theme.paragraph, {textAlign: 'center',color: theme.colors.darkgray}]}>Por favor entre em contacto com o seu administrador de sistemas.</Text>
                                     </View>
                                     <View style={{alignItems: 'center',justifyContent: 'center',marginTop: screenHeight * 0.07}}>

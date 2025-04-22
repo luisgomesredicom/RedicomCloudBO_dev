@@ -27,6 +27,7 @@ export function TextInput({ ...props }) {
                 mode="outlined"
                 locale="pt-PT"
                 right={props.rightIcon ? <Input.Icon icon={props.rightIcon} style={{marginTop: 8}} /> : undefined}
+                allowFontScaling={false}
                 {...props}
             />
             {props.description && !props.errorText ? (<Text style={styles.description}>{props.description}</Text>) : null}

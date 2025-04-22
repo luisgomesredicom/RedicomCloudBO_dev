@@ -38,6 +38,7 @@ export default function Button({ mode, style, ...props }) {
             mode={mode}
             textColor={mode === 'outlined' && theme.colors.black || mode === 'contained' && theme.colors.white}
             buttonColor={mode === 'outlined' && theme.colors.white || mode === 'contained' && theme.colors.theme}
+            allowFontScaling={false}
             {...props}
         />
     )
