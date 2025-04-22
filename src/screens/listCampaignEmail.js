@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import { StatusBar, View, FlatList, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import React, {useState, useEffect, useCallback} from 'react';
+import { StatusBar, View, FlatList, TouchableOpacity, StyleSheet, Image, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { remoteAPI, numberFormat } from '../core/utils';
@@ -13,9 +13,26 @@ export function ListCampaignEmail() {
     const [items, setItems] = useState([]);
     const [resultsLength, setResultsLength] = useState(null);
     const [nextPageLoading, setNextPageLoading] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
     const [tab, setTab] = useState(0);
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
+
+    useEffect(() => {
+        currentPage = null,
+        nextPage    = '',
+        endList     = false
+
+        loadResults();
+    }, []);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        endList = false;
+        currentPage = null;
+        nextPage = '';
+        loadResults();
+    }, []);
 
     const updateItem = (item) => {
         const updatedList = items.map((_item) => {
@@ -105,14 +122,6 @@ export function ListCampaignEmail() {
         )
     }
 
-    useEffect(() => {
-        currentPage = null,
-        nextPage    = '',
-        endList     = false
-
-        loadResults();
-    }, []);
-
     async function loadResults() {
         try {
             if(endList || nextPage == currentPage) return;
@@ -120,7 +129,7 @@ export function ListCampaignEmail() {
 
             if(nextPage != '') {
                 setNextPageLoading(true);
-            } else if(pageStatus == 1) {
+            } else if(pageStatus == 1 && !refreshing) {
                 setPageStatus(-1);
             }
 
@@ -132,7 +141,6 @@ export function ListCampaignEmail() {
             });
 
             const newItems = data.response.results;
-            console.log(JSON.stringify(data.response));
 
             nextPage = data.response.nextPage.substring(1);
             setResultsLength(parseInt(data.response.total));
@@ -149,7 +157,7 @@ export function ListCampaignEmail() {
             }
 
             setPageStatus(1);
-
+            setRefreshing(false);
         } catch (e) {
             console.warn(e);
         }
@@ -180,6 +188,9 @@ export function ListCampaignEmail() {
                                             onEndReached={loadResults}
                                             onEndReachedThreshold={ 0.15 }
                                             ListFooterComponent={ <FooterList load={nextPageLoading} /> }
+                                            refreshControl={
+                                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                                            }
                                         />
                                     ) : (
                                     <Noresults/>

@@ -296,7 +296,7 @@ export const ListStatistics = ({template, value}) => {
     );
 };
 
-export const FooterList = (load) => {
+export const FooterList = ({load}) => {
     if(!load) return;
     return (
         <View style={{height: 80,paddingBottom: 15,justifyContent: 'center'}}>
