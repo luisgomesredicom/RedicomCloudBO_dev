@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useContext, useCallback} from 'react';
-import { ScrollView, View, Pressable, TouchableOpacity, StatusBar, StyleSheet, RefreshControl } from 'react-native';
+import React, {useState, useEffect, useContext, useCallback, useRef} from 'react';
+import { ScrollView, View, Pressable, TouchableOpacity, StatusBar, StyleSheet, RefreshControl, Animated, Easing, ActivityIndicator } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native'
 import { remoteAPI, AuthContext } from '../core/utils';
@@ -16,6 +16,8 @@ export function DashboardScreen() {
     const [visible, setVisible] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const insets = useSafeAreaInsets();
+    const rotationLoopRef = useRef(null);
+    const [isRotating, setRotating] = useState(false);
 
     const fetchData = async () => {
         try {
@@ -49,6 +51,57 @@ export function DashboardScreen() {
         await fetchData();
         setRefreshing(false);
     }, []);
+
+    const onPressRefresh = useCallback(async () => {
+        if(isRotating) return;
+        setRotating(true);
+
+        startRotation();
+        await fetchData();
+        stopRotation();
+        setTimeout(() => {
+            setRotating(false);
+        }, 600);
+    }, []);
+
+    const rotateAnim = useRef(new Animated.Value(0)).current;
+
+    const rotateInterpolate = rotateAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['0deg', '360deg'],
+    });
+
+    const startRotation = () => {
+        const spin = () => {
+            rotateAnim.setValue(0);
+            rotationLoopRef.current = Animated.timing(rotateAnim, {
+                toValue: 1,
+                duration: 800,
+                easing: Easing.linear,
+                useNativeDriver: true,
+            });
+        
+            rotationLoopRef.current.start(({ finished }) => {
+                if(finished && isRotating) {
+                    spin();
+                }
+            });
+        };
+        spin();
+    };
+
+    const stopRotation = () => {
+        rotateAnim.stopAnimation((currentValue) => {
+            Animated.timing(rotateAnim, {
+                toValue: 1,
+                duration: (1 - currentValue) * 800,
+                easing: Easing.linear,
+                useNativeDriver: true,
+            }).start(() => {
+                rotateAnim.setValue(0);
+            });
+        });
+    };
 
     const renderGraphInformation = (item, index) => {
         if (item.status == '') {
@@ -130,10 +183,13 @@ export function DashboardScreen() {
                             <View style={{flexGrow: 1}}>
                                 <Text style={[theme.subtitle, {color: theme.colors.white}]}>{dataDash.informations.title}</Text>
                             </View>
-                            {dataDash.informations.currency != '' && (
-                                <TouchableOpacity style={{padding: 20,marginRight: -20}}>
+                            
+                            {Boolean(dataDash.informations.currency?.trim()) && (
+                                <TouchableOpacity style={{ padding: 20, marginRight: -20 }}>
                                     <View style={{borderRadius: 3,borderWidth: 1,borderColor: 'white',width: 24,height: 24,alignItems: 'center',justifyContent: 'center'}}>
-                                        <Text style={{fontSize: 18,color: 'white'}}>{dataDash.informations.currency}</Text>
+                                        <Text style={{fontSize: 18,color: 'white',fontFamily: 'System'}}>
+                                            {dataDash.informations.currency.trim()}
+                                        </Text>
                                     </View>
                                 </TouchableOpacity>
                             )}
@@ -209,14 +265,16 @@ export function DashboardScreen() {
                             </TouchableOpacity>
                             <View style={[styles.footerColumn, {width: 58,flexShrink: 0}]}>
                                 <Pressable 
-                                    onPress={onRefresh}
+                                    onPress={onPressRefresh}
                                     disabled={refreshing}
                                     style={({ pressed }) => [
                                         {alignItems: 'center',justifyContent: 'center',borderRadius: 150,width: 58,height: 58,position: 'absolute',top: -28},
                                         {backgroundColor: pressed ? '#fdb126' : theme.colors.linklight },
                                     ]}
                                 >
-                                    <Icon name="refresh" size={24} color="white" />
+                                    <Animated.View style={{ transform: [{ rotate: rotateInterpolate }] }}>
+                                        <Icon name="refresh" size={24} color="white" />
+                                    </Animated.View>
                                 </Pressable>
                             </View>
                             <TouchableOpacity style={styles.footerColumn}  onPress={() => {
@@ -244,7 +302,11 @@ export function DashboardScreen() {
                     </>
                 ) : <LoadingFullscreen />
             }
-
+            {isRotating && (
+                <View style={{...StyleSheet.absoluteFillObject,backgroundColor: 'rgba(0,0,0,0.3)',justifyContent: 'center',alignItems: 'center',zIndex: 1000}}>
+                    <ActivityIndicator size="large" color="#ffffff" />
+                </View>
+            )}
         </SafeAreaView>
     );
 }

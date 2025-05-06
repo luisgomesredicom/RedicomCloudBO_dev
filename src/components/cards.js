@@ -2,7 +2,6 @@ import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native'
 import { Ionicons } from '@expo/vector-icons';
-import { Octicons } from '@expo/vector-icons';
 import { Text } from 'react-native-paper';
 import { showToast } from "../core/utils";
 import { theme } from '../styles/styles'

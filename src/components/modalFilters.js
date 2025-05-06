@@ -1,10 +1,8 @@
 import React, {useState, createContext, useContext, useEffect} from 'react';
 import { View, ScrollView, Pressable, TouchableOpacity, Modal, TouchableHighlight, StyleSheet, Dimensions, StatusBar } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Octicons } from '@expo/vector-icons';
 import { theme } from '../styles/styles'
 import { Text, Chip } from 'react-native-paper';
-//import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Icon } from "../components/elements";
 import { Link } from '../components/buttons';
 import Button from '../components/buttons'

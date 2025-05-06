@@ -1,14 +1,13 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { View, StyleSheet, Dimensions, Animated } from 'react-native';
+import { View, StyleSheet, Dimensions, Animated, TouchableOpacity, TouchableHighlight } from 'react-native';
 import { Canvas, Path, Skia, Paint, SweepGradient, vec } from '@shopify/react-native-skia';
 import { useNavigation } from '@react-navigation/native'
 import { ActivityIndicator, Text, Switch } from 'react-native-paper';
-import { TouchableOpacity, TouchableHighlight, FlatList } from 'react-native-gesture-handler';
-import { Octicons, Feather, MaterialIcons, MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
-import { AuthContext, UserContext, numberFormat } from '../core/utils';
+import { FlatList } from 'react-native-gesture-handler';
+import { Octicons } from '@expo/vector-icons';
+import { UserContext, numberFormat } from '../core/utils';
 import { theme } from '../styles/styles'
 import Button from './buttons';
-import { addUpdatesStateChangeListener } from 'expo-updates';
 import { createIconSet } from '@expo/vector-icons';
 
 const { screenWidth } = Dimensions.get('window');
