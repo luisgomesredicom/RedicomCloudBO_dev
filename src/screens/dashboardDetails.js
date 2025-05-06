@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import { StatusBar, View, FlatList} from 'react-native';
+import React, {useState, useEffect, useCallback} from 'react';
+import { StatusBar, View, FlatList, RefreshControl } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import {TabsProvider, Tabs, TabScreen} from '../components/paperTabs';
 import { Text, ActivityIndicator } from 'react-native-paper';
@@ -14,6 +14,7 @@ export function DashboardDetails() {
     const insets = useSafeAreaInsets();
     const generateId = () => '_' + Math.random().toString(36).substr(2, 9);
     const infoUpdateHeight = 94;
+    const [refreshing, setRefreshing] = useState(false);
 
     const formatDate = (datetime) => {
         const date = new Date(datetime);
@@ -29,12 +30,6 @@ export function DashboardDetails() {
     const CardItem = ({index, item}) => {
         return (
             <>
-                {index == 0 && (
-                    <View style={{height: infoUpdateHeight}}>
-
-                    </View>
-                )}
-                
                 <View style={[theme.cardItem, {paddingBottom: 30}]}>
                     <View style={{marginBottom: 20}}><Text style={[theme.listNavSubtitle]}>{item.title}</Text></View>
                     <View style={{flexDirection: 'row',alignItems: 'stretch'}}>
@@ -50,30 +45,35 @@ export function DashboardDetails() {
         )
     }
 
+    const fetchData = async () => {
+        try {
+            const dataDash = await remoteAPI({
+                request: `dashboard/details`,
+                method: 'GET'
+            });
+
+            if(dataDash.response.today.length > 0)
+                dataDash.response.today = dataDash.response.today.map(item => ({ ...item, id: generateId() }));
+
+            if(dataDash.response.lastWeek.length > 0)
+                dataDash.response.lastWeek = dataDash.response.lastWeek.map(item => ({ ...item, id: generateId() }));
+
+            setDataDash(dataDash.response);
+            setPageStatus(1);
+
+        } catch (error) {;
+            console.log(error);
+        }
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const dataDash = await remoteAPI({
-                    request: `dashboard/details`,
-                    method: 'GET'
-                });
-
-                if(dataDash.response.today.length > 0)
-                    dataDash.response.today = dataDash.response.today.map(item => ({ ...item, id: generateId() }));
-
-                if(dataDash.response.lastWeek.length > 0)
-                    dataDash.response.lastWeek = dataDash.response.lastWeek.map(item => ({ ...item, id: generateId() }));
-
-                setDataDash(dataDash.response);
-
-                setPageStatus(1);
-
-            } catch (error) {;
-                console.log(error);
-            }
-        };
-
         fetchData();
+    }, []);
+
+    const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+        await fetchData();
+        setRefreshing(false);
     }, []);
   
 	return (
@@ -90,9 +90,9 @@ export function DashboardDetails() {
                                 </View>
                             ) : (
                                 <>
-                                    <View style={{backgroundColor: theme.colors.background,paddingVertical: theme.containerPadding,paddingHorizontal: 30,marginBottom: theme.containerPadding,position: 'absolute',top: 50,zIndex: 50,height: infoUpdateHeight}}>
+                                    {<View style={{backgroundColor: theme.colors.background,paddingVertical: theme.containerPadding,paddingHorizontal: 30,marginBottom: theme.containerPadding,position: 'absolute',top: 50,zIndex: 50}}>
                                         <Text style={{textAlign: 'center',marginVertical: 6}}>{formatDate(dataDash.lastUpdate)}</Text>
-                                    </View>
+                                    </View>}
                                     
                                     <TabsProvider defaultIndex={0} onChangeIndex={(index) => {setTab(index)}}>
                                         <Tabs disableSwipe={true} style={theme.tabs} tabLabelStyle={theme.tabsLabel}>
@@ -100,10 +100,13 @@ export function DashboardDetails() {
                                                 <View style={theme.tabsContent}>
                                                     {dataDash.today.length > 0 ? (
                                                         <FlatList 
-                                                            style={[theme.cardList, {paddingBottom: Math.max(insets.bottom)}]}
+                                                            style={[theme.cardList, {paddingBottom: Math.max(insets.bottom),marginTop: infoUpdateHeight}]}
                                                             data={dataDash.today}
                                                             keyExtractor={ item => item.id }
                                                             renderItem={ ({item, index}) => <CardItem index={index} item={item}/> }
+                                                            refreshControl={
+                                                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                                                            }
                                                         />
                                                     ) : (
                                                         <Noresults/>
@@ -115,10 +118,13 @@ export function DashboardDetails() {
                                                 <View style={theme.tabsContent}>
                                                     {dataDash.lastWeek.length > 0 ? (
                                                         <FlatList 
-                                                            style={[theme.cardList, {paddingBottom: Math.max(insets.bottom)}]}
+                                                            style={[theme.cardList, {paddingBottom: Math.max(insets.bottom),marginTop: infoUpdateHeight}]}
                                                             data={dataDash.lastWeek}
                                                             keyExtractor={ item => item.id }
                                                             renderItem={ ({item, index}) => <CardItem index={index} item={item}/> }
+                                                            refreshControl={
+                                                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                                                            }
                                                         />
                                                     ) : (
                                                         <Noresults/>
