@@ -44,7 +44,9 @@ const HearderLeft = () => {
 
 const HearderTitle = (props) => {
     return (
-        <Text style={[theme.subtitle, {color: theme.colors.white,fontSize: 18}]}>
+        <Text style={[theme.subtitle, {color: theme.colors.white,fontSize: 18,lineHeight: 18}]} 
+        numberOfLines={1}
+        ellipsizeMode="tail">
             {props.title}
         </Text>
     );
@@ -60,8 +62,8 @@ export function MainStackRoutes() {
 
     const styles = StyleSheet.create({
         header: {
-            backgroundColor: theme.colors.darktheme,
-            height: width <= 375 ? 80 : 96
+            backgroundColor: theme.colors.theme,
+            height: width <= 375 ? 97 : 113
         } 
     });
 
