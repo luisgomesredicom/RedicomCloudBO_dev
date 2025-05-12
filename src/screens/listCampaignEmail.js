@@ -247,7 +247,7 @@ export function ListCampaignEmail() {
 		<SafeAreaView style={theme.safeAreaView} edges={['right','left']}>
 			<StatusBar barStyle='default'/>
 			<View style={[theme.wrapperPage]}>
-                <ListStatistics template="listCampaignEmail" value={2425}/>
+                <ListStatistics template="listCampaignEmail" value={2425} date="2024-10-04"/>
 
                 {
                     pageStatus != 0 ? (

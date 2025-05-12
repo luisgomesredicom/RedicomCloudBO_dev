@@ -222,6 +222,36 @@ export function numberFormat(number){
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 }
 
+export function dateFormatter(dateTime) {
+    if(!dateTime) return '';
+  
+    const [datePart, timePart] = dateTime.split(' ');
+    const [year, month, day] = datePart.split('-').map(Number);
+    let d;
+  
+    if(timePart) {
+      const [hour, minute] = timePart.split(':').map(Number);
+      d = new Date(year, month - 1, day, hour, minute);
+    } else {
+      d = new Date(year, month - 1, day);
+    }
+  
+    const monthsPT = [
+      'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+      'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+    ];
+  
+    const hasTime = d.getHours() !== 0 || d.getMinutes() !== 0;
+    const hour = d.getHours();
+    const minute = d.getMinutes().toString().padStart(2, '0');
+    const formattedDate = `${monthsPT[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+    
+    return {
+        date: formattedDate,
+        time: hasTime ? `${hour}:${minute}H` : ''
+    };
+}  
+
 export function textEntity(text) {
   const return_text = text.replace(/&euro;/g, '€');
   return return_text;

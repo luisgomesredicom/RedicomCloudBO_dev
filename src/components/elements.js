@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native'
 import { ActivityIndicator, Text, Switch } from 'react-native-paper';
 import { FlatList } from 'react-native-gesture-handler';
 import { Octicons } from '@expo/vector-icons';
-import { UserContext, numberFormat } from '../core/utils';
+import { UserContext, numberFormat, dateFormatter } from '../core/utils';
 import { theme } from '../styles/styles'
 import Button from './buttons';
 import { createIconSet } from '@expo/vector-icons';
@@ -272,8 +272,8 @@ export const Icon = ({name, size = 24, color = theme.colors.black, style}) => {
     return <RedicomIcon name={name} size={size} color={color} style={style} />;
 };
 
-export const ListStatistics = ({template, value}) => {
-    const date = 'Setembro 4, 2024';
+export const ListStatistics = ({template, value, datetime}) => {
+    const { date, time } = dateFormatter(datetime);
 
     switch (template) {
         case 'listCampaignSMS':

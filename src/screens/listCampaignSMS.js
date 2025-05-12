@@ -2,7 +2,7 @@ import React, {useState, useEffect, useCallback} from 'react';
 import { StatusBar, View, FlatList, TouchableOpacity, StyleSheet, Image, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { remoteAPI, numberFormat } from '../core/utils';
+import { remoteAPI, dateFormatter } from '../core/utils';
 import { LoadingFullscreen, Noresults, ListStatistics, FooterList, Icon, ProgressBar } from '../components/elements';
 import { theme } from '../styles/styles'
 import { Text, ActivityIndicator } from 'react-native-paper';
@@ -98,6 +98,9 @@ export function ListCampaignSMS() {
     };
 
     const CardItem = ({index, item, updateItem}) => {
+        const { date: startDate, time: startTime } = dateFormatter(item.startDate);
+        const { date: finishedDate, time: finishedTime } = dateFormatter(item.finished);
+        
         return (
             <>
                 <View style={{height: 6,backgroundColor: theme.colors.background}}></View>
@@ -124,56 +127,64 @@ export function ListCampaignSMS() {
                                 <View style={{flexGrow: 1,width: 1,borderRadius: 6,borderWidth: 1,borderColor: theme.colors.lightgray,backgroundColor: theme.colors.successlight,paddingVertical: 3,paddingHorizontal: 6,minHeight: 61}}>
                                     <Text numberOfLines={4} ellipsizeMode='tail' style={[theme.small, {fontSize: 10,lineHeight: 13,color: '#000'}]}>{item.message}</Text>
                                 </View>
-                                <View style={{width: 180,flexShrink: 0,height: '100%'}}>
+                                <View style={{width: 220,flexShrink: 0,height: '100%'}}>
                                     <View style={{flexDirection: 'row',alignItems: 'center'}}>
-                                        <View style={{width: 80,marginRight: 10}}><Text style={[theme.small]}>Encomendas</Text></View>
-                                        <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>14</Text></View>
+                                        <View style={{width: 62,marginRight: 10}}><Text style={[theme.small]}>Estado</Text></View>
+                                        <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.flags[0].title}</Text></View>
                                     </View>
 
                                     <View style={{ flexDirection: 'row',alignItems: 'center'}}>
-                                        <View style={{width: 80,marginRight: 10}}><Text style={[theme.small]}>Conversão</Text></View>
-                                        <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>1%</Text></View>
+                                        <View style={{width: 62,marginRight: 10}}><Text style={[theme.small]}>Iniciado</Text></View>
+                                        <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{startDate}  <Text style={{color: theme.colors.darkgray}}>{startTime}</Text></Text></View>
                                     </View>
 
                                     <View style={{flexDirection: 'row',alignItems: 'center'}}>
-                                        <View style={{width: 80,marginRight: 10}}><Text style={[theme.small]}>Vendas</Text></View>
-                                        <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>1 089,91 <Text style={{color: theme.colors.darkgray}}>EUR</Text></Text></View>
+                                        <View style={{width: 62,marginRight: 10}}><Text style={[theme.small]}>Finalizado</Text></View>
+                                        <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{finishedDate}  <Text style={{color: theme.colors.darkgray}}>{finishedTime}</Text></Text></View>
                                     </View>
+
+                                    {/*<View style={{flexDirection: 'row',alignItems: 'center'}}>
+                                        <View style={{width: 62,marginRight: 10}}><Text style={[theme.small]}>Demo</Text></View>
+                                        <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>0 000,00 <Text style={{color: theme.colors.darkgray}}>EUR</Text></Text></View>
+                                    </View>*/}
                                     
                                     <View style={{marginTop: 6}}>
-                                        <ProgressBar percentage={80}/>
+                                        <ProgressBar percentage={item.stats.totalSentPercent}/>
                                     </View>
                                 </View>
                             </View>
                             <View style={statistics.container}>
+                                {/*<View style={statistics.item}>
+                                    <View>
+                                        <View><Text style={statistics.text1}>Demo</Text></View>
+                                        <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'right'}]}>0</Text></View>
+                                    </View>
+                                    <View style={statistics.columnRight}>
+                                        <View><Text style={[statistics.text2, {textAlign: 'center'}]}>0%</Text></View>
+                                        <View style={statistics.value}><Text style={statistics.valueText}>0</Text></View>
+                                    </View>
+                                </View>*/}
+                                <View style={statistics.item}>
+                                    <View>
+                                        <View><Text style={statistics.text1}>Destinatários</Text></View>
+                                        <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'right'}]}>{item.stats.totalRecipients}</Text></View>
+                                    </View>
+                                </View>
                                 <View style={statistics.item}>
                                     <View>
                                         <View><Text style={statistics.text1}>Enviados</Text></View>
-                                        <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'right'}]}>10 000</Text></View>
                                     </View>
                                     <View style={statistics.columnRight}>
-                                        <View><Text style={[statistics.text2, {textAlign: 'center'}]}>5%</Text></View>
-                                        <View style={statistics.value}><Text style={statistics.valueText}>500</Text></View>
+                                        <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{item.stats.totalSentPercent}%</Text></View>
+                                        <View style={statistics.value}><Text style={statistics.valueText}>{item.stats.totalSent}</Text></View>
                                     </View>
                                 </View>
                                 <View style={statistics.item}>
                                     <View>
-                                        <View><Text style={statistics.text1}>Aberturas</Text></View>
-                                        <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'right'}]}>500</Text></View>
-                                    </View>
-                                    <View style={statistics.columnRight}>
-                                        <View><Text style={[statistics.text2, {textAlign: 'center'}]}>10%</Text></View>
-                                        <View style={statistics.value}><Text style={statistics.valueText}>50</Text></View>
-                                    </View>
-                                </View>
-                                <View style={statistics.item}>
-                                    <View>
-                                        <View><Text style={statistics.text1}>Clicks</Text></View>
-                                        <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'right'}]}>50</Text></View>
-                                    </View>
-                                    <View style={statistics.columnRight}>
-                                        <View><Text style={[statistics.text2, {textAlign: 'center'}]}>10%</Text></View>
-                                        <View style={[statistics.value, {backgroundColor: theme.colors.errorlight}]}><Text style={[statistics.valueText, {color: theme.colors.error}]}>5</Text></View>
+                                        <View><Text style={statistics.text1}>SMS Gastas</Text></View>
+                                        <View style={[statistics.columnRight, {marginLeft: 'auto'}]}>
+                                            <View style={[statistics.value, {backgroundColor: theme.colors.errorlight}]}><Text style={[statistics.valueText, {color: theme.colors.error}]}>{item.stats.totalSpent}</Text></View>
+                                        </View>
                                     </View>
                                 </View>
                             </View>
@@ -277,7 +288,7 @@ export function ListCampaignSMS() {
         <SafeAreaView style={theme.safeAreaView} edges={['right','left']}>
             <StatusBar barStyle='default'/>
             <View style={[theme.wrapperPage]}>
-                <ListStatistics template="listCampaignSMS" value={2425}/>
+                <ListStatistics template="listCampaignSMS" value={2425} datetime="2024-09-04"/>
 
                 {
                     pageStatus != 0 ? (
