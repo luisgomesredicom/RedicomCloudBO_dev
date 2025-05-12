@@ -6,14 +6,19 @@ import { remoteAPI, numberFormat } from '../core/utils';
 import { LoadingFullscreen, Noresults, ListStatistics, FooterList, Icon, ProgressBar } from '../components/elements';
 import { theme } from '../styles/styles'
 import { Text, ActivityIndicator } from 'react-native-paper';
+import {TabsProvider, Tabs, TabScreen, useTabNavigation, useTabIndex} from '../components/paperTabs';
 
 export function ListCampaignEmail() {
     /* 0 => Início da página | -1 => Pedido à API | 1 => Tudo carregado */
     const [pageStatus, setPageStatus] = useState(0);
     const [items, setItems] = useState([]);
+    const [items_active, setItems_active] = useState([]);
     const [resultsLength, setResultsLength] = useState(null);
+    const [resultsLength_active, setResultsLength_active] = useState(null);
     const [nextPageLoading, setNextPageLoading] = useState(false);
+    const [nextPageLoading_active, setNextPageLoading_active] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
+    const [refreshing_active, setRefreshing_active] = useState(false);
     const [tab, setTab] = useState(0);
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
@@ -21,17 +26,38 @@ export function ListCampaignEmail() {
     useEffect(() => {
         currentPage = null,
         nextPage    = '',
-        endList     = false
+        endList     = false,
+		currentPage_active = null,
+		nextPage_active    = '',
+		endList_active     = false
 
         loadResults();
     }, []);
+
+    useEffect(() => {
+        if(refreshing) {
+            loadResults(1);
+        }
+    }, [refreshing]);
+
+    useEffect(() => {
+        if(refreshing_active) {
+            loadResults(0);
+        }
+    }, [refreshing_active]);
 
     const onRefresh = useCallback(() => {
         setRefreshing(true);
         endList = false;
         currentPage = null;
         nextPage = '';
-        loadResults();
+    }, []);
+
+    const onRefresh_active = useCallback(() => {
+        setRefreshing_active(true);
+        endList_active = false;
+        currentPage_active = null;
+        nextPage_active = '';
     }, []);
 
     const updateItem = (item) => {
@@ -43,6 +69,15 @@ export function ListCampaignEmail() {
         });
 
         setItems(updatedList);
+
+        const updatedListActive = items_active.map((_item) => {
+            if (_item.id === item.id) {
+                return { ..._item, ...item };
+            }
+            return _item;
+        });
+
+        setItems_active(updatedListActive);
     };
 
     const CardItem = ({index, item, updateItem}) => {
@@ -122,42 +157,87 @@ export function ListCampaignEmail() {
         )
     }
 
-    async function loadResults() {
+    async function loadResults(targetTab) {
         try {
-            if(endList || nextPage == currentPage) return;
-            currentPage = nextPage;
+            let loadAllResults = !targetTab || targetTab == 1 ? true : false;
+            let loadActiveResults = !targetTab || targetTab == 0 ? true : false;
 
-            if(nextPage != '') {
-                setNextPageLoading(true);
-            } else if(pageStatus == 1 && !refreshing) {
-                setPageStatus(-1);
+            if(loadActiveResults) { //Active
+                if(endList_active || nextPage_active == currentPage_active) return;
+                currentPage_active = nextPage_active;
+
+                if(nextPage_active != '') {
+                    setNextPageLoading_active(true);
+                } else if(pageStatus == 1 && !refreshing_active) {
+                    setPageStatus(-1);
+                }
+
+                var requestHTTP = `${nextPage == '' ? `marketing/campaigns/email/active` : nextPage}`;
+
+                const data = await remoteAPI({
+                    request: requestHTTP,
+                    method: 'GET'
+                });
+
+                const newItems = data.response.results;
+
+                nextPage = data.response.nextPage.substring(1);
+                setResultsLength_active(parseInt(data.response.total));
+                setNextPageLoading_active(false);
+
+                if(data.response.nextPage == '') {
+                    endList_active = true;
+                }
+
+                if(currentPage_active != '') {
+                    setItems_active([...items, ...newItems]);
+                } else {
+                    setItems_active(newItems);
+                }
+
+                setPageStatus(1);
+                setRefreshing_active(false);
+
             }
 
-            var requestHTTP = `${nextPage == '' ? `marketing/campaigns/email` : nextPage}`;
+            if(loadAllResults){ //ALL
+                if(endList || nextPage == currentPage) return;
+                currentPage = nextPage;
 
-            const data = await remoteAPI({
-                request: requestHTTP,
-                method: 'GET'
-            });
+                if(nextPage != '') {
+                    setNextPageLoading(true);
+                } else if(pageStatus == 1 && !refreshing) {
+                    setPageStatus(-1);
+                }
 
-            const newItems = data.response.results;
+                var requestHTTP = `${nextPage == '' ? `marketing/campaigns/email` : nextPage}`;
 
-            nextPage = data.response.nextPage.substring(1);
-            setResultsLength(parseInt(data.response.total));
-            setNextPageLoading(false);
+                const data = await remoteAPI({
+                    request: requestHTTP,
+                    method: 'GET'
+                });
 
-            if(data.response.nextPage == '') {
-                endList = true;
+                const newItems = data.response.results;
+
+                nextPage = data.response.nextPage.substring(1);
+                setResultsLength(parseInt(data.response.total));
+                setNextPageLoading(false);
+
+                if(data.response.nextPage == '') {
+                    endList = true;
+                }
+
+                if(currentPage != '') {
+                    setItems([...items, ...newItems]);
+                } else {
+                    setItems(newItems);
+                }
+
+                setPageStatus(1);
+                setRefreshing(false);
+
             }
 
-            if(currentPage != '') {
-                setItems([...items, ...newItems]);
-            } else {
-                setItems(newItems);
-            }
-
-            setPageStatus(1);
-            setRefreshing(false);
         } catch (e) {
             console.warn(e);
         }
@@ -178,24 +258,72 @@ export function ListCampaignEmail() {
                                     <ActivityIndicator size={32} color={theme.colors.darktheme} />
                                 </View>
                             ) : (
-                                <View style={theme.tabsContent}>
-                                    {items.length > 0 ? (
-                                        <FlatList 
-                                            style={[theme.cardList, {paddingBottom: Math.max(insets.bottom)}]}
-                                            data={items}
-                                            keyExtractor={ item => item.id }
-                                            renderItem={ ({item, index}) => <CardItem index={index} item={item} updateItem={updateItem} tab={tab}/> }
-                                            onEndReached={loadResults}
-                                            onEndReachedThreshold={ 0.15 }
-                                            ListFooterComponent={ <FooterList load={nextPageLoading} /> }
-                                            refreshControl={
-                                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                                            }
-                                        />
+                                <>
+                                {
+                                    items_active.length > 0 ? (
+                                        <TabsProvider defaultIndex={0} onChangeIndex={(index) => {setTab(index)}}>
+                                            <Tabs disableSwipe={true} style={theme.tabs} tabLabelStyle={theme.tabsLabel}>
+                                                <TabScreen label="Campanhas Ativas">
+                                                    <View style={theme.tabsContent}>
+                                                        <FlatList 
+                                                            style={[theme.cardList, {paddingBottom: Math.max(insets.bottom)}]}
+                                                            data={items_active}
+                                                            keyExtractor={ item => item.id }
+                                                            renderItem={ ({item, index}) => <CardItem index={index} item={item} updateItem={updateItem} tab={tab}/> }
+                                                            onEndReached={() => {loadResults(0);}}
+                                                            onEndReachedThreshold={ 0.15 }
+                                                            ListFooterComponent={ <FooterList load={nextPageLoading_active} /> }
+                                                            refreshControl={
+                                                                <RefreshControl refreshing={refreshing_active} onRefresh={onRefresh_active} />
+                                                            }
+                                                        />
+                                                    </View>
+                                                </TabScreen>
+
+                                                <TabScreen label="Todas">
+                                                    <View style={theme.tabsContent}>
+                                                        {items.length > 0 ? (
+                                                            <FlatList 
+                                                                style={[theme.cardList, {paddingBottom: Math.max(insets.bottom)}]}
+                                                                data={items}
+                                                                keyExtractor={ item => item.id }
+                                                                renderItem={ ({item, index}) => <CardItem index={index} item={item} updateItem={updateItem} tab={tab}/> }
+                                                                onEndReached={() => {loadResults(1);}}
+                                                                onEndReachedThreshold={ 0.15 }
+                                                                ListFooterComponent={ <FooterList load={nextPageLoading} /> }
+                                                                refreshControl={
+                                                                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                                                                }
+                                                            />
+                                                        ) : (
+                                                            <Noresults/>
+                                                        )}
+                                                    </View>
+                                                </TabScreen>
+                                            </Tabs>
+                                        </TabsProvider>
                                     ) : (
-                                    <Noresults/>
-                                    )}
-                                </View>   
+                                        <View style={theme.tabsContent}>
+                                            {items.length > 0 ? (
+                                                <FlatList 
+                                                    style={[theme.cardList, {paddingBottom: Math.max(insets.bottom)}]}
+                                                    data={items}
+                                                    keyExtractor={ item => item.id }
+                                                    renderItem={ ({item, index}) => <CardItem index={index} item={item} updateItem={updateItem} tab={tab}/> }
+                                                    onEndReached={loadResults}
+                                                    onEndReachedThreshold={ 0.15 }
+                                                    ListFooterComponent={ <FooterList load={nextPageLoading} /> }
+                                                    refreshControl={
+                                                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                                                    }
+                                                />
+                                            ) : (
+                                            <Noresults/>
+                                            )}
+                                        </View>
+                                    )
+                                }
+                                </> 
                             )
                         }
                         </>
