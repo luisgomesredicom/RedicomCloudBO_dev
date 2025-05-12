@@ -2,94 +2,26 @@ import React, {useState, useEffect} from 'react';
 import { ScrollView, StatusBar, View, StyleSheet, TouchableOpacity} from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRoute, useNavigation } from "@react-navigation/native";
-import RNPickerSelect from 'react-native-picker-select';
-import { Badge, LoadingFullscreen, HalfDonutChart, Icon, ProgressBar, CountDown } from '../components/elements';
+import { LoadingFullscreen, HalfDonutChart, Icon, ProgressBar, CountDown } from '../components/elements';
 import { theme } from '../styles/styles'
 import { Text } from 'react-native-paper';
 import Button from '../components/buttons'
-import { TextInput } from "../components/inputs";
-import { DateInput, DatePicker } from "../components/modalDatePicker";
-import { showToast, formValidator, remoteAPI } from '../core/utils'
-
-const fromHoursList = [
-    {label: '00:00:00', value: '00:00:00'},
-    {label: '00:30:00', value: '00:30:00'},
-    {label: '01:00:00', value: '01:00:00'},
-    {label: '01:30:00', value: '01:30:00'},
-    {label: '02:00:00', value: '02:00:00'},
-    {label: '02:30:00', value: '02:30:00'},
-    {label: '03:00:00', value: '03:00:00'},
-    {label: '03:30:00', value: '03:30:00'},
-    {label: '04:00:00', value: '04:00:00'},
-    {label: '04:30:00', value: '04:30:00'},
-    {label: '05:00:00', value: '05:00:00'},
-    {label: '05:30:00', value: '05:30:00'},
-    {label: '06:00:00', value: '06:00:00'},
-    {label: '06:30:00', value: '06:30:00'},
-    {label: '07:00:00', value: '07:00:00'},
-    {label: '07:30:00', value: '07:30:00'},
-    {label: '08:00:00', value: '08:00:00'},
-    {label: '08:30:00', value: '08:30:00'},
-    {label: '09:00:00', value: '09:00:00'},
-    {label: '09:30:00', value: '09:30:00'},
-    {label: '10:00:00', value: '10:00:00'},
-    {label: '10:30:00', value: '10:30:00'},
-    {label: '11:00:00', value: '11:00:00'},
-    {label: '11:30:00', value: '11:30:00'},
-    {label: '12:00:00', value: '12:00:00'},
-    {label: '12:30:00', value: '12:30:00'},
-    {label: '13:00:00', value: '13:00:00'},
-    {label: '13:30:00', value: '13:30:00'},
-    {label: '14:00:00', value: '14:00:00'},
-    {label: '14:30:00', value: '14:30:00'},
-    {label: '15:00:00', value: '15:00:00'},
-    {label: '15:30:00', value: '15:30:00'},
-    {label: '16:00:00', value: '16:00:00'},
-    {label: '16:30:00', value: '16:30:00'},
-    {label: '17:00:00', value: '17:00:00'},
-    {label: '17:30:00', value: '17:30:00'},
-    {label: '18:00:00', value: '18:00:00'},
-    {label: '18:30:00', value: '18:30:00'},
-    {label: '19:00:00', value: '19:00:00'},
-    {label: '19:30:00', value: '19:30:00'},
-    {label: '20:00:00', value: '20:00:00'},
-    {label: '20:30:00', value: '20:30:00'},
-    {label: '21:00:00', value: '21:00:00'},
-    {label: '21:30:00', value: '21:30:00'},
-    {label: '22:00:00', value: '22:00:00'},
-    {label: '22:30:00', value: '22:30:00'},
-    {label: '23:00:00', value: '23:00:00'},
-    {label: '23:30:00', value: '23:30:00'}
-]
+import { showToast, dateFormatter } from '../core/utils'
 
 export function DetCampaignSMS() {
     const [pageIsReady, setPageIsReady] = useState(false);
     const route = useRoute();
     const insets = useSafeAreaInsets();
     const [campaign, setCampaign] = useState(route.params.item);
+    const { date: startDate, time: startTime } = dateFormatter(campaign.startDate);
+    const { date: finishedDate, time: finishedTime } = dateFormatter(campaign.finished);
     const navigation = useNavigation();
-    
-    const [startDate, setStartDate] = useState({value: new Date(campaign.startDate),error: false,errorText: '',open: false});
-    const [startDateDatePart, startDateTimePart] = campaign.startDate.split(' ');
-    //const [startDateHour, startDateMinute] = startDateTimePart.split(':');
-    const startHourItem = fromHoursList.filter(item => item.label == startDateTimePart);
-    const [fromHour, setFromHour] = useState({value: startHourItem[0].value, required: true, showtoast: true});
-    const setStartDateVisible = React.useCallback((open) => {
-        setStartDate((params) => {
-            return { ...params, open: open || false };
-        });
-    }, [setStartDate]);
-    
-    const setStartDateConfirm = React.useCallback((data) => {
-        setStartDate((params) => {
-            return { ...params, open: false, value: data.date };
-        });
-    }, [setStartDate]);
 
-    const onPressAction = (action) => {
-        showToast({text: 'Temporariamente indisponível'});
-        //navigation.goBack();
-    }
+    const orderedOptions = [...campaign.options].sort((a, b) => {
+        const isAContained = a.option == 1 || (a.option == 5 && campaign.status != 0);
+        const isBContained = b.option == 1 || (b.option == 5 && campaign.status != 0);
+        return isAContained - isBContained; //Colocar o botão principal no fim
+    });
 
     const onSubmit = () => {
         showToast({text: 'Temporariamente indisponível'});
@@ -112,7 +44,7 @@ export function DetCampaignSMS() {
                             <ScrollView style={[theme.wrapperPage, {backgroundColor: 'transparent'}]} contentContainerStyle={[theme.wrapperContentStyle, {backgroundColor: 'white',paddingTop: 0, minHeight: '70%'}]}>
                                 
                                 <View style={[theme.containerDonutChart, {marginBottom: 30}]}>
-                                    <HalfDonutChart percentage={39} length={3900} title="SMS" />
+                                    <HalfDonutChart percentage={campaign.stats.totalSentPercent} length={campaign.stats.totalSent} title="SMS" bgcolor={campaign.status != 9 ? 'success' : 'warning'}/>
                                 </View>
                                 
                                 <View style={{marginBottom: 30}}>
@@ -120,90 +52,116 @@ export function DetCampaignSMS() {
                                         <View style={{flexGrow: 1,width: 1,borderRadius: 6,borderWidth: 1,borderColor: theme.colors.lightgray,backgroundColor: theme.colors.successlight,paddingVertical: 3,paddingHorizontal: 6,minHeight: 61}}>
                                             <Text numberOfLines={4} ellipsizeMode='tail' style={[theme.small, {fontSize: 10,lineHeight: 13,color: '#000'}]}>{campaign.message}</Text>
                                         </View>
-                                        <View style={{width: 180,flexShrink: 0,height: '100%'}}>
+                                        <View style={{width: 220,flexShrink: 0,height: '100%'}}>
                                             <View style={{flexDirection: 'row',alignItems: 'center'}}>
-                                                <View style={{width: 80,marginRight: 10}}><Text style={[theme.small]}>Encomendas</Text></View>
-                                                <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>14</Text></View>
+                                                <View style={{width: 62,marginRight: 10}}><Text style={[theme.small]}>Estado</Text></View>
+                                                <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{campaign.flags[0].title}</Text></View>
                                             </View>
-
+        
                                             <View style={{ flexDirection: 'row',alignItems: 'center'}}>
-                                                <View style={{width: 80,marginRight: 10}}><Text style={[theme.small]}>Conversão</Text></View>
-                                                <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>1%</Text></View>
+                                                <View style={{width: 62,marginRight: 10}}><Text style={[theme.small]}>Iniciado</Text></View>
+                                                <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{startDate}  <Text style={{color: theme.colors.darkgray}}>{startTime}</Text></Text></View>
                                             </View>
-
+        
                                             <View style={{flexDirection: 'row',alignItems: 'center'}}>
-                                                <View style={{width: 80,marginRight: 10}}><Text style={[theme.small]}>Vendas</Text></View>
-                                                <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>1 089,91 <Text style={{color: theme.colors.darkgray}}>EUR</Text></Text></View>
+                                                <View style={{width: 62,marginRight: 10}}><Text style={[theme.small]}>Finalizado</Text></View>
+                                                <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{finishedDate}  <Text style={{color: theme.colors.darkgray}}>{finishedTime}</Text></Text></View>
                                             </View>
+        
+                                            {/*<View style={{flexDirection: 'row',alignItems: 'center'}}>
+                                                <View style={{width: 62,marginRight: 10}}><Text style={[theme.small]}>Demo</Text></View>
+                                                <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>0 000,00 <Text style={{color: theme.colors.darkgray}}>EUR</Text></Text></View>
+                                            </View>*/}
                                             
                                             <View style={{marginTop: 6}}>
-                                                <ProgressBar percentage={80}/>
+                                                <ProgressBar percentage={campaign.stats.totalSentPercent}/>
                                             </View>
                                         </View>
                                     </View>
                                     <View style={statistics.container}>
+                                        {/*<View style={statistics.item}>
+                                            <View>
+                                                <View><Text style={statistics.text1}>Demo</Text></View>
+                                                <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'right'}]}>0</Text></View>
+                                            </View>
+                                            <View style={statistics.columnRight}>
+                                                <View><Text style={[statistics.text2, {textAlign: 'center'}]}>0%</Text></View>
+                                                <View style={statistics.value}><Text style={statistics.valueText}>0</Text></View>
+                                            </View>
+                                        </View>*/}
+                                        <View style={statistics.item}>
+                                            <View>
+                                                <View><Text style={statistics.text1}>Destinatários</Text></View>
+                                                <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'right'}]}>{campaign.stats.totalRecipients}</Text></View>
+                                            </View>
+                                        </View>
                                         <View style={statistics.item}>
                                             <View>
                                                 <View><Text style={statistics.text1}>Enviados</Text></View>
-                                                <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'right'}]}>10 000</Text></View>
                                             </View>
                                             <View style={statistics.columnRight}>
-                                                <View><Text style={[statistics.text2, {textAlign: 'center'}]}>5%</Text></View>
-                                                <View style={statistics.value}><Text style={statistics.valueText}>500</Text></View>
+                                                <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{campaign.stats.totalSentPercent}%</Text></View>
+                                                <View style={statistics.value}><Text style={statistics.valueText}>{campaign.stats.totalSent}</Text></View>
                                             </View>
                                         </View>
                                         <View style={statistics.item}>
                                             <View>
-                                                <View><Text style={statistics.text1}>Aberturas</Text></View>
-                                                <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'right'}]}>500</Text></View>
-                                            </View>
-                                            <View style={statistics.columnRight}>
-                                                <View><Text style={[statistics.text2, {textAlign: 'center'}]}>10%</Text></View>
-                                                <View style={statistics.value}><Text style={statistics.valueText}>50</Text></View>
+                                                <View><Text style={statistics.text1}>SMS Gastas</Text></View>
+                                                <View style={[statistics.columnRight, {marginLeft: 'auto'}]}>
+                                                    <View style={[statistics.value, {backgroundColor: theme.colors.errorlight}]}><Text style={[statistics.valueText, {color: theme.colors.error}]}>{campaign.stats.totalSpent}</Text></View>
+                                                </View>
                                             </View>
                                         </View>
-                                        <View style={statistics.item}>
+                                    </View>
+                                </View>
+                                
+                                {
+                                    campaign.status != 0 ? (
+                                        <View style={{flexDirection: 'row',gap: 10,justifyContent: 'space-between',marginTop: 8}}>
+                                            <View style={{flexDirection: 'column'}}>
+                                                <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2,color: '#993399'}]}>0</Text>
+                                                <Text style={[theme.small, {textAlign: 'center'}]}>Emails enviados</Text>
+                                            </View>
                                             <View>
-                                                <View><Text style={statistics.text1}>Clicks</Text></View>
-                                                <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'right'}]}>50</Text></View>
+                                                <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2,color: '#993399'}]}>10 000</Text>
+                                                <Text style={[theme.small, {textAlign: 'center'}]}>Pendentes</Text>
                                             </View>
-                                            <View style={statistics.columnRight}>
-                                                <View><Text style={[statistics.text2, {textAlign: 'center'}]}>10%</Text></View>
-                                                <View style={[statistics.value, {backgroundColor: theme.colors.errorlight}]}><Text style={[statistics.valueText, {color: theme.colors.error}]}>5</Text></View>
+                                            <View>
+                                                <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2,color: '#993399'}]}>0,00<Text style={theme.small}> %</Text></Text>
+                                                <Text style={[theme.small, {textAlign: 'center'}]}>Taxa de rejeição</Text>
                                             </View>
                                         </View>
-                                    </View>
-                                </View>
-
-                                <View style={{flexDirection: 'row',gap: 10,justifyContent: 'space-between',marginTop: 8}}>
-                                    <View style={{flexDirection: 'column'}}>
-                                        <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2}]}>0</Text>
-                                        <Text style={[theme.small, {textAlign: 'center'}]}>Emails enviados</Text>
-                                    </View>
-                                    <View>
-                                        <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2}]}>10 000</Text>
-                                        <Text style={[theme.small, {textAlign: 'center'}]}>Pendentes</Text>
-                                    </View>
-                                    <View>
-                                        <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2}]}>0,00<Text style={theme.small}> %</Text></Text>
-                                        <Text style={[theme.small, {textAlign: 'center'}]}>Taxa de rejeição</Text>
-                                    </View>
-                                </View>
-
-                                {/*
-                                <View style={{height: 6,backgroundColor: theme.colors.background,marginHorizontal: theme.ncontainerPadding,}}></View>
-
-                                <Text style={[theme.listNavSubtitle, {marginTop: theme.containerPadding,marginBottom: 20}]}>O envio começa...</Text>
-
-                                <View style={{marginHorizontal: 'auto'}}>
-                                    <CountDown targetDate="2025-07-01T00:00:00" onComplete={() => {
-                                        console.log('countdown completed');
-                                    }}/>
-                                </View>*/}
+                                    ) : (
+                                        <>
+                                            <View style={{height: 6,backgroundColor: theme.colors.background,marginHorizontal: theme.ncontainerPadding,}}></View>
+                                            <Text style={[theme.listNavSubtitle, {marginTop: theme.containerPadding,marginBottom: 20}]}>O envio começa...</Text>
+                                            <View style={{marginHorizontal: 'auto'}}>
+                                                <CountDown targetDate={campaign.startDate} onComplete={() => {
+                                                    console.log('countdown completed');
+                                                }}/>
+                                            </View>
+                                        </>
+                                    )
+                                }
                             </ScrollView>
 
-                            <View style={[theme.wrapperPageFooter, {paddingBottom: theme.containerPadding + Math.max(insets.bottom)}]}>
-                                <Button mode="contained" onPress={onSubmit}>Parar Envio</Button>
+                            <View style={[theme.wrapperPageFooter, {paddingBottom: theme.containerPadding + Math.max(insets.bottom),flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'}]}>
+                            {orderedOptions.map((item, index) => {
+                                let mode = 'outlined';
+
+                                if(campaign.options.length == 1 ||
+                                    item.option == 1 ||
+                                    (item.option == 5 && campaign.status != 0)
+                                ) {
+                                    mode = 'contained';
+                                }
+
+                                return (
+                                    <View key={index} style={{width: mode == 'contained' && campaign.options.length > 2 ? '100%' : '48%', marginTop: 2}}>
+                                        <Button mode={mode} onPress={onSubmit}>{item.title}</Button>
+                                    </View>
+                                );
+                            })}
                             </View>
                         </>
                     ) : <LoadingFullscreen />

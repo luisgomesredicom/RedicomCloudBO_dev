@@ -58,8 +58,8 @@ const wrapperContentStyle = {padding: containerPadding,paddingBottom: 0}
 const wrapperPageFooter = {
     paddingHorizontal: containerPadding,
     paddingTop: 20,
-    paddingBottom: 10,
-    gap: 10,
+    paddingBottom: 14,
+    gap: 14,
     backgroundColor: 'white'
 }
 

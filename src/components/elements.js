@@ -315,7 +315,7 @@ export const ProgressBar = ({percentage}) => {
     )
 }
 
-export const HalfDonutChart = ({ percentage, length, title }) => {
+export const HalfDonutChart = ({ percentage, length, title, bgcolor }) => {
     percentage = percentage / 100;
     const padding = 0;
     const strokeWidth = 20;
@@ -323,7 +323,7 @@ export const HalfDonutChart = ({ percentage, length, title }) => {
     const viewWidth = 220;
     const drawWidth = viewWidth - (strokeWidth * 2);
 
-    const bgcolor = theme.colors.success;
+    const gradientColor = theme.colors[bgcolor];
     const lightgray = theme.colors.lightgray;
 
     const path = Skia.Path.Make();
@@ -340,7 +340,7 @@ export const HalfDonutChart = ({ percentage, length, title }) => {
                     <Paint style="stroke" strokeWidth={strokeWidth} strokeCap="round">
                         <SweepGradient 
                             c={vec(viewWidth / 2, viewWidth / 2 + strokeWidth)}
-                            colors={[bgcolor]}
+                            colors={[gradientColor]}
                             start={180}
                             end={180 + (180 * percentage)}
                         />
