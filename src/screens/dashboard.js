@@ -185,7 +185,14 @@ export function DashboardScreen() {
                             </View>
                             
                             {Boolean(dataDash.informations.currency?.trim()) && (
-                                <TouchableOpacity style={{ padding: 20, marginRight: -20 }}>
+                                <TouchableOpacity style={{ padding: 20, marginRight: -20 }} onPress={() => {
+                                    navigation.navigate({
+                                        name: 'DashboardDetails',
+                                        params: {
+                                            title: 'Detalhes'
+                                        }
+                                    })
+                                }}>
                                     <View style={{borderRadius: 3,borderWidth: 1,borderColor: 'white',width: 24,height: 24,alignItems: 'center',justifyContent: 'center'}}>
                                         <Text style={{fontSize: 18,color: 'white',fontFamily: 'System'}}>
                                             { textEntity(dataDash.informations.currency.trim()) }

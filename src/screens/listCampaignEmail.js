@@ -86,7 +86,7 @@ export function ListCampaignEmail() {
                 <View style={{height: 6,backgroundColor: theme.colors.background}}></View>
 
                 {index == 0 && (
-                    <View style={{height: theme.containerPadding}}></View>
+                    <View style={{height: theme.containerPadding,backgroundColor: theme.colors.white}}></View>
                 )}
                 
                 <TouchableOpacity key={item.index} onPress={() => {

@@ -1,23 +1,101 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import { StatusBar, View, FlatList, TouchableOpacity, StyleSheet, RefreshControl } from 'react-native';
+import { StatusBar, View, FlatList, TouchableOpacity, StyleSheet, Image, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { remoteAPI } from '../core/utils';
+import { remoteAPI, numberFormat } from '../core/utils';
 import { LoadingFullscreen, Noresults, ListStatistics, FooterList, Icon, ProgressBar } from '../components/elements';
 import { theme } from '../styles/styles'
 import { Text, ActivityIndicator } from 'react-native-paper';
+import {TabsProvider, Tabs, TabScreen, useTabNavigation, useTabIndex} from '../components/paperTabs';
 
 export function ListCampaignSMS() {
     /* 0 => Início da página | -1 => Pedido à API | 1 => Tudo carregado */
     const [pageStatus, setPageStatus] = useState(0);
     const [items, setItems] = useState([]);
+    const [items_active, setItems_active] = useState([]);
     const [resultsLength, setResultsLength] = useState(null);
+    const [resultsLength_active, setResultsLength_active] = useState(null);
     const [nextPageLoading, setNextPageLoading] = useState(false);
+    const [nextPageLoading_active, setNextPageLoading_active] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
+    const [refreshing_active, setRefreshing_active] = useState(false);
     const [tab, setTab] = useState(0);
     const [info, setInfo] = useState([]);
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
+
+    useEffect(() => {
+        currentPage = null,
+        nextPage    = '',
+        endList     = false,
+        currentPage_active = null,
+        nextPage_active    = '',
+        endList_active     = false
+
+        const loadInfo = async () => {
+            try {
+                const response = await remoteAPI({
+                    request: `marketing/campaigns/sms/info`,
+                    method: 'GET'
+                });
+                
+                setInfo(response.response.info);
+                loadResults();
+
+            } catch (error) {
+                loadResults();
+                console.log(error);
+            }
+        };
+
+        loadInfo();
+    }, []);
+
+    useEffect(() => {
+        if(refreshing) {
+            loadResults(1);
+        }
+    }, [refreshing]);
+
+    useEffect(() => {
+        if(refreshing_active) {
+            loadResults(0);
+        }
+    }, [refreshing_active]);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        endList = false;
+        currentPage = null;
+        nextPage = '';
+    }, []);
+
+    const onRefresh_active = useCallback(() => {
+        setRefreshing_active(true);
+        endList_active = false;
+        currentPage_active = null;
+        nextPage_active = '';
+    }, []);
+
+    const updateItem = (item) => {
+        const updatedList = items.map((_item) => {
+            if (_item.id === item.id) {
+                return { ..._item, ...item };
+            }
+            return _item;
+        });
+
+        setItems(updatedList);
+
+        const updatedListActive = items_active.map((_item) => {
+            if (_item.id === item.id) {
+                return { ..._item, ...item };
+            }
+            return _item;
+        });
+
+        setItems_active(updatedListActive);
+    };
 
     const CardItem = ({index, item, updateItem}) => {
         return (
@@ -25,7 +103,7 @@ export function ListCampaignSMS() {
                 <View style={{height: 6,backgroundColor: theme.colors.background}}></View>
 
                 {index == 0 && (
-                    <View style={{height: theme.containerPadding}}></View>
+                    <View style={{height: theme.containerPadding,backgroundColor: theme.colors.white}}></View>
                 )}
                 
                 <TouchableOpacity key={item.index} onPress={() => {
@@ -109,96 +187,98 @@ export function ListCampaignSMS() {
         )
     }
 
-    useEffect(() => {
-        currentPage = null,
-        nextPage    = '',
-        endList     = false
+    async function loadResults(targetTab) {
+        try {
+            let loadAllResults = !targetTab || targetTab == 1 ? true : false;
+            let loadActiveResults = !targetTab || targetTab == 0 ? true : false;
 
-        const fetchData = async () => {
-            try {
-                const response = await remoteAPI({
-                    request: `marketing/campaigns/sms/info`,
+            if(loadActiveResults) { //Active
+                if(endList_active || nextPage_active == currentPage_active) return;
+                currentPage_active = nextPage_active;
+
+                if(nextPage_active != '') {
+                    setNextPageLoading_active(true);
+                } else if(pageStatus == 1 && !refreshing_active) {
+                    setPageStatus(-1);
+                }
+
+                var requestHTTP = `${nextPage == '' ? `marketing/campaigns/sms/active` : nextPage}`;
+
+                const data = await remoteAPI({
+                    request: requestHTTP,
                     method: 'GET'
                 });
-                
-                setInfo(response.response.info);
-                loadResults();
 
-            } catch (error) {
-                loadResults();
-                console.log(error);
-            }
-        };
+                const newItems = data.response.results;
 
-        // Chame a função assíncrona fetchData para iniciar a operação fetch
-        fetchData();
-    }, []);
+                nextPage = data.response.nextPage.substring(1);
+                setResultsLength_active(parseInt(data.response.total));
+                setNextPageLoading_active(false);
 
-    const onRefresh = useCallback(() => {
-        setRefreshing(true);
-        endList = false;
-        currentPage = null;
-        nextPage = '';
-        loadResults();
-    }, []);
+                if(data.response.nextPage == '') {
+                    endList_active = true;
+                }
 
-    const updateItem = (item) => {
-        const updatedList = items.map((_item) => {
-            if (_item.id === item.id) {
-                return { ..._item, ...item };
-            }
-            return _item;
-        });
+                if(currentPage_active != '') {
+                    setItems_active([...items, ...newItems]);
+                } else {
+                    setItems_active(newItems);
+                }
 
-        setItems(updatedList);
-    };
+                setPageStatus(1);
+                setRefreshing_active(false);
 
-    async function loadResults() {
-        try {
-            if(endList || nextPage == currentPage) return;
-            currentPage = nextPage;
-
-            if(nextPage != '') {
-                setNextPageLoading(true);
-            } else if(pageStatus == 1 && !refreshing) {
-                setPageStatus(-1);
             }
 
-            var requestHTTP = `${nextPage == '' ? `marketing/campaigns/sms` : nextPage}`;
+            if(loadAllResults){ //ALL
+                if(endList || nextPage == currentPage) return;
+                currentPage = nextPage;
 
-            const data = await remoteAPI({
-                request: requestHTTP,
-                method: 'GET'
-            });
+                if(nextPage != '') {
+                    setNextPageLoading(true);
+                } else if(pageStatus == 1 && !refreshing) {
+                    setPageStatus(-1);
+                }
 
-            const newItems = data.response.results;
+                var requestHTTP = `${nextPage == '' ? `marketing/campaigns/sms` : nextPage}`;
 
-            nextPage = data.response.nextPage.substring(1);
-            setResultsLength(parseInt(data.response.total));
-            setNextPageLoading(false);
+                const data = await remoteAPI({
+                    request: requestHTTP,
+                    method: 'GET'
+                });
 
-            if(data.response.nextPage == '') {
-                endList = true;
+                const newItems = data.response.results;
+
+                nextPage = data.response.nextPage.substring(1);
+                setResultsLength(parseInt(data.response.total));
+                setNextPageLoading(false);
+
+                if(data.response.nextPage == '') {
+                    endList = true;
+                }
+
+                if(currentPage != '') {
+                    setItems([...items, ...newItems]);
+                } else {
+                    setItems(newItems);
+                }
+
+                setPageStatus(1);
+                setRefreshing(false);
+
             }
 
-            if(currentPage != '') {
-                setItems([...items, ...newItems]);
-            } else {
-                setItems(newItems);
-            }
-
-            setPageStatus(1);
-            setRefreshing(false);
         } catch (e) {
             console.warn(e);
         }
     }
   
-	return (
-		<SafeAreaView style={theme.safeAreaView} edges={['right','left']}>
-			<StatusBar barStyle='default'/>
+    return (
+        <SafeAreaView style={theme.safeAreaView} edges={['right','left']}>
+            <StatusBar barStyle='default'/>
             <View style={[theme.wrapperPage]}>
-                <ListStatistics template="listCampaignSMS" value={2045} />
+                <ListStatistics template="listCampaignSMS" value={2425}/>
+
                 {
                     pageStatus != 0 ? (
                         <>
@@ -208,36 +288,84 @@ export function ListCampaignSMS() {
                                     <ActivityIndicator size={32} color={theme.colors.darktheme} />
                                 </View>
                             ) : (
-                                <View style={theme.tabsContent}>
-                                    {items.length > 0 ? (
-                                        <FlatList 
-                                            style={[theme.cardList, {paddingBottom: Math.max(insets.bottom)}]}
-                                            data={items}
-                                            keyExtractor={ item => item.id }
-                                            renderItem={ ({item, index}) => <CardItem index={index} item={item} updateItem={updateItem} tab={tab}/> }
-                                            onEndReached={loadResults}
-                                            onEndReachedThreshold={ 0.15 }
-                                            ListFooterComponent={ <FooterList load={nextPageLoading} />}
-                                            refreshControl={
-                                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                                            }
-                                        />
+                                <>
+                                {
+                                    items_active.length > 0 ? (
+                                        <TabsProvider defaultIndex={0} onChangeIndex={(index) => {setTab(index)}}>
+                                            <Tabs disableSwipe={true} style={theme.tabs} tabLabelStyle={theme.tabsLabel}>
+                                                <TabScreen label="Campanhas Ativas">
+                                                    <View style={theme.tabsContent}>
+                                                        <FlatList 
+                                                            style={[theme.cardList, {paddingBottom: Math.max(insets.bottom)}]}
+                                                            data={items_active}
+                                                            keyExtractor={ item => item.id }
+                                                            renderItem={ ({item, index}) => <CardItem index={index} item={item} updateItem={updateItem} tab={tab}/> }
+                                                            onEndReached={() => {loadResults(0);}}
+                                                            onEndReachedThreshold={ 0.15 }
+                                                            ListFooterComponent={ <FooterList load={nextPageLoading_active} /> }
+                                                            refreshControl={
+                                                                <RefreshControl refreshing={refreshing_active} onRefresh={onRefresh_active} />
+                                                            }
+                                                        />
+                                                    </View>
+                                                </TabScreen>
+
+                                                <TabScreen label="Todas">
+                                                    <View style={theme.tabsContent}>
+                                                        {items.length > 0 ? (
+                                                            <FlatList 
+                                                                style={[theme.cardList, {paddingBottom: Math.max(insets.bottom)}]}
+                                                                data={items}
+                                                                keyExtractor={ item => item.id }
+                                                                renderItem={ ({item, index}) => <CardItem index={index} item={item} updateItem={updateItem} tab={tab}/> }
+                                                                onEndReached={() => {loadResults(1);}}
+                                                                onEndReachedThreshold={ 0.15 }
+                                                                ListFooterComponent={ <FooterList load={nextPageLoading} /> }
+                                                                refreshControl={
+                                                                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                                                                }
+                                                            />
+                                                        ) : (
+                                                            <Noresults/>
+                                                        )}
+                                                    </View>
+                                                </TabScreen>
+                                            </Tabs>
+                                        </TabsProvider>
                                     ) : (
-                                    <Noresults/>
-                                    )}
-                                </View>   
+                                        <View style={theme.tabsContent}>
+                                            {items.length > 0 ? (
+                                                <FlatList 
+                                                    style={[theme.cardList, {paddingBottom: Math.max(insets.bottom)}]}
+                                                    data={items}
+                                                    keyExtractor={ item => item.id }
+                                                    renderItem={ ({item, index}) => <CardItem index={index} item={item} updateItem={updateItem} tab={tab}/> }
+                                                    onEndReached={loadResults}
+                                                    onEndReachedThreshold={ 0.15 }
+                                                    ListFooterComponent={ <FooterList load={nextPageLoading} /> }
+                                                    refreshControl={
+                                                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                                                    }
+                                                />
+                                            ) : (
+                                            <Noresults/>
+                                            )}
+                                        </View>
+                                    )
+                                }
+                                </> 
                             )
                         }
                         </>
                     ) : <LoadingFullscreen />
                 }
             </View>
-		</SafeAreaView>
-	);
+        </SafeAreaView>
+    );
 }
 
 const statistics = StyleSheet.create({
-    container: {flexDirection: 'row',gap: 10,justifyContent: 'space-between',marginTop: 8},
+    container: {flexDirection: 'row',gap: 10,justifyContent: 'space-between',marginTop: 4},
     item: {flexDirection: 'row',gap: 10},
     columnRight: {width: 42},
     text1: [theme.small, {textAlign: 'right'}],
