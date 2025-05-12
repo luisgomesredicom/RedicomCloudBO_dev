@@ -221,3 +221,9 @@ export function numberFormat(number){
 
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 }
+
+export function textEntity(text) {
+  const return_text = text.replace(/&euro;/g, '€');
+  return return_text;
+}
+

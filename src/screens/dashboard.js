@@ -2,7 +2,7 @@ import React, {useState, useEffect, useContext, useCallback, useRef} from 'react
 import { ScrollView, View, Pressable, TouchableOpacity, StatusBar, StyleSheet, RefreshControl, Animated, Easing, ActivityIndicator } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native'
-import { remoteAPI, AuthContext } from '../core/utils';
+import { remoteAPI, AuthContext, textEntity } from '../core/utils';
 import { Text } from 'react-native-paper'
 import { ListMenu, LoadingFullscreen, Icon } from '../components/elements';
 import { theme } from '../styles/styles'
@@ -188,7 +188,7 @@ export function DashboardScreen() {
                                 <TouchableOpacity style={{ padding: 20, marginRight: -20 }}>
                                     <View style={{borderRadius: 3,borderWidth: 1,borderColor: 'white',width: 24,height: 24,alignItems: 'center',justifyContent: 'center'}}>
                                         <Text style={{fontSize: 18,color: 'white',fontFamily: 'System'}}>
-                                            {dataDash.informations.currency.trim()}
+                                            { textEntity(dataDash.informations.currency.trim()) }
                                         </Text>
                                     </View>
                                 </TouchableOpacity>
