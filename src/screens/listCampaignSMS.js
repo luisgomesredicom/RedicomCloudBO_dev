@@ -213,7 +213,7 @@ export function ListCampaignSMS() {
                     setPageStatus(-1);
                 }
 
-                var requestHTTP = `${nextPage == '' ? `marketing/campaigns/sms/active` : nextPage}`;
+                var requestHTTP = `${nextPage_active == '' ? `marketing/campaigns/sms/active` : nextPage}`;
 
                 const data = await remoteAPI({
                     request: requestHTTP,
@@ -288,7 +288,7 @@ export function ListCampaignSMS() {
         <SafeAreaView style={theme.safeAreaView} edges={['right','left']}>
             <StatusBar barStyle='default'/>
             <View style={[theme.wrapperPage]}>
-                <ListStatistics template="listCampaignSMS" value={2425} datetime="2024-09-04"/>
+                <ListStatistics template="listCampaignSMS" value={info.totalSentToday} datetime={info.date}/>
 
                 {
                     pageStatus != 0 ? (

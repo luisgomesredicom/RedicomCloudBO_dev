@@ -215,15 +215,17 @@ export function priceFormat(number, decimals, decPoint, thousandsSep, prefix, su
 
 //Number format
 export function numberFormat(number){
-    if(number.toLocaleString('en-US').split(',').length > 1) {
+    /*if(number.toLocaleString('en-US').split(',').length > 1) {
         return number.toLocaleString('en-US').replace(/,/g, ' ')
     }
 
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');*/
+    return number;
 }
 
 export function dateFormatter(dateTime) {
-    if(!dateTime) return '';
+    if(!dateTime || dateTime.split('0000-00').length > 1)
+        return {date: '...', time: ''};
   
     const [datePart, timePart] = dateTime.split(' ');
     const [year, month, day] = datePart.split('-').map(Number);

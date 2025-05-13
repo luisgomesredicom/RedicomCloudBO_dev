@@ -10,6 +10,7 @@ import { showToast, dateFormatter } from '../core/utils'
 
 export function DetCampaignSMS() {
     const [pageIsReady, setPageIsReady] = useState(false);
+    const [pageStatus, setPageStatus] = useState(0);
     const route = useRoute();
     const insets = useSafeAreaInsets();
     const [campaign, setCampaign] = useState(route.params.item);
@@ -18,14 +19,15 @@ export function DetCampaignSMS() {
     const navigation = useNavigation();
 
     const orderedOptions = [...campaign.options].sort((a, b) => {
-        const isAContained = a.option == 1 || (a.option == 5 && campaign.status != 0);
-        const isBContained = b.option == 1 || (b.option == 5 && campaign.status != 0);
+        const isAContained = a.option == 1 || (a.option == 5 && campaign.status != 0) || (a.option == 0 && campaign.status != 0);
+        const isBContained = b.option == 1 || (b.option == 5 && campaign.status != 0) || (b.option == 0 && campaign.status != 0);
         return isAContained - isBContained; //Colocar o botão principal no fim
     });
 
-    const onSubmit = () => {
-        showToast({text: 'Temporariamente indisponível'});
+    const onSubmit = (data) => {
+        //showToast({text: 'Temporariamente indisponível'});
         //navigation.goBack();
+        //console.log(data);
     }
 
     useEffect(() => {
@@ -119,15 +121,15 @@ export function DetCampaignSMS() {
                                     campaign.status != 0 ? (
                                         <View style={{flexDirection: 'row',gap: 10,justifyContent: 'space-between',marginTop: 8}}>
                                             <View style={{flexDirection: 'column'}}>
-                                                <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2,color: '#993399'}]}>0</Text>
+                                                <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2}]}>{campaign.stats.totalSent}</Text>
                                                 <Text style={[theme.small, {textAlign: 'center'}]}>Emails enviados</Text>
                                             </View>
                                             <View>
-                                                <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2,color: '#993399'}]}>10 000</Text>
+                                                <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2}]}>{campaign.stats.totalPending}</Text>
                                                 <Text style={[theme.small, {textAlign: 'center'}]}>Pendentes</Text>
                                             </View>
                                             <View>
-                                                <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2,color: '#993399'}]}>0,00<Text style={theme.small}> %</Text></Text>
+                                                <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2}]}>{campaign.stats.bounceRate}<Text style={theme.small}> %</Text></Text>
                                                 <Text style={[theme.small, {textAlign: 'center'}]}>Taxa de rejeição</Text>
                                             </View>
                                         </View>
@@ -151,14 +153,15 @@ export function DetCampaignSMS() {
 
                                 if(campaign.options.length == 1 ||
                                     item.option == 1 ||
-                                    (item.option == 5 && campaign.status != 0)
+                                    (item.option == 5 && campaign.status != 0) || 
+                                    (item.option == 0 && campaign.status != 0)
                                 ) {
                                     mode = 'contained';
                                 }
 
                                 return (
                                     <View key={index} style={{width: mode == 'contained' && campaign.options.length > 2 ? '100%' : '48%', marginTop: 2}}>
-                                        <Button mode={mode} onPress={onSubmit}>{item.title}</Button>
+                                        <Button mode={mode} onPress={() => onSubmit(item)}>{item.title}</Button>
                                     </View>
                                 );
                             })}

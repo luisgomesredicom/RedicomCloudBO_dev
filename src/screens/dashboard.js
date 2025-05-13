@@ -179,7 +179,7 @@ export function DashboardScreen() {
                 pageIsReady ? (
                     <>
                     <View style={{flex: 1,backgroundColor: theme.colors.theme,paddingTop: Math.max(insets.top)}}>
-                        <View style={{flexDirection: 'row',height: 52,backgroundColor: theme.colors.theme,alignItems: 'center',paddingHorizontal: theme.containerPadding}}>
+                        <View style={{flexDirection: 'row',height: 56,backgroundColor: theme.colors.theme,alignItems: 'center',paddingHorizontal: theme.containerPadding}}>
                             <View style={{flexGrow: 1}}>
                                 <Text style={[theme.subtitle, {color: theme.colors.white}]}>{dataDash.informations.title}</Text>
                             </View>
