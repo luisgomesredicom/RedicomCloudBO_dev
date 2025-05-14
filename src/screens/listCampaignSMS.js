@@ -63,22 +63,34 @@ export function ListCampaignSMS() {
         }
     }, [refreshing_active]);
 
-    const onRefresh = useCallback(() => {
-        setRefreshing(true);
+    const resetLists = () => {
         endList = false;
         currentPage = null;
         nextPage = '';
-    }, []);
-
-    const onRefresh_active = useCallback(() => {
-        setRefreshing_active(true);
+        
         endList_active = false;
         currentPage_active = null;
         nextPage_active = '';
+    };
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        setRefreshing_active(true);
+        resetLists();
+    }, []);
+
+    const onRefresh_active = useCallback(() => {
+        setRefreshing(true);
+        setRefreshing_active(true);
+        resetLists();
     }, []);
 
     const updateItem = (item) => {
-        const updatedList = items.map((_item) => {
+        setRefreshing(true);
+        setRefreshing_active(true);
+        resetLists();
+        
+        /*const updatedList = items.map((_item) => {
             if (_item.id === item.id) {
                 return { ..._item, ...item };
             }
@@ -94,7 +106,7 @@ export function ListCampaignSMS() {
             return _item;
         });
 
-        setItems_active(updatedListActive);
+        setItems_active(updatedListActive);*/
     };
 
     const CardItem = ({index, item, updateItem}) => {

@@ -1,10 +1,10 @@
 import React, {useState, useEffect, useContext, useCallback, useRef} from 'react';
-import { ScrollView, View, Pressable, TouchableOpacity, StatusBar, StyleSheet, RefreshControl, Animated, Easing, ActivityIndicator } from 'react-native';
+import { ScrollView, View, Pressable, TouchableOpacity, StatusBar, StyleSheet, RefreshControl, Animated, Easing } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native'
 import { remoteAPI, AuthContext, textEntity } from '../core/utils';
-import { Text } from 'react-native-paper'
-import { ListMenu, LoadingFullscreen, Icon } from '../components/elements';
+import { Portal, Text } from 'react-native-paper'
+import { ListMenu, LoadingFullscreen, Icon, LoadingRefreshFullscreen, LoadingRefresh } from '../components/elements';
 import { theme } from '../styles/styles'
 import { Link } from '../components/buttons';
 
@@ -15,9 +15,9 @@ export function DashboardScreen() {
     const [dataDash, setDataDash] = useState(null);
     const [visible, setVisible] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    const [isRefreshLoading, setRefreshLoading] = useState(false);
     const insets = useSafeAreaInsets();
     const rotationLoopRef = useRef(null);
-    const [isRotating, setRotating] = useState(false);
 
     const fetchData = async () => {
         try {
@@ -53,14 +53,14 @@ export function DashboardScreen() {
     }, []);
 
     const onPressRefresh = useCallback(async () => {
-        if(isRotating) return;
-        setRotating(true);
+        if(isRefreshLoading) return;
+        setRefreshLoading(true);
 
         startRotation();
         await fetchData();
         stopRotation();
         setTimeout(() => {
-            setRotating(false);
+            setRefreshLoading(false);
         }, 600);
     }, []);
 
@@ -82,7 +82,7 @@ export function DashboardScreen() {
             });
         
             rotationLoopRef.current.start(({ finished }) => {
-                if(finished && isRotating) {
+                if(finished && isRefreshLoading) {
                     spin();
                 }
             });
@@ -205,7 +205,7 @@ export function DashboardScreen() {
                         <View style={[theme.wrapperPage]}>
                             <ScrollView style={[theme.wrapperContainerPage, {paddingBottom: 50}]} contentContainerStyle={theme.wrapperContentStyle}
                             refreshControl={
-                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
                             }>
                                 <View style={{display: 'flex',alignItems: 'center',flexDirection: 'row',justifyContent: 'space-between',gap: 10,marginBottom: 15}} /*onPress={() => {setVisible(true)}}*/>
                                     <View><Text style={[theme.listNavSubtitle]}>{dataDash.stats.informations.title}</Text></View>
@@ -309,10 +309,8 @@ export function DashboardScreen() {
                     </>
                 ) : <LoadingFullscreen />
             }
-            {isRotating && (
-                <View style={{...StyleSheet.absoluteFillObject,backgroundColor: 'rgba(0,0,0,0.3)',justifyContent: 'center',alignItems: 'center',zIndex: 1000}}>
-                    <ActivityIndicator size="large" color="#ffffff" />
-                </View>
+            {isRefreshLoading && (
+                <Portal><LoadingRefreshFullscreen /></Portal>
             )}
         </SafeAreaView>
     );

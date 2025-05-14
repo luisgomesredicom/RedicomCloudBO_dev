@@ -20,6 +20,14 @@ export const LoadingFullscreen = () => {
   )
 }
 
+export const LoadingRefreshFullscreen = () => {
+    return (
+        <View style={{...StyleSheet.absoluteFillObject,backgroundColor: 'rgba(0,0,0,0.3)',justifyContent: 'center',alignItems: 'center',zIndex: 1000}}>
+            <ActivityIndicator animating={true} size={40} color={theme.colors.lightgray} />
+        </View>
+    );
+}
+
 export const Noresults = (props) => {
   return (
     <View style={theme.noResultsWrapper}>

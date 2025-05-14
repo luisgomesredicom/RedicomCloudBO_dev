@@ -1,14 +1,25 @@
-import React, {useState, useEffect} from 'react';
-import { ScrollView, StatusBar, View, StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useState, useEffect, useCallback} from 'react';
+import { ScrollView, StatusBar, View, StyleSheet, Modal, RefreshControl } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRoute, useNavigation } from "@react-navigation/native";
-import { LoadingFullscreen, HalfDonutChart, Icon, ProgressBar, CountDown } from '../components/elements';
+import { Portal } from "react-native-paper";
+import { LoadingFullscreen, HalfDonutChart, Icon, ProgressBar, CountDown, LoadingRefreshFullscreen } from '../components/elements';
 import { theme } from '../styles/styles'
 import { Text } from 'react-native-paper';
 import Button from '../components/buttons'
-import { showToast, dateFormatter } from '../core/utils'
+import { remoteAPI, dateFormatter } from '../core/utils'
 
 export function DetCampaignSMS() {
+    /*
+    Estados das campanhas SMS (campaign.status)
+        0  - Agendada
+        1  - A enviar
+        3  - Parada
+        5  - Em preparação
+        9  - Finalizada
+        10 - Cancelada
+    */
+    const navigation = useNavigation();
     const [pageIsReady, setPageIsReady] = useState(false);
     const [pageStatus, setPageStatus] = useState(0);
     const route = useRoute();
@@ -16,23 +27,105 @@ export function DetCampaignSMS() {
     const [campaign, setCampaign] = useState(route.params.item);
     const { date: startDate, time: startTime } = dateFormatter(campaign.startDate);
     const { date: finishedDate, time: finishedTime } = dateFormatter(campaign.finished);
-    const navigation = useNavigation();
-
-    const orderedOptions = [...campaign.options].sort((a, b) => {
-        const isAContained = a.option == 1 || (a.option == 5 && campaign.status != 0) || (a.option == 0 && campaign.status != 0);
-        const isBContained = b.option == 1 || (b.option == 5 && campaign.status != 0) || (b.option == 0 && campaign.status != 0);
-        return isAContained - isBContained; //Colocar o botão principal no fim
-    });
-
-    const onSubmit = (data) => {
-        //showToast({text: 'Temporariamente indisponível'});
-        //navigation.goBack();
-        //console.log(data);
-    }
+    const [isRefreshLoading, setRefreshLoading] = useState(false);
+    const [isModalConfirm, setModalConfirm] = useState(false);
+    const [optionSubmit, setOptionSubmit] = useState(null);
+    const [refreshing, setRefreshing] = useState(false);
 
     useEffect(() => {
         setPageIsReady(true);
     }, []);
+
+    useEffect(() => {
+        if(optionSubmit) {
+            if(String(optionSubmit.confirmPopup).trim() === 'true') {
+                setModalConfirm(true);
+                return;
+            }
+            
+            onSubmit();
+        }
+    }, [optionSubmit]);
+
+    const onSubmit = async () => {
+        setRefreshLoading(true);
+
+        try {
+            const data = await remoteAPI({
+                request: `marketing/campaigns/sms`,
+                method: 'PUT',
+                body: {
+                    id: campaign.id,
+                    option: optionSubmit.option
+                }
+            });
+    
+            updateCampaign(data);
+
+        } catch (error) {
+            console.error('Erro ao chamar a API:', error);
+        } finally {
+            setTimeout(() => {
+                setRefreshLoading(false);
+                setOptionSubmit(null);
+            }, 500);
+        }
+    }
+
+    const updateCampaign = (data) => {
+        if(data && JSON.stringify(data.response)) {
+            setCampaign(data.response);
+            route.params.update(data.response);
+        }
+    }
+
+    const refreshCampaign = async () => {
+        const data = await remoteAPI({
+            request: `marketing/campaigns/sms/${campaign.id}`,
+            method: 'GET'
+        });
+
+        updateCampaign(data);
+    }
+
+    const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+        await refreshCampaign();
+        setRefreshing(false);
+    }, []);
+
+    const ModalConfirm = () => {
+        return (
+            <View style={{flex: 1,justifyContent: 'center',alignItems: 'center'}}>
+                <Modal animationType="fade" transparent={true} visible={isModalConfirm} onRequestClose={() => {
+                    setModalConfirm(!isModalConfirm);
+                    setOptionSubmit(null);
+                }}>
+                    <View style={{flex: 1,justifyContent: 'center',alignItems: 'center',backgroundColor: 'rgba(255, 255, 255, 0.8)'}}>
+                        <View style={theme.modalView}>
+                            {/*<View style={{marginBottom: 12}}><Icon name="unlock" size={42} /></View>*/}
+                            <Text style={[theme.listNavTitle, {textAlign: 'center',marginBottom: 10}]}>Deseja continuar?</Text>
+                            <Text style={[theme.paragraph, {textAlign: 'center',color: theme.colors.darkgray}]}>{optionSubmit ? optionSubmit.confirmPopupText : ''}</Text>
+                            <View style={{flexDirection: 'row',justifyContent: 'space-between',gap: 14,marginTop: 20}}>
+                                <View style={{flexBasis: '50%'}}>
+                                    <Button mode="outlined" onPress={() => {
+                                        setModalConfirm(!isModalConfirm);
+                                        setOptionSubmit(null);
+                                    }}>Cancelar</Button>
+                                </View>
+                                <View style={{flexBasis: '50%'}}>
+                                    <Button mode="contained" onPress={() => {
+                                        setModalConfirm(!isModalConfirm);
+                                        onSubmit();
+                                    }}>Continuar</Button>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
+            </View>
+        )
+    }
 
     return (
         <SafeAreaView style={theme.safeAreaView} edges={['right','left']}>
@@ -43,10 +136,13 @@ export function DetCampaignSMS() {
                         <>
                             <View style={{backgroundColor: theme.colors.darktheme,position: 'absolute',top: 0,left: 0,width: '100%',height: 300,zIndex: 0}}></View>
                             
-                            <ScrollView style={[theme.wrapperPage, {backgroundColor: 'transparent'}]} contentContainerStyle={[theme.wrapperContentStyle, {backgroundColor: 'white',paddingTop: 0, minHeight: '70%'}]}>
-                                
+                            <ScrollView style={[theme.wrapperPage, {backgroundColor: 'transparent'}]} contentContainerStyle={[theme.wrapperContentStyle, {backgroundColor: 'white',paddingTop: 0, minHeight: '70%'}]}
+                            refreshControl={
+                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={theme.colors.white} tintColor={theme.colors.white}/>
+                            }
+                            >
                                 <View style={[theme.containerDonutChart, {marginBottom: 30}]}>
-                                    <HalfDonutChart percentage={campaign.stats.totalSentPercent} length={campaign.stats.totalSent} title="SMS" bgcolor={campaign.status != 9 ? 'success' : 'warning'}/>
+                                    <HalfDonutChart percentage={campaign.stats.totalSentPercent} length={campaign.stats.totalSent} title="SMS" bgcolor={campaign.flags.graphStyle}/>
                                 </View>
                                 
                                 <View style={{marginBottom: 30}}>
@@ -139,7 +235,7 @@ export function DetCampaignSMS() {
                                             <Text style={[theme.listNavSubtitle, {marginTop: theme.containerPadding,marginBottom: 20}]}>O envio começa...</Text>
                                             <View style={{marginHorizontal: 'auto'}}>
                                                 <CountDown targetDate={campaign.startDate} onComplete={() => {
-                                                    console.log('countdown completed');
+                                                    refreshCampaign();
                                                 }}/>
                                             </View>
                                         </>
@@ -148,20 +244,12 @@ export function DetCampaignSMS() {
                             </ScrollView>
 
                             <View style={[theme.wrapperPageFooter, {paddingBottom: theme.containerPadding + Math.max(insets.bottom),flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'}]}>
-                            {orderedOptions.map((item, index) => {
-                                let mode = 'outlined';
-
-                                if(campaign.options.length == 1 ||
-                                    item.option == 1 ||
-                                    (item.option == 5 && campaign.status != 0) || 
-                                    (item.option == 0 && campaign.status != 0)
-                                ) {
-                                    mode = 'contained';
-                                }
+                            {campaign.options.map((item, index) => {
+                                const mode = item.buttonStyle == 'principal' ? 'contained' : 'outlined';
 
                                 return (
                                     <View key={index} style={{width: mode == 'contained' && campaign.options.length > 2 ? '100%' : '48%', marginTop: 2}}>
-                                        <Button mode={mode} onPress={() => onSubmit(item)}>{item.title}</Button>
+                                        <Button mode={mode} onPress={() => setOptionSubmit(item)}>{item.title}</Button>
                                     </View>
                                 );
                             })}
@@ -170,6 +258,12 @@ export function DetCampaignSMS() {
                     ) : <LoadingFullscreen />
                 }
             </View>
+            
+            <View><ModalConfirm /></View>
+
+            {isRefreshLoading && (
+                <Portal><LoadingRefreshFullscreen /></Portal>
+            )}
         </SafeAreaView>
     );
 }
