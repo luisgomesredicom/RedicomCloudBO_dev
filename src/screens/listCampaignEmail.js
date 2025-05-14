@@ -20,6 +20,7 @@ export function ListCampaignEmail() {
     const [refreshing, setRefreshing] = useState(false);
     const [refreshing_active, setRefreshing_active] = useState(false);
     const [tab, setTab] = useState(0);
+    const [info, setInfo] = useState([]);
     const insets = useSafeAreaInsets();
     const navigation = useNavigation();
 
@@ -31,7 +32,22 @@ export function ListCampaignEmail() {
 		nextPage_active    = '',
 		endList_active     = false
 
-        loadResults();
+        const loadInfo = async () => {
+            try {
+                const response = await remoteAPI({
+                    request: `marketing/campaigns/email/info`,
+                    method: 'GET'
+                });
+                
+                setInfo(response.response.info);
+            } catch (error) {
+                console.log(error);
+            } finally {
+                loadResults();
+            }
+        };
+        
+        loadInfo();
     }, []);
 
     useEffect(() => {
@@ -46,22 +62,34 @@ export function ListCampaignEmail() {
         }
     }, [refreshing_active]);
 
-    const onRefresh = useCallback(() => {
-        setRefreshing(true);
+    const resetLists = () => {
         endList = false;
         currentPage = null;
         nextPage = '';
-    }, []);
-
-    const onRefresh_active = useCallback(() => {
-        setRefreshing_active(true);
+        
         endList_active = false;
         currentPage_active = null;
         nextPage_active = '';
+    };
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        setRefreshing_active(true);
+        resetLists();
+    }, []);
+
+    const onRefresh_active = useCallback(() => {
+        setRefreshing(true);
+        setRefreshing_active(true);
+        resetLists();
     }, []);
 
     const updateItem = (item) => {
-        const updatedList = items.map((_item) => {
+        setRefreshing(true);
+        setRefreshing_active(true);
+        resetLists();
+
+        /*const updatedList = items.map((_item) => {
             if (_item.id === item.id) {
                 return { ..._item, ...item };
             }
@@ -77,7 +105,7 @@ export function ListCampaignEmail() {
             return _item;
         });
 
-        setItems_active(updatedListActive);
+        setItems_active(updatedListActive);*/
     };
 
     const CardItem = ({index, item, updateItem}) => {
@@ -172,7 +200,7 @@ export function ListCampaignEmail() {
                     setPageStatus(-1);
                 }
 
-                var requestHTTP = `${nextPage == '' ? `marketing/campaigns/email/active` : nextPage}`;
+                var requestHTTP = `${nextPage_active == '' ? `marketing/campaigns/email/active` : nextPage}`;
 
                 const data = await remoteAPI({
                     request: requestHTTP,
@@ -247,7 +275,7 @@ export function ListCampaignEmail() {
 		<SafeAreaView style={theme.safeAreaView} edges={['right','left']}>
 			<StatusBar barStyle='default'/>
 			<View style={[theme.wrapperPage]}>
-                <ListStatistics template="listCampaignEmail" value={2425} date="2024-10-04"/>
+                <ListStatistics template="listCampaignEmail" value={info.totalSentToday} datetime={info.date}/>
 
                 {
                     pageStatus != 0 ? (

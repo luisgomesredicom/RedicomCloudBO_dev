@@ -40,11 +40,10 @@ export function ListCampaignSMS() {
                 });
                 
                 setInfo(response.response.info);
-                loadResults();
-
             } catch (error) {
-                loadResults();
                 console.log(error);
+            } finally {
+                loadResults();
             }
         };
 
@@ -89,7 +88,7 @@ export function ListCampaignSMS() {
         setRefreshing(true);
         setRefreshing_active(true);
         resetLists();
-        
+
         /*const updatedList = items.map((_item) => {
             if (_item.id === item.id) {
                 return { ..._item, ...item };
