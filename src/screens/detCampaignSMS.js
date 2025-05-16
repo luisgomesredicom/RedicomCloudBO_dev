@@ -138,7 +138,7 @@ export function DetCampaignSMS() {
                             
                             <ScrollView style={[theme.wrapperPage, {backgroundColor: 'transparent'}]} contentContainerStyle={[theme.wrapperContentStyle, {backgroundColor: 'white',paddingTop: 0, minHeight: '70%'}]}
                             refreshControl={
-                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={theme.colors.white} tintColor={theme.colors.white}/>
+                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[theme.colors.white]} tintColor={theme.colors.white}/>
                             }
                             >
                                 <View style={[theme.containerDonutChart, {marginBottom: 30}]}>
