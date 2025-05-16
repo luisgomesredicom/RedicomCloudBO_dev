@@ -84,7 +84,7 @@ export function LoginRegisterScreen({ navigation }) {
             }}>
                 <View style={{flex: 1,justifyContent: 'center',alignItems: 'center',backgroundColor: 'rgba(255, 255, 255, 0.8)'}}>
                     <View style={theme.modalView}>
-                        <View style={{marginBottom: 12}}><Icon name="unlock" size={42} /></View>
+                        <View style={{marginBottom: 12}}><Icon code="820" size={42} /></View>
                         <Text style={[theme.listNavTitle, {textAlign: 'center',marginBottom: 10}]}>Definir código?</Text>
                         <Text style={[theme.paragraph, {textAlign: 'center',color: theme.colors.darkgray}]}>O código aumenta a segurança e facilita a autenticação na App.</Text>
                         <View style={{flexDirection: 'row',justifyContent: 'space-between',gap: 14,marginTop: 20}}>

@@ -8,7 +8,6 @@ import { Octicons } from '@expo/vector-icons';
 import { UserContext, numberFormat, dateFormatter } from '../core/utils';
 import { theme } from '../styles/styles'
 import Button from './buttons';
-import { createIconSet } from '@expo/vector-icons';
 
 const { screenWidth } = Dimensions.get('window');
 
@@ -68,7 +67,7 @@ export const KeyboardNumeric = (props) => {
           <View style={[styles.Keyboard_item, {backgroundColor: 'transparent'}]}></View>
           <TouchableHighlight underlayColor="#DDDDDD" onPressIn={() => {props.onPress(0)}} style={styles.Keyboard_item}><Text style={styles.Keyboard_text}>0</Text></TouchableHighlight>
           <TouchableOpacity onPressIn={() => {props.onPress('clear')}} style={[styles.Keyboard_item, {backgroundColor: 'transparent'}]}>
-            <Icon name='clear' size={32} />
+            <Icon code='806' size={32} />
           </TouchableOpacity>
         </View>
       </View>
@@ -103,19 +102,19 @@ export const ListMenu = (props) => {
 
     var iconCode = '';
     switch(item.iconCode) {
-        case 'package':         iconCode = 'cart'; break;
-        case 'key-asterisk':    iconCode = 'promotions'; break;
-        case 'megaphone':       iconCode = 'campaign'; break;
-        case 'device-mobile':   iconCode = 'sms'; break;
-        case 'mail':            iconCode = 'email'; break;
-        default: iconCode = '';
+        case 'package':         iconCode = '828'; break;
+        case 'key-asterisk':    iconCode = '816'; break;
+        case 'megaphone':       iconCode = '804'; break;
+        case 'device-mobile':   iconCode = '81d'; break;
+        case 'mail':            iconCode = '80d'; break;
+        default: iconCode = item.iconCode;
     }
 
     return (
       <View style={{flexDirection: 'row',alignItems: 'center'}}>
         {item.iconCode && (
           <View style={{width: 35,alignItems: 'center',marginRight: 6}}>
-            <Icon name={iconCode} size={23} />
+            <Icon code={iconCode} size={23} />
           </View>
         )}
         
@@ -127,7 +126,7 @@ export const ListMenu = (props) => {
         
         <View style={{marginLeft: 10}}>
           {item.hrefTemplate && (
-            <Icon name="right" size={16} color={theme.colors.darkgray}/>
+            <Icon code="818" size={16} color={theme.colors.darkgray}/>
           )}
 
           {item.switch && (
@@ -208,76 +207,15 @@ export const Badge = (props) => {
     )
 }
 
-const glyphMap = {
-    'alert-full':   '\uE800',
-    'alert':        '\uE801',
-    'calendar':     '\uE802',
-    'arrow-left':   '\uE803',
-    'campaign':     '\uE804',
-    'cart':         '\uE805',
-    'charts':       '\uE806',
-    'check':        '\uE807',
-    'clear':        '\uE808',
-    'close':        '\uE809',
+export const Icon = ({code, size = 24, color = theme.colors.black, style}) => {
+    if(!code) return null;
 
-    'confirm-full': '\uE80a',
-    'down-full':    '\uE80b',
-    'down-left':    '\uE80c',
-    'edit':         '\uE80d',
-    'home':         '\uE80e',
-    'no-wifi':      '\uE80f',
+    const hex = code.replace(/^\\?e/i, ''); // remove "\e" ou "e"
+    const unicode = String.fromCharCode(parseInt('E' + hex, 16)); // força E800, E801, etc.
 
-    'notification-full': '\uE810',
-    'down':         '\uE811',
-    'face-id':      '\uE812',
-    'left':         '\uE813',
-    'percentage':   '\uE814',
-    'email':        '\uE815',
-    'filter':       '\uE816',
-    'plus':         '\uE817',
-    'file':         '\uE818',
-    'options':      '\uE819',
-
-    'products':     '\uE81a',
-    'refresh':      '\uE81b',
-    'promotions':   '\uE81c',
-    'redicom':      '\uE81d',
-    'right':        '\uE81e',
-    'linkedin':     '\uE81f',
-
-    's-email':        '\uE820',
-    'facebook':     '\uE821',
-    'google':       '\uE822',
-    'messenger':    '\uE823',
-    'thumblr':      '\uE824',
-    'whatshapp':    '\uE825',
-    'pinterest':    '\uE826',
-    'vimeo':        '\uE827',
-    'x':            '\uE828',
-    'search':       '\uE829',
-
-    'youtube':      '\uE82a',
-    'shield':       '\uE82b',
-    'sms':          '\uE82c',
-    'settings':     '\uE82d',
-    'sign-out':     '\uE82e',
-    'time':         '\uE82f',
-
-    'touch-id':     '\uE830',
-    'up-full':      '\uE831',
-    'unlock':       '\uE832',
-    'up-right':     '\uE833',
-    'up':           '\uE834',
-    'user':         '\uE835',
-    'zip':          '\uE836',
-
-    'error':        '\uE86F'
-};
-
-const RedicomIcon = createIconSet(glyphMap, 'RedicomIcons');
-
-export const Icon = ({name, size = 24, color = theme.colors.black, style}) => {
-    return <RedicomIcon name={name} size={size} color={color} style={style} />;
+    return (
+        <Text style={[{fontFamily: 'RedicomIcons', fontSize: size, color}, style]}>{unicode}</Text>
+    );
 };
 
 export const ListStatistics = ({template, value, datetime}) => {

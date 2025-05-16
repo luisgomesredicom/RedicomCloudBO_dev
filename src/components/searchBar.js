@@ -14,7 +14,7 @@ export const SearchBar = ({onChangeText}) => {
 
     return (
         <Searchbar
-            icon={() => (<Icon name="search" size={24} style={{color: theme.colors.darkgray}}/>)}
+            icon={() => (<Icon code="819" size={24} style={{color: theme.colors.darkgray}}/>)}
             placeholder="Pesquisar"
             onChangeText={onChangeSearch}
             value={searchQuery}

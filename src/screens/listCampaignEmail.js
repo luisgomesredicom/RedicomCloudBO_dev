@@ -177,7 +177,7 @@ export function ListCampaignEmail() {
                             </View>
                         </View>
                         <View style={{marginRight: -6,justifyContent: 'center'}}>
-                            <Icon name="right" size={22} style={{color: theme.colors.darkgray}}/>
+                            <Icon code="818" size={22} style={{color: theme.colors.darkgray}}/>
                         </View>
                     </View>
                 </TouchableOpacity>

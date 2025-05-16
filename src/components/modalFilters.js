@@ -146,7 +146,7 @@ export const ModalFilters = (aux) => {
                     <View style={{flexDirection: 'row',justifyContent: 'space-between',alignItems: 'center',height: 52}}>
                         <View style={{width: 80}}>
                             <TouchableOpacity style={{paddingHorizontal: theme.containerPadding,height: 50,justifyContent: 'center'}} onPress={CloseFilters}>
-                                <Icon name="close" size={28} style={{color: theme.colors.white}} />
+                                <Icon code="807" size={28} style={{color: theme.colors.white}} />
                             </TouchableOpacity>
                         </View>
 
@@ -194,7 +194,7 @@ export const ModalFilters = (aux) => {
                                                 if(isSelected)
                                                     return (
                                                         <View style={{width: 22,height: 22,alignItems: 'center',justifyContent: 'center',backgroundColor: theme.colors.background,borderRadius: 50}}>
-                                                            <Icon name="close" size={14} />
+                                                            <Icon code="807" size={14} />
                                                         </View>
                                                     )
                                                 else

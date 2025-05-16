@@ -128,9 +128,9 @@ export function LoginCodeScreen() {
                     <View style={theme.modalView}>
                         <View style={{marginBottom: 16,alignItems: 'center',width: 200}}>
                             {authenticationType == 1 ? (
-                                <Icon name='touch-id' size={42} />
+                                <Icon code='81f' size={42} />
                             ) : (
-                                <Icon name='face-id' size={42} />
+                                <Icon code='80e' size={42} />
                             )}
                         </View>
                         <View style={{marginBottom: 10}}><Text style={[theme.listNavTitle, {textAlign: 'center'}]}>{authenticationType == 1 ? 'Ativar login com Touch ID?' : 'Ativar login com Face ID?'}</Text></View>

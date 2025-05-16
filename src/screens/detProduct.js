@@ -182,16 +182,16 @@ export function DetProduct() {
                                         </View>
                                         <View style={[stylesTable.tableInfo_body_td, {width: 55,alignItems: 'center'}]}>
                                             {item.hasPrice ? (
-                                                <Icon name="check" size={24} style={{color: theme.colors.success}} />
+                                                <Icon code="805" size={24} style={{color: theme.colors.success}} />
                                             ) : (
-                                                <Icon name="close" size={28} style={{color: theme.colors.error}} />
+                                                <Icon code="807" size={28} style={{color: theme.colors.error}} />
                                             )}
                                         </View>
                                         <View style={[stylesTable.tableInfo_body_td, {width: 55,alignItems: 'center'}]}>
                                             {item.hasIncentory ? (
-                                                <Icon name="check" size={24} style={{color: theme.colors.success}} />
+                                                <Icon code="805" size={24} style={{color: theme.colors.success}} />
                                             ) : (
-                                                <Icon name="close" size={28} style={{color: theme.colors.error}} />
+                                                <Icon code="807" size={28} style={{color: theme.colors.error}} />
                                             )}
                                         </View>
                                         <View style={[stylesTable.tableInfo_body_td, {marginRight: 0,width: 55,alignItems: 'center'}]}>

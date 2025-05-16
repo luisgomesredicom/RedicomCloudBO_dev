@@ -38,7 +38,7 @@ export function SettingsScreen() {
                     <View style={{flex: 1,justifyContent: 'center',alignItems: 'center',backgroundColor: 'rgba(255, 255, 255, 0.8)'}}>
                         <View style={theme.modalView}>
                             <View style={{marginBottom: 16,alignItems: 'center',width: 200}}>
-                                <Icon name='unlock' size={42} />
+                                <Icon code='820' size={42} />
                             </View>
                             <View style={{marginBottom: 10}}><Text style={[theme.listNavTitle, {textAlign: 'center'}]}>Não tem código definido.{"\n"}Definir definir agora?</Text></View>
                             <View><Text style={[theme.paragraph, {textAlign: 'center',color: theme.colors.darkgray}]}>Para ativar o {authenticationType == 1 ? 'Touch ID' : 'Face ID'} necessita de ter um código definido.</Text></View>
@@ -71,7 +71,7 @@ export function SettingsScreen() {
                     <View style={{flex: 1,justifyContent: 'center',alignItems: 'center',backgroundColor: 'rgba(255, 255, 255, 0.8)'}}>
                         <View style={theme.modalView}>
                             <View style={{marginBottom: 16,alignItems: 'center',width: 200}}>
-                                <Icon name='unlock' size={42} />
+                                <Icon code='820' size={42} />
                             </View>
                             <View style={{marginBottom: 10}}><Text style={[theme.listNavTitle, {textAlign: 'center'}]}>É necessário ativar o código.{"\n"}Deseja ativar agora?</Text></View>
                             <View><Text style={[theme.paragraph, {textAlign: 'center',color: theme.colors.darkgray}]}>Para ativar o {authenticationType == 1 ? 'Touch ID' : 'Face ID'} necessita de ativar código.</Text></View>

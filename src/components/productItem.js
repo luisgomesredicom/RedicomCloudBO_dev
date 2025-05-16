@@ -79,7 +79,7 @@ export const ProductItem = ({index, item, updateItem, total, linkAction}) => {
                                 </View>
                             </View>
                             <View style={{marginLeft: 10,marginRight: -6}}>
-                                <Icon name="right" size={22} style={{color: theme.colors.darkgray}}/>
+                                <Icon code="818" size={22} style={{color: theme.colors.darkgray}}/>
                             </View>
                         </View>
                     </View>

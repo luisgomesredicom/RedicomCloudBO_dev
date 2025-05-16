@@ -120,9 +120,9 @@ export function DashboardScreen() {
                         </View>
                         <View style={{marginLeft: 2,marginTop: 7}}>
                             {item.status == 'down' ? (
-                                <Icon name="down-left" size={11} />
+                                <Icon code="80a" size={11} />
                             ) : (
-                                <Icon name="up-right" size={11} />
+                                <Icon code="822" size={11} />
                             )}
                         </View>
                     </View>
@@ -237,7 +237,7 @@ export function DashboardScreen() {
                                     ) : (
                                         <View style={{alignItems: 'center',justifyContent: 'center',gap: 20,flexGrow: 1,paddingTop: 15}}>
                                             <View>
-                                                <Icon name="error" size={48} />
+                                                <Icon code="837" size={48} />
                                             </View>
                                             <View>
                                                 <Text style={theme.small}>Não temos resultados para lhe mostrar</Text>
@@ -258,7 +258,7 @@ export function DashboardScreen() {
                         
                         <View style={[styles.footerContainer, {paddingBottom: Math.max(insets.bottom)}]}>
                             <TouchableOpacity style={styles.footerColumn}>
-                                <Icon name="home" size={24} color={theme.colors.linklight} />
+                                <Icon code="82a" size={24} color={theme.colors.linklight} />
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.footerColumn} onPress={() => {
                                 navigation.navigate({
@@ -268,7 +268,7 @@ export function DashboardScreen() {
                                     }
                                 })
                             }}>
-                                <Icon name="search" size={24} color="white" />
+                                <Icon code="819" size={24} color="white" />
                             </TouchableOpacity>
                             <View style={[styles.footerColumn, {width: 58,flexShrink: 0}]}>
                                 <Pressable 
@@ -280,7 +280,7 @@ export function DashboardScreen() {
                                     ]}
                                 >
                                     <Animated.View style={{ transform: [{ rotate: rotateInterpolate }] }}>
-                                        <Icon name="refresh" size={24} color="white" />
+                                        <Icon code="815" size={24} color="white" />
                                     </Animated.View>
                                 </Pressable>
                             </View>
@@ -292,7 +292,7 @@ export function DashboardScreen() {
                                     }
                                 })
                             }}>
-                                <Icon name="cart" size={24} color="white" />
+                                <Icon code="828" size={24} color="white" />
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.footerColumn}  onPress={() => {
                                 navigation.navigate({
@@ -302,7 +302,7 @@ export function DashboardScreen() {
                                     }
                                 })
                             }}>
-                                <Icon name="user" size={24} color="white" />
+                                <Icon code="824" size={24} color="white" />
                             </TouchableOpacity>
                         </View>
                     </View>

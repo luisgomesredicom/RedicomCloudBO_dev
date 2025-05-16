@@ -37,7 +37,7 @@ const HearderLeft = () => {
     const navigation = useNavigation();
     return (
         <TouchableOpacity style={{paddingHorizontal: theme.containerPadding,height: 50,justifyContent: 'center'}} onPress={() => navigation.goBack()}>
-            <Icon name="left" size={28} style={{color: theme.colors.white}} />
+            <Icon code="810" size={28} style={{color: theme.colors.white}} />
         </TouchableOpacity>
     );
 }
