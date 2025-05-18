@@ -143,18 +143,18 @@ export function ListCampaignEmail() {
 
                                     <View style={{flexGrow: 1,flexDirection: 'row'}}>
                                         <View style={{width: 80,marginRight: 10}}><Text style={[theme.small]}>Conversão</Text></View>
-                                        <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.stats.totalOrdersPercentage}%</Text></View>
+                                        <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.stats.totalConversionsPercentage}%</Text></View>
                                     </View>
                                 </View>
                                 <View>
-                                    <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>(0 - falta) <Text style={{color: theme.colors.darkgray}}>EUR</Text></Text></View>
+                                    <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{numberFormat(item.stats.totalOrdersValue)} <Text style={{color: theme.colors.darkgray}}>EUR</Text></Text></View>
                                 </View>
                             </View>
                             <View style={statistics.container}>
                                 <View style={statistics.item}>
                                     <View>
                                         <View><Text style={statistics.text1}>Aberturas</Text></View>
-                                        <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'right'}]}>(0 - falta)</Text></View>
+                                        <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'right'}]}>{numberFormat(item.stats.totalSent)}</Text></View>
                                     </View>
                                     <View style={statistics.columnRight}>
                                         <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{item.stats.totalOpeningsPercentage}%</Text></View>
@@ -164,7 +164,7 @@ export function ListCampaignEmail() {
                                 <View style={statistics.item}>
                                     <View>
                                         <View><Text style={statistics.text1}>Clicks</Text></View>
-                                        <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'right'}]}>(0 - falta)</Text></View>
+                                        <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'right'}]}>{numberFormat(item.stats.totalClicks)}</Text></View>
                                     </View>
                                     <View style={statistics.columnRight}>
                                         <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{item.stats.totalClicksPercentage}%</Text></View>

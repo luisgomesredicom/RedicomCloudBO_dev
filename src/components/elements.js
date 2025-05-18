@@ -100,21 +100,11 @@ export const ListMenu = (props) => {
   const MenuItem = (props) => {
     const item = props.item;
 
-    var iconCode = '';
-    switch(item.iconCode) {
-        case 'package':         iconCode = '828'; break;
-        case 'key-asterisk':    iconCode = '816'; break;
-        case 'megaphone':       iconCode = '804'; break;
-        case 'device-mobile':   iconCode = '81d'; break;
-        case 'mail':            iconCode = '80d'; break;
-        default: iconCode = item.iconCode;
-    }
-
     return (
       <View style={{flexDirection: 'row',alignItems: 'center'}}>
         {item.iconCode && (
           <View style={{width: 35,alignItems: 'center',marginRight: 6}}>
-            <Icon code={iconCode} size={23} />
+            <Icon code={item.iconCode} size={23} />
           </View>
         )}
         
