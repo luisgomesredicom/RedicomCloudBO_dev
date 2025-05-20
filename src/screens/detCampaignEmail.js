@@ -7,7 +7,7 @@ import { LoadingFullscreen, HalfDonutChart, Icon, CountDown, LoadingRefreshFulls
 import { theme } from '../styles/styles'
 import { Text } from 'react-native-paper';
 import Button from '../components/buttons'
-import { remoteAPI, numberFormat } from '../core/utils'
+import { remoteAPI, numberFormat, dateFormatter } from '../core/utils'
 
 export function DetCampaignEmail() {
     /*
@@ -19,6 +19,7 @@ export function DetCampaignEmail() {
     const route = useRoute();
     const insets = useSafeAreaInsets();
     const [campaign, setCampaign] = useState(route.params.item);
+    const { date: startDate, time: startTime } = dateFormatter(campaign.startDate);
     const [isRefreshLoading, setRefreshLoading] = useState(false);
     const [isModalConfirm, setModalConfirm] = useState(false);
     const [optionSubmit, setOptionSubmit] = useState(null);
@@ -138,46 +139,91 @@ export function DetCampaignEmail() {
                                 </View>
                                 
                                 <View style={{flexDirection: 'row',alignItems: 'stretch',gap: 10,marginBottom: 30}}>
-                                    <View style={{width: 122,height: 122,flexShrink: 0}}>
-                                        <Image source={{uri: 'https://fakeimg.pl/220x220/'}} style={{resizeMode: 'cover',flex: 1,width: 122,height: 122}} />
-                                    </View>
-                                    <View style={{flexGrow: 1,paddingTop: 2}}>
-                                        <View style={{marginBottom: 6}}><Text style={[theme.listNavSubtitle, {color: theme.colors.black}]}>{campaign.title}</Text></View>
-                                        <View style={{flexDirection: 'row',gap: 10,maxWidth: '100%'}}>
-                                            <View style={{flexGrow: 1}}>
-                                                <View style={{flexDirection: 'row'}}>
-                                                    <View style={{width: 80,marginRight: 10}}><Text style={[theme.small]}>Encomendas</Text></View>
-                                                    <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{numberFormat(campaign.stats.totalOrders)}</Text></View>
+                                    <View style={{width: 122,flexShrink: 0}}>
+                                        <View style={{height: 122,flexShrink: 0}}>
+                                            <Image source={{uri: 'https://fakeimg.pl/220x220/'}} style={{resizeMode: 'cover',flex: 1,width: 122,height: 122}} />
+                                        </View>
+            
+                                        <View style={[statistics.container, {justifyContent: 'center'}]}>
+                                            <View style={statistics.item}>
+                                                <View>
+                                                    <View>
+                                                        <Text style={[statistics.text1, {textAlign: 'center'}]}>Destinatários</Text>
+                                                        </View>
+                                                    <View style={statistics.bottom}>
+                                                        <Text style={[statistics.text2, {textAlign: 'center'}]}>{numberFormat(campaign.stats.totalRecipients)}</Text>
+                                                    </View>
+                                                    <View style={[statistics.value, {alignSelf: 'center',width: 'auto',minWidth: 70,paddingHorizontal: 15,backgroundColor: theme.colors.infolight}]}>
+                                                        <Text style={[statistics.valueText, {color: theme.colors.info}]}>{campaign.multiLanguageContent.pt.descriptionRecipients}</Text>
+                                                    </View>
                                                 </View>
-
-                                                <View style={{flexGrow: 1,flexDirection: 'row'}}>
-                                                    <View style={{width: 80,marginRight: 10}}><Text style={[theme.small]}>Conversão</Text></View>
-                                                    <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{campaign.stats.totalConversionsPercentage}%</Text></View>
-                                                </View>
-                                            </View>
-                                            <View>
-                                                <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{numberFormat(campaign.stats.totalOrdersValue)} <Text style={{color: theme.colors.darkgray}}>EUR</Text></Text></View>
                                             </View>
                                         </View>
-                                        <View style={statistics.container}>
-                                            <View style={statistics.item}>
-                                                <View>
-                                                    <View><Text style={statistics.text1}>Aberturas</Text></View>
-                                                    <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'right'}]}>{numberFormat(campaign.stats.totalSent)}</Text></View>
+                                    </View>
+                                    
+                                    <View style={{flexGrow: 1}}>
+                                        <View style={{height: 122,justifyContent: 'space-between',paddingTop: 2,paddingBottom: 12}}>
+                                            <View>
+                                                <Text style={[theme.listNavSubtitle, {color: theme.colors.black}]}>{campaign.title}</Text>
+                                            </View>
+            
+                                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                                <View style={{width: 80, marginRight: 10}}>
+                                                    <Text style={theme.small}>Iniciado</Text>
                                                 </View>
-                                                <View style={statistics.columnRight}>
-                                                    <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{campaign.stats.totalOpeningsPercentage}%</Text></View>
-                                                    <View style={statistics.value}><Text style={statistics.valueText}>{numberFormat(campaign.stats.totalOpenings)}</Text></View>
+                                                <View style={{flex: 1}}>
+                                                    <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{startDate} <Text style={{color: theme.colors.darkgray}}>{startTime}</Text></Text>
                                                 </View>
                                             </View>
-                                            <View style={statistics.item}>
-                                                <View>
-                                                    <View><Text style={statistics.text1}>Clicks</Text></View>
-                                                    <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'right'}]}>{numberFormat(campaign.stats.totalClicks)}</Text></View>
+            
+                                            <View style={{flexDirection: 'row'}}>
+                                                <View style={{width: 80, marginRight: 10}}>
+                                                    <Text style={theme.small}>Encomendas</Text>
                                                 </View>
-                                                <View style={statistics.columnRight}>
-                                                    <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{campaign.stats.totalClicksPercentage}%</Text></View>
-                                                    <View style={[statistics.value, {backgroundColor: theme.colors.errorlight}]}><Text style={[statistics.valueText, {color: theme.colors.error}]}>{numberFormat(campaign.stats.totalClicks)}</Text></View>
+                                                <View style={{flex: 1}}>
+                                                    <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{numberFormat(campaign.stats.totalOrders)}</Text>
+                                                </View>
+                                            </View>
+            
+                                            <View style={{flexDirection: 'row'}}>
+                                                <View style={{width: 80, marginRight: 10}}>
+                                                    <Text style={theme.small}>Conversão</Text>
+                                                </View>
+                                                <View style={{flex: 1}}>
+                                                    <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{campaign.stats.totalConversionsPercentage}%</Text>
+                                                </View>
+                                            </View>
+            
+                                            <View style={{flexDirection: 'row'}}>
+                                                <View style={{width: 80, marginRight: 10}}>
+                                                    <Text style={theme.small}>Vendas</Text>
+                                                </View>
+                                                <View style={{flex: 1}}>
+                                                    <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{numberFormat(campaign.stats.totalOrdersValue)} <Text style={{color: theme.colors.darkgray}}>EUR</Text></Text>
+                                                </View>
+                                            </View>
+                                        </View>
+                                        <View>
+                                            <View style={[statistics.container, {maxWidth: 250}]}>
+                                                <View style={statistics.item}>
+                                                    <View>
+                                                        <View><Text style={statistics.text1}>Aberturas</Text></View>
+                                                        <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'right'}]}>{numberFormat(campaign.stats.totalSent)}</Text></View>
+                                                    </View>
+                                                    <View style={statistics.columnRight}>
+                                                        <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{campaign.stats.totalOpeningsPercentage}%</Text></View>
+                                                        <View style={statistics.value}><Text style={statistics.valueText}>{numberFormat(campaign.stats.totalOpenings)}</Text></View>
+                                                    </View>
+                                                </View>
+                                                <View style={statistics.item}>
+                                                    <View>
+                                                        <View><Text style={statistics.text1}>Clicks</Text></View>
+                                                        <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'right'}]}>{numberFormat(campaign.stats.totalClicks)}</Text></View>
+                                                    </View>
+                                                    <View style={statistics.columnRight}>
+                                                        <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{campaign.stats.totalClicksPercentage}%</Text></View>
+                                                        <View style={statistics.value}><Text style={statistics.valueText}>{numberFormat(campaign.stats.totalClicks)}</Text></View>
+                                                    </View>
                                                 </View>
                                             </View>
                                         </View>
