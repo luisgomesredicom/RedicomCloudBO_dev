@@ -5,7 +5,7 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { remoteAPI, numberFormat, dateFormatter } from '../core/utils';
 import { LoadingFullscreen, Noresults, ListStatistics, FooterList, Icon, ProgressBar } from '../components/elements';
 import { theme } from '../styles/styles'
-import { Text, ActivityIndicator } from 'react-native-paper';
+import { Text, ActivityIndicator, Switch } from 'react-native-paper';
 import {TabsProvider, Tabs, TabScreen, useTabNavigation, useTabIndex} from '../components/paperTabs';
 
 export function ListCampaignEmail() {
@@ -84,13 +84,16 @@ export function ListCampaignEmail() {
         resetLists();
     }, []);
 
-    const updateItem = (item) => {
-        setRefreshing(true);
-        setRefreshing_active(true);
-        resetLists();
-
-        /*const updatedList = items.map((_item) => {
-            if (_item.id === item.id) {
+    const updateItem = (item, all = true) => {
+        if(all) {
+            setRefreshing(true);
+            setRefreshing_active(true);
+            resetLists();
+            return;
+        }
+        
+        const updatedList = items.map((_item) => {
+            if(_item.id === item.id) {
                 return { ..._item, ...item };
             }
             return _item;
@@ -99,18 +102,51 @@ export function ListCampaignEmail() {
         setItems(updatedList);
 
         const updatedListActive = items_active.map((_item) => {
-            if (_item.id === item.id) {
+            if(_item.id === item.id) {
                 return { ..._item, ...item };
             }
             return _item;
         });
 
-        setItems_active(updatedListActive);*/
+        setItems_active(updatedListActive);
     };
 
     const CardItem = ({index, item, updateItem}) => {
         const { date: startDate, time: startTime } = dateFormatter(item.startDate);
 
+        const SwitchItem = (...props) => {
+            const toggleSwitch = async (...dataSwitch) => {
+                dataSwitch = dataSwitch[0];
+                
+                const switchKey = item.options.find(opt => opt.buttonStyle == 'principal')?.option;
+                
+                const data = await remoteAPI({
+                    request: `marketing/campaigns/email`,
+                    method: 'PUT',
+                    body: {
+                        id: item.id,
+                        option: switchKey
+                    }
+                });
+                
+                //updateItem(data, false);
+
+                if(!data || !data.response) return;
+
+                const updatedItem = data.response;
+
+                const updatedListActive = items_active.map((_item) =>
+                    _item.id === item.id ? updatedItem : _item
+                );
+
+                setItems_active(updatedListActive);
+            };
+
+            return (
+                <Switch value={item.status == 0 ? false : true} onValueChange={(status) => toggleSwitch({status: status})} color={theme.colors.success} style={{ transform: [{ scaleX: .85 }, { scaleY: .85 }] }}/>
+            );
+        }
+        
         return (
             <>
                 <View style={{height: 6,backgroundColor: theme.colors.background}}></View>
@@ -147,10 +183,10 @@ export function ListCampaignEmail() {
                             </View>
                         </View>
                         
-                        <View style={{flexGrow: 1}}>
+                        <View style={{flexGrow: 1,width: 1}}>
                             <View style={{height: 122,justifyContent: 'space-between',paddingTop: 2,paddingBottom: 12}}>
                                 <View>
-                                    <Text style={[theme.listNavSubtitle, {color: theme.colors.black}]}>{item.title}</Text>
+                                    <Text numberOfLines={1} ellipsizeMode='tail' style={[theme.listNavSubtitle, {color: theme.colors.black,paddingRight: 30}]}>{item.title}</Text>
                                 </View>
 
                                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -219,6 +255,11 @@ export function ListCampaignEmail() {
                         </View>
                         
                         <View style={{marginRight: -6,justifyContent: 'center'}}>
+                            {item.active == 1 && (
+                                <View style={{position: 'absolute',top: -4,right: 0}}>
+                                    <SwitchItem item={item} status={item.status}/>
+                                </View>
+                            )}
                             <Icon code="818" size={22} style={{color: theme.colors.darkgray}}/>
                         </View>
                     </View>

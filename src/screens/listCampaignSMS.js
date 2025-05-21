@@ -84,12 +84,14 @@ export function ListCampaignSMS() {
         resetLists();
     }, []);
 
-    const updateItem = (item) => {
-        setRefreshing(true);
-        setRefreshing_active(true);
-        resetLists();
+    const updateItem = (item, all = true) => {
+        if(all) {
+            setRefreshing(true);
+            setRefreshing_active(true);
+            resetLists();
+        }
 
-        /*const updatedList = items.map((_item) => {
+        const updatedList = items.map((_item) => {
             if (_item.id === item.id) {
                 return { ..._item, ...item };
             }
@@ -105,7 +107,7 @@ export function ListCampaignSMS() {
             return _item;
         });
 
-        setItems_active(updatedListActive);*/
+        setItems_active(updatedListActive);
     };
 
     const CardItem = ({index, item, updateItem}) => {
@@ -132,7 +134,7 @@ export function ListCampaignSMS() {
                     }}
                 >
                     <View style={[theme.cardItem, {flexDirection: 'row',alignItems: 'center'}]}>
-                        <View style={{flexGrow: 1}}>
+                        <View style={{flexGrow: 1,width: 1}}>
                             <View style={{marginBottom: 12}}><Text style={[theme.listNavSubtitle, {color: theme.colors.black}]}>{item.title}</Text></View>
                             <View style={{flexDirection: 'row',alignItems: 'center',gap: 10,width: '100%'}}>
                                 <View style={{flexGrow: 1,width: 1,borderRadius: 6,borderWidth: 1,borderColor: theme.colors.lightgray,backgroundColor: theme.colors.successlight,paddingVertical: 3,paddingHorizontal: 6,minHeight: 61}}>
