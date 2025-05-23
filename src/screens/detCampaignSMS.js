@@ -142,7 +142,7 @@ export function DetCampaignSMS() {
                             }
                             >
                                 <View style={[theme.containerDonutChart, {marginBottom: 30}]}>
-                                    <HalfDonutChart percentage={campaign.stats.totalSentPercent} length={campaign.stats.totalSent} title="SMS" bgcolor={campaign.flags.graphStyle}/>
+                                    <HalfDonutChart percentage={campaign.stats.totalSentPercent} value1title="SMS" value1value={campaign.stats.totalSent} bgcolor={campaign.flags[0].graphStyle}/>
                                 </View>
                                 
                                 <View style={{marginBottom: 30}}>
@@ -246,9 +246,14 @@ export function DetCampaignSMS() {
                             <View style={[theme.wrapperPageFooter, {paddingBottom: theme.containerPadding + Math.max(insets.bottom),flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'}]}>
                             {campaign.options.map((item, index) => {
                                 const mode = item.buttonStyle == 'principal' ? 'contained' : 'outlined';
+                                var width = '48%';
+
+                                if(campaign.options.length == 1 || campaign.options.length > 2 && mode == 'contained') {
+                                    width = '100%';
+                                }
 
                                 return (
-                                    <View key={index} style={{width: mode == 'contained' && campaign.options.length > 2 ? '100%' : '48%', marginTop: 2}}>
+                                    <View key={index} style={{width: width, marginTop: 2}}>
                                         <Button mode={mode} onPress={() => setOptionSubmit(item)}>{item.title}</Button>
                                     </View>
                                 );

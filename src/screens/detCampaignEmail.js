@@ -135,13 +135,20 @@ export function DetCampaignEmail() {
                             }
                             >
                                 <View style={[theme.containerDonutChart, {marginBottom: 30}]}>
-                                    <HalfDonutChart percentage={campaign.stats.totalSentPercent} length={campaign.stats.totalSent} title="Emails" bgcolor={campaign.flags.graphStyle}/>
+                                    <HalfDonutChart 
+                                        percentage={campaign.stats.totalSentPercentage} 
+                                        value1title="Emails" 
+                                        value1value={campaign.stats.totalSent} 
+                                        value2title="Pendentes" 
+                                        value2value={campaign.stats.totalPending} 
+                                        bgcolor={campaign.flags[0].graphStyle}
+                                    />
                                 </View>
                                 
                                 <View style={{flexDirection: 'row',alignItems: 'stretch',gap: 10,marginBottom: 30}}>
                                     <View style={{width: 122,flexShrink: 0}}>
-                                        <View style={{height: 122,flexShrink: 0}}>
-                                            <Image source={{uri: 'https://fakeimg.pl/220x220/'}} style={{resizeMode: 'cover',flex: 1,width: 122,height: 122}} />
+                                        <View style={{height: 122,flexShrink: 0,backgroundColor: 'whitesmoke'}}>
+                                            <Image source={{uri: campaign.image.src}} style={{resizeMode: 'contain',flex: 1,width: 122,height: 122}} />
                                         </View>
             
                                         <View style={[statistics.container, {justifyContent: 'center'}]}>
@@ -154,7 +161,7 @@ export function DetCampaignEmail() {
                                                         <Text style={[statistics.text2, {textAlign: 'center'}]}>{numberFormat(campaign.stats.totalRecipients)}</Text>
                                                     </View>
                                                     <View style={[statistics.value, {alignSelf: 'center',width: 'auto',minWidth: 70,paddingHorizontal: 15,backgroundColor: theme.colors.infolight}]}>
-                                                        <Text style={[statistics.valueText, {color: theme.colors.info}]}>{campaign.multiLanguageContent.pt.descriptionRecipients}</Text>
+                                                        <Text style={[statistics.valueText, {color: theme.colors.info}]}>{campaign.stats.recipientsType}</Text>
                                                     </View>
                                                 </View>
                                             </View>
@@ -234,16 +241,16 @@ export function DetCampaignEmail() {
                                     campaign.status != 0 ? (
                                         <View style={{flexDirection: 'row',gap: 10,justifyContent: 'space-between',marginTop: 8}}>
                                             <View style={{flexDirection: 'column'}}>
-                                                <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2}]}>{campaign.stats.totalSent}</Text>
-                                                <Text style={[theme.small, {textAlign: 'center'}]}>Emails enviados</Text>
-                                            </View>
-                                            <View>
-                                                <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2}]}>{campaign.stats.totalPending}</Text>
-                                                <Text style={[theme.small, {textAlign: 'center'}]}>Pendentes</Text>
-                                            </View>
-                                            <View>
-                                                <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2}]}>{campaign.stats.bounceRate}<Text style={theme.small}> %</Text></Text>
+                                                <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2}]}>{campaign.stats.bounceRate}</Text>
                                                 <Text style={[theme.small, {textAlign: 'center'}]}>Taxa de rejeição</Text>
+                                            </View>
+                                            <View>
+                                                <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2}]}>{campaign.stats.complaintRate}</Text>
+                                                <Text style={[theme.small, {textAlign: 'center'}]}>Taxa de reclamação</Text>
+                                            </View>
+                                            <View>
+                                                <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2}]}>{campaign.stats.unsubscribes}</Text>
+                                                <Text style={[theme.small, {textAlign: 'center'}]}>Remoções</Text>
                                             </View>
                                         </View>
                                     ) : (
@@ -263,9 +270,14 @@ export function DetCampaignEmail() {
                             <View style={[theme.wrapperPageFooter, {paddingBottom: theme.containerPadding + Math.max(insets.bottom),flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'}]}>
                             {campaign.options.map((item, index) => {
                                 const mode = item.buttonStyle == 'principal' ? 'contained' : 'outlined';
+                                var width = '48%';
+
+                                if(campaign.options.length == 1 || campaign.options.length > 2 && mode == 'contained') {
+                                    width = '100%';
+                                }
 
                                 return (
-                                    <View key={index} style={{width: mode == 'contained' && campaign.options.length > 2 ? '100%' : '48%', marginTop: 2}}>
+                                    <View key={index} style={{width: width, marginTop: 2}}>
                                         <Button mode={mode} onPress={() => setOptionSubmit(item)}>{item.title}</Button>
                                     </View>
                                 );

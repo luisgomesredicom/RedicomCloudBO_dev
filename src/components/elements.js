@@ -251,15 +251,15 @@ export const ProgressBar = ({percentage}) => {
     )
 }
 
-export const HalfDonutChart = ({ percentage, length, title, bgcolor }) => {
-    percentage = percentage / 100;
+export const HalfDonutChart = (props) => {
+    const percentage = props.percentage / 100;
     const padding = 0;
     const strokeWidth = 20;
     //const viewWidth = screenWidth - (2 * padding);
     const viewWidth = 220;
     const drawWidth = viewWidth - (strokeWidth * 2);
 
-    const gradientColor = theme.colors[bgcolor];
+    const gradientColor = theme.colors[props.bgcolor];
     const lightgray = theme.colors.lightgray;
 
     const path = Skia.Path.Make();
@@ -285,7 +285,10 @@ export const HalfDonutChart = ({ percentage, length, title, bgcolor }) => {
             </Canvas>
             <View style={{position: 'absolute',bottom: 6,width: '100%',alignItems: 'center'}}>
                 <Text style={{fontWeight: '700',fontSize: 28,color: theme.colors.white}}>{percentage * 100}%</Text>
-                <Text style={[theme.small, {fontSize: 12,color: theme.colors.gray}]}>{numberFormat(length)}{title && title != '' ? ' ' + title : ''}</Text>
+                <Text style={[theme.small, {fontSize: 12,color: theme.colors.gray}]}>{numberFormat(props.value1value)}{props.value1title && props.value1title != '' ? ' ' + props.value1title : ''}</Text>
+                {props.value2value && (
+                  <Text style={[theme.small, {fontSize: 12,color: theme.colors.gray}]}>{numberFormat(props.value2value)}{props.value2title && props.value2title != '' ? ' ' + props.value2title : ''}</Text>
+                )}
             </View>
         </View>
     );

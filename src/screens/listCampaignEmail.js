@@ -111,7 +111,7 @@ export function ListCampaignEmail() {
         setItems_active(updatedListActive);
     };
 
-    const CardItem = ({index, item, updateItem}) => {
+    const CardItem = ({index, item, updateItem, tab}) => {
         const { date: startDate, time: startTime } = dateFormatter(item.startDate);
 
         const SwitchItem = (...props) => {
@@ -143,7 +143,7 @@ export function ListCampaignEmail() {
             };
 
             return (
-                <Switch value={item.status == 0 ? false : true} onValueChange={(status) => toggleSwitch({status: status})} color={theme.colors.success} style={{ transform: [{ scaleX: .85 }, { scaleY: .85 }] }}/>
+                <Switch value={item.active == 0 ? false : true} onValueChange={(status) => toggleSwitch({status: status})} color={theme.colors.success} style={{ transform: [{ scaleX: .85 }, { scaleY: .85 }] }}/>
             );
         }
         
@@ -168,8 +168,8 @@ export function ListCampaignEmail() {
                 >
                     <View style={[theme.cardItem, {flexDirection: 'row',alignItems: 'stretch',flexGrow: 1,gap: 10}]}>
                         <View style={{width: 122,flexShrink: 0}}>
-                            <View style={{height: 122,flexShrink: 0}}>
-                                <Image source={{uri: 'https://fakeimg.pl/220x220/'}} style={{resizeMode: 'cover',flex: 1,width: 122,height: 122}} />
+                            <View style={{height: 122,flexShrink: 0,backgroundColor: 'whitesmoke'}}>
+                                <Image source={{uri: item.image.src}} style={{resizeMode: 'contain',flex: 1,width: 122,height: 122}} />
                             </View>
 
                             <View style={[statistics.container, {justifyContent: 'center'}]}>
@@ -177,7 +177,7 @@ export function ListCampaignEmail() {
                                     <View>
                                         <View><Text style={[statistics.text1, {textAlign: 'center'}]}>Destinatários</Text></View>
                                         <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'center'}]}>{numberFormat(item.stats.totalRecipients)}</Text></View>
-                                        <View style={[statistics.value, {alignSelf: 'center',width: 'auto',minWidth: 70,paddingHorizontal: 15,backgroundColor: theme.colors.infolight}]}><Text style={[statistics.valueText, {color: theme.colors.info}]}>{item.multiLanguageContent.pt.descriptionRecipients}</Text></View>
+                                        <View style={[statistics.value, {alignSelf: 'center',width: 'auto',minWidth: 70,paddingHorizontal: 15,backgroundColor: theme.colors.infolight}]}><Text style={[statistics.valueText, {color: theme.colors.info}]}>{item.stats.recipientsType}</Text></View>
                                     </View>
                                 </View>
                             </View>
@@ -255,7 +255,7 @@ export function ListCampaignEmail() {
                         </View>
                         
                         <View style={{marginRight: -6,justifyContent: 'center'}}>
-                            {item.active == 1 && (
+                            {tab == 0 && (
                                 <View style={{position: 'absolute',top: -4,right: 0}}>
                                     <SwitchItem item={item} status={item.status}/>
                                 </View>
@@ -374,7 +374,7 @@ export function ListCampaignEmail() {
                                     items_active.length > 0 ? (
                                         <TabsProvider defaultIndex={0} onChangeIndex={(index) => {setTab(index)}}>
                                             <Tabs disableSwipe={true} style={theme.tabs} tabLabelStyle={theme.tabsLabel}>
-                                                <TabScreen label="Por Ativar">
+                                                <TabScreen label="Por Enviar">
                                                     <View style={theme.tabsContent}>
                                                         <FlatList 
                                                             style={[theme.cardList, {paddingBottom: Math.max(insets.bottom)}]}
