@@ -215,13 +215,14 @@ export function ListProducts() {
                                             <Noresults />
                                         ) : (
                                             <FlatList
+                                                style={theme.wrapperContainerList}
+                                                contentContainerStyle={{paddingBottom: Math.max(insets.bottom)}}
                                                 data={items}
                                                 keyExtractor={ item => item.id }
                                                 renderItem={ ({item, index}) => <View style={{paddingRight: theme.containerPadding}}><ProductItem index={index} item={item} updateItem={updateItem} total={resultsLength} linkAction={modalFiltersDispatch}/></View> }
                                                 onEndReached={loadResults}
                                                 onEndReachedThreshold={ 0.15 }
                                                 ListFooterComponent={ <FooterList load={nextPageLoading} /> }
-                                                style={[theme.wrapperContainerList, {paddingBottom: Math.max(insets.bottom)}]}
                                                 refreshControl={
                                                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                                                 }

@@ -19,9 +19,6 @@ LogBox.ignoreLogs(['Warning: ...']);
 //Ignore all log notifications
 LogBox.ignoreAllLogs();
 
-GlobalState();
-
-
 export default function App() {  
     const [appIsReady, setAppIsReady] = useState(null);
     
@@ -29,13 +26,13 @@ export default function App() {
         async function prepare() {
             try {
                 //Global VARS
-                GlobalState.setValue({field: 'http_resource', value: 'https://appservices.redicom.ws'}); //Sem barra no fim
-                GlobalState.setValue({field: 'http_folder', value: '/app'}); //Sem barra no fim
+                await GlobalState.setValue({ field: 'http_resource', value: 'https://appservices.redicom.ws', setStorage: true });
+                await GlobalState.setValue({ field: 'http_folder', value: '/app', setStorage: true });
                 
                 // Pre-load fonts, make any API calls you need to do here
                 await Font.loadAsync({
                     'RedicomUI': require('./assets/fonts/RedicomUI-SemiBold.ttf'),
-                    'RedicomIcons': require('./assets/fonticon/rdc_app-bo.ttf'),
+                    'RedicomIcons': require('./assets/fonticon/REDICOM APP BO.ttf'),
                     'SF Mono 500': require('./assets/fonts/SFMonoMedium.ttf')
                 });
 

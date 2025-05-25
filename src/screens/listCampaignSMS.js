@@ -113,7 +113,16 @@ export function ListCampaignSMS() {
     const CardItem = ({index, item, updateItem}) => {
         const { date: startDate, time: startTime } = dateFormatter(item.startDate);
         const { date: finishedDate, time: finishedTime } = dateFormatter(item.finished);
-        
+        const sendStatus = [
+            {status: 0, icon: '001', color: 'warning'}, //Agendado
+            {status: 1, icon: '003', color: 'success'}, //A Enviar
+            {status: 3, icon: '005', color: 'gray'}, //Parada
+            {status: 5, icon: '005', color: 'gray'}, //Em preparação
+            {status: 9, icon: '004', color: 'success'}, //Finalizada
+            {status: 10, icon: '002', color: 'gray'} //Cancelada
+        ];
+        const currentSendStatus = sendStatus.find(s => s.status == item.status);
+
         return (
             <>
                 <View style={{height: 6,backgroundColor: theme.colors.background}}></View>
@@ -143,7 +152,10 @@ export function ListCampaignSMS() {
                                 <View style={{width: 220,flexShrink: 0,height: '100%'}}>
                                     <View style={{flexDirection: 'row',alignItems: 'center'}}>
                                         <View style={{width: 62,marginRight: 10}}><Text style={[theme.small]}>Estado</Text></View>
-                                        <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.flags[0].title}</Text></View>
+                                        <View style={{flex: 1,flexDirection: 'row',alignItems: 'center'}}>
+                                            <Icon code={currentSendStatus.icon} size={13} style={{color: theme.colors[currentSendStatus.color],marginRight: 4}}/>
+                                            <Text style={[theme.small, {fontWeight: 500,color: theme.colors[currentSendStatus.color]}]} numberOfLines={1} ellipsizeMode='tail'>{item.flags[0].title}</Text>
+                                        </View>
                                     </View>
 
                                     <View style={{ flexDirection: 'row',alignItems: 'center'}}>
@@ -317,10 +329,11 @@ export function ListCampaignSMS() {
                                     items_active.length > 0 ? (
                                         <TabsProvider defaultIndex={0} onChangeIndex={(index) => {setTab(index)}}>
                                             <Tabs disableSwipe={true} style={theme.tabs} tabLabelStyle={theme.tabsLabel}>
-                                                <TabScreen label="Campanhas Ativas">
+                                                <TabScreen label="Por Enviar">
                                                     <View style={theme.tabsContent}>
                                                         <FlatList 
-                                                            style={[theme.cardList, {paddingBottom: Math.max(insets.bottom)}]}
+                                                            style={theme.cardList}
+                                                            contentContainerStyle={{paddingBottom: Math.max(insets.bottom)}}
                                                             data={items_active}
                                                             keyExtractor={ item => item.id }
                                                             renderItem={ ({item, index}) => <CardItem index={index} item={item} updateItem={updateItem} tab={tab}/> }
@@ -334,11 +347,12 @@ export function ListCampaignSMS() {
                                                     </View>
                                                 </TabScreen>
 
-                                                <TabScreen label="Todas">
+                                                <TabScreen label="Histórico">
                                                     <View style={theme.tabsContent}>
                                                         {items.length > 0 ? (
                                                             <FlatList 
-                                                                style={[theme.cardList, {paddingBottom: Math.max(insets.bottom)}]}
+                                                                style={theme.cardList}
+                                                                contentContainerStyle={{paddingBottom: Math.max(insets.bottom)}}
                                                                 data={items}
                                                                 keyExtractor={ item => item.id }
                                                                 renderItem={ ({item, index}) => <CardItem index={index} item={item} updateItem={updateItem} tab={tab}/> }
@@ -360,7 +374,8 @@ export function ListCampaignSMS() {
                                         <View style={theme.tabsContent}>
                                             {items.length > 0 ? (
                                                 <FlatList 
-                                                    style={[theme.cardList, {paddingBottom: Math.max(insets.bottom)}]}
+                                                    style={theme.cardList}
+                                                    contentContainerStyle={{paddingBottom: Math.max(insets.bottom)}}
                                                     data={items}
                                                     keyExtractor={ item => item.id }
                                                     renderItem={ ({item, index}) => <CardItem index={index} item={item} updateItem={updateItem} tab={tab}/> }

@@ -2,6 +2,7 @@ import React, { createContext } from 'react';
 import { Dimensions } from 'react-native';
 import Toast from 'react-native-root-toast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import { theme } from '../styles/styles'
 
@@ -41,110 +42,114 @@ export function formValidator(data){
 }
 
 //Remote HTTP
-export async function remoteAPI (data){
-    let userDomain = await SecureStore.getItemAsync('userDomain');
-    let userToken = await SecureStore.getItemAsync('userToken');
-    const http_resource = GlobalState.getValue({field: 'http_resource'});
-    const http_folder = GlobalState.getValue({field: 'http_folder'});
-    const http = `${http_resource}${http_folder}${data.request != '' ? `/${data.request}` : ''}`;
-    const mostrarToast = typeof data.showToast != 'undefined' ? data.showToast : true;
+export async function remoteAPI(data) {
+    try {
+        const userDomain = await SecureStore.getItemAsync('userDomain');
+        const userToken = await SecureStore.getItemAsync('userToken');
+        const http_resource = await GlobalState.getValue({ field: 'http_resource', getStorage: true });
+        const http_folder = await GlobalState.getValue({ field: 'http_folder', getStorage: true });
+        const url = `${http_resource}${http_folder}${data.request ? `/${data.request}` : ''}`;
 
-    var headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'domain': userDomain
-    }
+        const mostrarToast = data.showToast !== undefined ? data.showToast : true;
 
-    if(userToken != null && data.request && data.request != 'login') {
-        headers['token'] = userToken;
-    }
+        let headers = {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            domain: userDomain || '',
+            ...(data.header || {})
+        };
 
-    if(data.header) {
-        headers = {
-            ...headers,
-            ...data.header
+        if(userToken && data.request && data.request !== 'login') {
+            headers.token = userToken;
         }
-    }
-    
-    return fetch(http, {
-        method: data.method || 'GET',
-        headers: headers,
-        body: data.body ? JSON.stringify(data.body) : null
-    })
-    .then(response => response.json())
-    .then(resp => {
-        if(resp.status === 'false') {
-            if(mostrarToast)
-                showToast({text: resp.response.error, duration: 2000});
-            
+
+        //Configuração Axios
+        const axiosConfig = {
+            method: data.method || 'GET',
+            url,
+            headers
+        };
+
+        if(data.body) {
+            axiosConfig.data = data.body;
+        }
+
+        const response = await axios(axiosConfig);
+
+        if(response.data.status == 'false') {
+            if(mostrarToast) {
+                showToast({ text: response.data.response.error, duration: 2000 });
+            }
             return false;
         }
-        return resp;
-    })
-    .catch(error => {
-      console.error(error);
-    });
+
+        return response.data;
+    } catch (error) {
+        console.error('remoteAPI error:', error);
+        if(data.showToast !== false) {
+            showToast({ text: 'Erro na comunicação com o servidor.', duration: 2000 });
+        }
+        return false;
+    }
 }
 
 //Create global VAR's
-export const GlobalState = async () => {
-    var allStates = {
+export const GlobalState = {
+    allStates: {
         appFirstLaunched: null,
         user: {
-            boardingVersion: 0
-        }
-    }
-
-    const _f = {
-        getValue: function(data) {
-            if(data.field == undefined) return null;
-            
-            if(data.getStorage) {
-                return (async () => {
-                    var retorno = '';
-
-                    try {
-                        const storageData = await AsyncStorage.getItem(data.field);
-                        if(storageData !== null) {
-                            retorno = storageData;
-                        } else {
-                            retorno = allStates[data.field] || null;
-                        }
-
-                    } catch(e) {
-                        retorno = allStates[data.field] || null;
-                    }
-
-                    if(typeof retorno == 'string' && retorno.substring(0, 1) == '{')
-                        retorno = JSON.parse(retorno);
-
-                    return retorno;
-                })();
-            } else {
-                return allStates[data.field] == undefined ? null : allStates[data.field];
-            }
+            boardingVersion: 0,
         },
-        setValue: function(data){
-            if(data.field == undefined || data.value == undefined) return null;
-            
-            //if(allStates[data.field] == undefined)
-                allStates[data.field] = data.value;
-            //else
-                var finalData = Utils.extend(allStates[data.field], data.value);
-            
-            if(data.setStorage) {
-                AsyncStorage.setItem(data.field, JSON.stringify(finalData));
+    },
+
+    async getValue({ field, getStorage = false }) {
+        if(!field) return null;
+
+        if(getStorage) {
+            try {
+                const storageData = await AsyncStorage.getItem(field);
+                if(storageData != null) {
+                    let retorno = storageData;
+                    if(typeof retorno === 'string') {
+                        try {
+                            retorno = JSON.parse(retorno);
+                        } catch {
+                            // Manter como string
+                        }
+                    }
+                    return retorno;
+                }
+            } catch (e) {
+                // Erro no AsyncStorage
             }
         }
-    }
 
-    GlobalState.getValue = _f.getValue;
-    GlobalState.setValue = _f.setValue;
-}
+        return this.allStates[field] != undefined ? this.allStates[field] : null;
+    },
+    async setValue({ field, value, setStorage = false }) {
+        if(!field || value == undefined) return null;
+
+        const currentValue = this.allStates[field];
+        if(typeof currentValue == 'object' && typeof value == 'object') {
+            this.allStates[field] = Utils.extend(currentValue, value);
+        } else {
+            this.allStates[field] = value;
+        }
+
+        if(setStorage) {
+            try {
+                await AsyncStorage.setItem(field, JSON.stringify(this.allStates[field]));
+            } catch (e) {
+                console.error('Erro ao guardar no AsyncStorage:', e);
+            }
+        }
+    },
+};
 
 //Toast
-export function showToast(data) {
-    var toastVisible = GlobalState.getValue({field: 'toastVisible'});
+export async function showToast(data) {
+    //var toastVisible = GlobalState.getValue({field: 'toastVisible'});
+    const toastVisible = await GlobalState.getValue({ field: 'toastVisible', getStorage: true });
     var popupDefaults = {
         text: 'Ocorreu um erro. Tente novamente.',
         duration: data.duration ? data.duration : 500,
@@ -154,10 +159,12 @@ export function showToast(data) {
         shadow: false,
         position: -50,
         onShow: function(){
-            GlobalState.setValue({field: 'toastVisible', value: true});
+            //GlobalState.setValue({field: 'toastVisible', value: true});
+            GlobalState.setValue({ field: 'toastVisible', value: true, setStorage: true });
         },
         onHidden: function() {
-            GlobalState.setValue({field: 'toastVisible', value: false});
+            //GlobalState.setValue({field: 'toastVisible', value: false});
+            GlobalState.setValue({ field: 'toastVisible', value: false, setStorage: true });
         }
     };
     
@@ -258,4 +265,3 @@ export function textEntity(text) {
   const return_text = text.replace(/&euro;/g, '€');
   return return_text;
 }
-

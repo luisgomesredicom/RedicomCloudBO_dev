@@ -136,7 +136,7 @@ export function DetCampaignEmail() {
                             >
                                 <View style={[theme.containerDonutChart, {marginBottom: 30}]}>
                                     <HalfDonutChart 
-                                        percentage={campaign.stats.totalSentPercentage} 
+                                        percentage={campaign.stats.totalSentPercent} 
                                         value1title="Emails" 
                                         value1value={campaign.stats.totalSent} 
                                         value2title="Pendentes" 
@@ -197,7 +197,7 @@ export function DetCampaignEmail() {
                                                     <Text style={theme.small}>Conversão</Text>
                                                 </View>
                                                 <View style={{flex: 1}}>
-                                                    <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{campaign.stats.totalConversionsPercentage}%</Text>
+                                                    <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{campaign.stats.totalConversionsPercent}%</Text>
                                                 </View>
                                             </View>
             
@@ -218,7 +218,7 @@ export function DetCampaignEmail() {
                                                         <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'right'}]}>{numberFormat(campaign.stats.totalSent)}</Text></View>
                                                     </View>
                                                     <View style={statistics.columnRight}>
-                                                        <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{campaign.stats.totalOpeningsPercentage}%</Text></View>
+                                                        <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{campaign.stats.totalOpeningsPercent}%</Text></View>
                                                         <View style={statistics.value}><Text style={statistics.valueText}>{numberFormat(campaign.stats.totalOpenings)}</Text></View>
                                                     </View>
                                                 </View>
@@ -228,7 +228,7 @@ export function DetCampaignEmail() {
                                                         <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'right'}]}>{numberFormat(campaign.stats.totalClicks)}</Text></View>
                                                     </View>
                                                     <View style={statistics.columnRight}>
-                                                        <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{campaign.stats.totalClicksPercentage}%</Text></View>
+                                                        <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{campaign.stats.totalClicksPercent}%</Text></View>
                                                         <View style={statistics.value}><Text style={statistics.valueText}>{numberFormat(campaign.stats.totalClicks)}</Text></View>
                                                     </View>
                                                 </View>

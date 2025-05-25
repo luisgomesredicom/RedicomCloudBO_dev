@@ -184,7 +184,7 @@ export function DashboardScreen() {
                                 <Text style={[theme.subtitle, {color: theme.colors.white}]}>{dataDash.informations.title}</Text>
                             </View>
                             
-                            {Boolean(dataDash.informations.currency?.trim()) && (
+                            {dataDash.stats.graphDays.totalValues > 0 && Boolean(dataDash.informations.currency?.trim()) && (
                                 <TouchableOpacity style={{ padding: 20, marginRight: -20 }} onPress={() => {
                                     navigation.navigate({
                                         name: 'DashboardDetails',

@@ -5,7 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import { View, Text, TouchableOpacity, Alert, Image, Dimensions, StyleSheet } from 'react-native';
 import { Ionicons, Octicons } from '@expo/vector-icons';
 //import { useActionSheet } from '@expo/react-native-action-sheet';
-import { GlobalState, UserContext, AuthContext, remoteAPI } from '../core/utils';
+import { UserContext, AuthContext, remoteAPI } from '../core/utils';
 
 //import { BoardingScreen } from '../screens/boarding'
 //import { DemoScreen } from '../screens/demo'
@@ -23,6 +23,7 @@ import { ListPromo } from '../screens/listPromo'
 import { ListCampaign } from '../screens/listCampaign'
 import { ListCampaignSMS } from '../screens/listCampaignSMS'
 import { ListCampaignEmail } from "../screens/listCampaignEmail";
+import { ListOrders } from '../screens/listOrders'
 
 import { ListOrdersInfo } from "../screens/listOrdersInfo";
 import { DetProduct } from '../screens/detProduct'
@@ -231,6 +232,19 @@ export function MainStackRoutes() {
                         <MainStack.Screen
                             name="ListProductsScreen"
                             component={ListProducts}
+                            options={({route, navigation}) => ({
+                                headerStyle: styles.header,
+                                headerLeft: () => <HearderLeft />,
+                                headerTitle: () => (
+                                    <HearderTitle title={route.params.title} />
+                                ),
+                                title: route.params.title
+                            })}
+                        />
+
+                        <MainStack.Screen
+                            name="ListOrdersScreen"
+                            component={ListOrders}
                             options={({route, navigation}) => ({
                                 headerStyle: styles.header,
                                 headerLeft: () => <HearderLeft />,

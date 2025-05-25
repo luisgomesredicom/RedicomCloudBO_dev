@@ -142,7 +142,7 @@ export function DetCampaignSMS() {
                             }
                             >
                                 <View style={[theme.containerDonutChart, {marginBottom: 30}]}>
-                                    <HalfDonutChart percentage={campaign.stats.totalSentPercent} value1title="SMS" value1value={campaign.stats.totalSent} bgcolor={campaign.flags[0].graphStyle}/>
+                                    <HalfDonutChart percentage={39} value1title="SMS" value1value={'3 900'} bgcolor={campaign.flags[0].graphStyle}/>
                                 </View>
                                 
                                 <View style={{marginBottom: 30}}>

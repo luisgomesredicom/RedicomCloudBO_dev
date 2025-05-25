@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native'
 import { ActivityIndicator, Text, Switch } from 'react-native-paper';
 import { FlatList } from 'react-native-gesture-handler';
 import { Octicons } from '@expo/vector-icons';
-import { UserContext, numberFormat, dateFormatter } from '../core/utils';
+import { UserContext, numberFormat, dateFormatter, showToast } from '../core/utils';
 import { theme } from '../styles/styles'
 import Button from './buttons';
 
@@ -156,6 +156,10 @@ export const ListMenu = (props) => {
               <TouchableOpacity 
                 style={styles.menuItem} 
                 onPress={() => {
+                  if(item.hrefTemplate == 'ListPromoScreen' || item.hrefTemplate == 'ListCampaignScreen') {
+                    showToast({text: 'Página em desenvolvimento'});
+                  }
+                  
                   navigation.navigate({name: item.hrefTemplate, params: {id: item.id, title: item.name}});
                 }}
                 >

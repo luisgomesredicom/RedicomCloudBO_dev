@@ -3,18 +3,18 @@
  */
 
 @font-face {
-    font-family: "rdc_app-bo";
-    src: url("rdc_app-bo.eot"); /* IE9 */
-    src: url("rdc_app-bo.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
-    url("rdc_app-bo.woff2") format("woff2"), /* chrome、firefox、opera、Safari, Android, iOS */
-    url("rdc_app-bo.woff") format("woff"), /* chrome、firefox */
-    url("rdc_app-bo.ttf") format("truetype"), /* chrome、firefox、opera、Safari, Android, iOS 4.2+ */
-    url("rdc_app-bo.svg#uxfonteditor") format("svg"); /* iOS 4.1- */
+    font-family: "REDICOM APP BO";
+    src: url("REDICOM APP BO.eot"); /* IE9 */
+    src: url("REDICOM APP BO.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+    url("REDICOM APP BO.woff2") format("woff2"), /* chrome、firefox、opera、Safari, Android, iOS */
+    url("REDICOM APP BO.woff") format("woff"), /* chrome、firefox */
+    url("REDICOM APP BO.ttf") format("truetype"), /* chrome、firefox、opera、Safari, Android, iOS 4.2+ */
+    url("REDICOM APP BO.svg#uxfonteditor") format("svg"); /* iOS 4.1- */
 }
 
 
 .icon {
-    font-family: "rdc_app-bo" !important;
+    font-family: "REDICOM APP BO" !important;
     speak: none;
     font-style: normal;
     font-weight: normal;
@@ -248,6 +248,26 @@
 
 .icon-uniE837:before {
   content: "\e837";
+}
+
+.icon-uniE001:before {
+  content: "\e001";
+}
+
+.icon-uniE002:before {
+  content: "\e002";
+}
+
+.icon-uniE003:before {
+  content: "\e003";
+}
+
+.icon-uniE004:before {
+  content: "\e004";
+}
+
+.icon-uniE005:before {
+  content: "\e005";
 }
 
 

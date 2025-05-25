@@ -212,7 +212,7 @@ export function ListCampaignEmail() {
                                         <Text style={theme.small}>Conversão</Text>
                                     </View>
                                     <View style={{flex: 1}}>
-                                        <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.stats.totalConversionsPercentage}%</Text>
+                                        <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.stats.totalConversionsPercent}%</Text>
                                     </View>
                                 </View>
 
@@ -233,7 +233,7 @@ export function ListCampaignEmail() {
                                             <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'right'}]}>{numberFormat(item.stats.totalSent)}</Text></View>
                                         </View>
                                         <View style={statistics.columnRight}>
-                                            <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{item.stats.totalOpeningsPercentage}%</Text></View>
+                                            <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{item.stats.totalOpeningsPercent}%</Text></View>
                                             <View style={statistics.value}><Text style={statistics.valueText}>{numberFormat(item.stats.totalOpenings)}</Text></View>
                                         </View>
                                     </View>
@@ -243,13 +243,13 @@ export function ListCampaignEmail() {
                                             <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'right'}]}>{numberFormat(item.stats.totalClicks)}</Text></View>
                                         </View>
                                         <View style={statistics.columnRight}>
-                                            <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{item.stats.totalClicksPercentage}%</Text></View>
+                                            <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{item.stats.totalClicksPercent}%</Text></View>
                                             <View style={statistics.value}><Text style={statistics.valueText}>{numberFormat(item.stats.totalClicks)}</Text></View>
                                         </View>
                                     </View>
                                 </View>
                                 <View style={{marginTop: 6}}>
-                                    <ProgressBar percentage={item.stats.totalSentPercentage}/>
+                                    <ProgressBar percentage={item.stats.totalSentPercent}/>
                                 </View>
                             </View>
                         </View>
@@ -377,7 +377,8 @@ export function ListCampaignEmail() {
                                                 <TabScreen label="Por Enviar">
                                                     <View style={theme.tabsContent}>
                                                         <FlatList 
-                                                            style={[theme.cardList, {paddingBottom: Math.max(insets.bottom)}]}
+                                                            style={theme.cardList}
+                                                            contentContainerStyle={{paddingBottom: Math.max(insets.bottom)}}
                                                             data={items_active}
                                                             keyExtractor={ item => item.id }
                                                             renderItem={ ({item, index}) => <CardItem index={index} item={item} updateItem={updateItem} tab={tab}/> }
@@ -395,7 +396,8 @@ export function ListCampaignEmail() {
                                                     <View style={theme.tabsContent}>
                                                         {items.length > 0 ? (
                                                             <FlatList 
-                                                                style={[theme.cardList, {paddingBottom: Math.max(insets.bottom)}]}
+                                                                style={theme.cardList}
+                                                                contentContainerStyle={{paddingBottom: Math.max(insets.bottom)}}
                                                                 data={items}
                                                                 keyExtractor={ item => item.id }
                                                                 renderItem={ ({item, index}) => <CardItem index={index} item={item} updateItem={updateItem} tab={tab}/> }
@@ -417,7 +419,8 @@ export function ListCampaignEmail() {
                                         <View style={theme.tabsContent}>
                                             {items.length > 0 ? (
                                                 <FlatList 
-                                                    style={[theme.cardList, {paddingBottom: Math.max(insets.bottom)}]}
+                                                    style={theme.cardList}
+                                                    contentContainerStyle={{paddingBottom: Math.max(insets.bottom)}}
                                                     data={items}
                                                     keyExtractor={ item => item.id }
                                                     renderItem={ ({item, index}) => <CardItem index={index} item={item} updateItem={updateItem} tab={tab}/> }

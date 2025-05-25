@@ -8,7 +8,6 @@ import {TextInput} from "../components/inputs";
 import { LoadingFullscreen, Icon } from '../components/elements';
 import { AuthContext, UserContext, formValidator, remoteAPI } from '../core/utils';
 import Logo from '../images/logo.svg';
-import LogoIcon from '../images/icon-gray.svg';
 
 export function LoginRegisterScreen({ navigation }) {
     const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
@@ -134,6 +133,7 @@ export function LoginRegisterScreen({ navigation }) {
                                                         autoCapitalize="none"
                                                         autoCorrect={false}
                                                         autoComplete="off"
+                                                        importantForAutofill="no"
                                                         onChangeText={(text) => setRemoteToken({ value: text, error: false, errorText: '' })}
                                                         value={remoteToken.value}
                                                         error={remoteToken.error}
@@ -152,6 +152,7 @@ export function LoginRegisterScreen({ navigation }) {
                                                         autoCapitalize="none"
                                                         autoCorrect={false}
                                                         autoComplete="off"
+                                                        importantForAutofill="no"
                                                         onChangeText={(text) => setUsername({ value: text, error: false, errorText: '' })}
                                                         value={username.value}
                                                         error={username.error}
@@ -169,6 +170,7 @@ export function LoginRegisterScreen({ navigation }) {
                                                 onChangeText={(text) => setPassword({ value: text, error: false, errorText: '' })}
                                                 secureTextEntry
                                                 autoComplete="off"
+                                                importantForAutofill="no"
                                                 autoCorrect={false}
                                                 textContentType="password"
                                                 value={password.value}
@@ -191,7 +193,7 @@ export function LoginRegisterScreen({ navigation }) {
                                         <Text style={[theme.paragraph, {textAlign: 'center',color: theme.colors.darkgray}]}>Por favor entre em contacto com o seu administrador de sistemas.</Text>
                                     </View>
                                     <View style={{alignItems: 'center',justifyContent: 'center',marginTop: screenHeight * 0.07}}>
-                                        <LogoIcon width={32} height={32} />
+                                        <Icon code="82B" size={32} style={{color: '#E0E0E0'}}/>
                                     </View>
                                 </View>
 
