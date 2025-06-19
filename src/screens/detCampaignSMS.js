@@ -32,6 +32,16 @@ export function DetCampaignSMS() {
     const [optionSubmit, setOptionSubmit] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
 
+    const sendStatus = [
+        {status: 0, icon: '001', color: 'warning'}, //Agendado
+        {status: 1, icon: '003', color: 'success'}, //A Enviar
+        {status: 3, icon: '005', color: 'gray'}, //Parada
+        {status: 5, icon: '005', color: 'gray'}, //Em preparação
+        {status: 9, icon: '004', color: 'success'}, //Finalizada
+        {status: 10, icon: '002', color: 'gray'} //Cancelada
+    ];
+    const currentSendStatus = sendStatus.find(s => s.status == campaign.status);
+    console.log('status', campaign.status);
     useEffect(() => {
         setPageIsReady(true);
     }, []);
@@ -153,7 +163,10 @@ export function DetCampaignSMS() {
                                         <View style={{width: 220,flexShrink: 0,height: '100%'}}>
                                             <View style={{flexDirection: 'row',alignItems: 'center'}}>
                                                 <View style={{width: 62,marginRight: 10}}><Text style={[theme.small]}>Estado</Text></View>
-                                                <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{campaign.flags[0].title}</Text></View>
+                                                <View style={{flex: 1,flexDirection: 'row',alignItems: 'center'}}>
+                                                    <Icon code={currentSendStatus.icon} size={13} style={{color: theme.colors[currentSendStatus.color],marginRight: 4}}/>
+                                                    <Text style={[theme.small, {fontWeight: 500,color: theme.colors[currentSendStatus.color]}]} numberOfLines={1} ellipsizeMode='tail'>{campaign.flags[0].title}</Text>
+                                                </View>
                                             </View>
         
                                             <View style={{ flexDirection: 'row',alignItems: 'center'}}>

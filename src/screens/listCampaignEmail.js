@@ -86,8 +86,8 @@ export function ListCampaignEmail() {
 
     const updateItem = (item, all = true) => {
         if(all) {
-            setRefreshing(true);
-            setRefreshing_active(true);
+            //setRefreshing(true);
+            //setRefreshing_active(true);
             resetLists();
             return;
         }
@@ -129,7 +129,7 @@ export function ListCampaignEmail() {
                     }
                 });
                 
-                //updateItem(data, false);
+                updateItem(data, false);
 
                 if(!data || !data.response) return;
 

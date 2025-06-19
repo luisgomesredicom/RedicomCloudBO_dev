@@ -86,8 +86,8 @@ export function ListCampaignSMS() {
 
     const updateItem = (item, all = true) => {
         if(all) {
-            setRefreshing(true);
-            setRefreshing_active(true);
+            //setRefreshing(true);
+            //setRefreshing_active(true);
             resetLists();
         }
 
