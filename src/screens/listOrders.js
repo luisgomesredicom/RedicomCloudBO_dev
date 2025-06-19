@@ -156,19 +156,23 @@ export function ListOrders() {
                 setPageStatus(-1);
             }
 
-            var requestHTTP = `${nextPage == '' ? `catalog/products` : nextPage}`;
+            var requestHTTP = 'app/orders/search';
+
+            /*var requestHTTP = `${nextPage == '' ? `catalog/products` : nextPage}`;
             if(searchValue != '') {
                 requestHTTP = `catalog/products/search`;
-            }
+            }*/
 
-            var bodyHTTP = {}
+            var bodyHTTP = {
+                trackingStatus: '80,103'
+            }
             if(searchValue != '') {
                 bodyHTTP.search = searchValue;
             }
 
             const data = await remoteAPI({
                 request: requestHTTP,
-                method: searchValue != '' ? 'POST' : 'GET',
+                method: 'POST',//searchValue != '' ? 'POST' : 'GET',
                 body: Object.keys(bodyHTTP).length > 0 ? bodyHTTP : null
             });
 
