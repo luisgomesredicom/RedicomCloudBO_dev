@@ -71,10 +71,11 @@ export function ListOrders() {
     function RemoteSVG(src) {
         if(src == '') return null;
 
+        /*
         const [svgXmlData, setSvgXmlData] = useState(null);
 
         useEffect(() => {
-            fetch(`https://www.redicom.pt/${src}`)
+            fetch(`https://www.redicom.pt/${pathOnly}`)
             .then((response) => response.text())
             .then((text) => {
                 setSvgXmlData(text);
@@ -86,14 +87,41 @@ export function ListOrders() {
 
         if (!svgXmlData) {
             return null;
-        }
+        }*/
+
+        const paymentImage = `https://www.redicom.pt/checkout${src.split("/checkout")[1]}`;
 
         return (
             <View style={{width: 34,minHeight: 24}}>
-                <SvgXml xml={svgXmlData} width="100%" />
+                {/*<SvgXml xml={svgXmlData} width="100%" />*/}
+                <Image source={{uri: paymentImage}} style={{resizeMode: 'contain',flex: 1,width: 34,height: 24}} />
             </View>
         );
-        }
+    }
+
+    function ProductImage({uri}) {
+        const [aspectRatio, setAspectRatio] = useState(1);
+
+        useEffect(() => {
+            if(uri) {
+                Image.getSize(
+                    uri,
+                    (width, height) => {
+                        setAspectRatio(width / height);
+                    },
+                    (error) => {
+                        console.warn("Erro ao carregar imagem:", error);
+                    }
+                );
+            }
+        }, [uri]);
+
+        return (
+            <View style={{backgroundColor: 'whitesmoke',alignItems: 'center'}}>
+                <Image source={{ uri }} style={{width: 60,aspectRatio,resizeMode: 'contain'}}/>
+            </View>
+        );
+    }
 
     const CardItem = ({index, item}) => {
         return (
@@ -111,9 +139,9 @@ export function ListOrders() {
                                 <Text style={theme.small}>Cliente</Text>
                             </View>
                             <View style={{flex: 1, flexDirection: 'row',gap: 6,alignItems: 'center'}}>
-                                <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>Marta</Text>
-                                <Text style={theme.small} ellipsizeMode='tail'>Cliente novo</Text>
-                                <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]}>Portugal</Text>
+                                <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.customerName}</Text>
+                                <Text style={theme.small} ellipsizeMode='tail'>{item.customerSince}</Text>
+                                <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]}>{item.customerCountry}</Text>
                             </View>
                         </View>
 
@@ -122,23 +150,20 @@ export function ListOrders() {
                                 <Text style={theme.small}>No. Encomenda</Text>
                             </View>
                             <View style={{flex: 1}}>
-                                <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]}>PT2024MMQ81JA9</Text>
+                                <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]}>{item.orderRef}</Text>
                             </View>
                         </View>
                     </View>
 
                     <View style={{flexDirection: 'row',gap: 4}}>
-                        <View style={{height: 80,flexShrink: 0,backgroundColor: 'whitesmoke'}}>
-                            <Image source={{uri: 'https://picsum.photos/120/160'}} style={{resizeMode: 'contain',flex: 1,width: 60,height: 80}} />
-                        </View>
-                        <View style={{height: 80,flexShrink: 0,backgroundColor: 'whitesmoke'}}>
-                            <Image source={{uri: 'https://picsum.photos/120/160'}} style={{resizeMode: 'contain',flex: 1,width: 60,height: 80}} />
-                        </View>
+                        {item.products.map((product, index) => (
+                            <ProductImage key={index} uri={product.image} />
+                        ))}
                     </View>
 
                     <View style={{flexDirection: 'row',gap: 10, alignItems: 'center'}}>
-                        {RemoteSVG('checkout/v1/images/blocopt13.svg')}
-                        <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>89,91 <Text style={{color: theme.colors.darkgray}}>EUR</Text></Text>
+                        {RemoteSVG(item.paymentImage)}
+                        <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.totalAmount} <Text style={{color: theme.colors.darkgray}}>{item.currency}</Text></Text>
                     </View>
                 </View>
             </>
@@ -156,19 +181,16 @@ export function ListOrders() {
                 setPageStatus(-1);
             }
 
-            var requestHTTP = 'app/orders/search';
-
-            /*var requestHTTP = `${nextPage == '' ? `catalog/products` : nextPage}`;
-            if(searchValue != '') {
-                requestHTTP = `catalog/products/search`;
-            }*/
-
+            var requestHTTP = `${nextPage == '' ? `orders/search` : nextPage}`;
+            
             var bodyHTTP = {
                 trackingStatus: '80,103'
             }
             if(searchValue != '') {
                 bodyHTTP.search = searchValue;
             }
+
+            console.log(bodyHTTP)
 
             const data = await remoteAPI({
                 request: requestHTTP,
