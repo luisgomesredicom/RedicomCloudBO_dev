@@ -87,13 +87,13 @@ export function LoginRegisterScreen({ navigation }) {
                         <Text style={[theme.listNavTitle, {textAlign: 'center',marginBottom: 10}]}>Definir código?</Text>
                         <Text style={[theme.paragraph, {textAlign: 'center',color: theme.colors.darkgray}]}>O código aumenta a segurança e facilita a autenticação na App.</Text>
                         <View style={{flexDirection: 'row',justifyContent: 'space-between',gap: 14,marginTop: 20}}>
-                            <View style={{flexBasis: '50%'}}>
+                            <View style={{width: '50%'}}>
                                 <Button mode="outlined" onPress={() => {
                                     setModalVisible(!modalVisible);
                                     cancelPinCode();
                                 }}>Cancelar</Button>
                             </View>
-                            <View style={{flexBasis: '50%'}}>
+                            <View style={{width: '50%'}}>
                                 <Button mode="contained" onPress={() => {
                                     setModalVisible(!modalVisible);
                                     acceptPinCode();

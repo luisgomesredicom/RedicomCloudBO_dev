@@ -117,13 +117,13 @@ export function DetCampaignSMS() {
                             <Text style={[theme.listNavTitle, {textAlign: 'center',marginBottom: 10}]}>Deseja continuar?</Text>
                             <Text style={[theme.paragraph, {textAlign: 'center',color: theme.colors.darkgray}]}>{optionSubmit ? optionSubmit.confirmPopupText : ''}</Text>
                             <View style={{flexDirection: 'row',justifyContent: 'space-between',gap: 14,marginTop: 20}}>
-                                <View style={{flexBasis: '50%'}}>
+                                <View style={{width: '50%'}}>
                                     <Button mode="outlined" onPress={() => {
                                         setModalConfirm(!isModalConfirm);
                                         setOptionSubmit(null);
                                     }}>Cancelar</Button>
                                 </View>
-                                <View style={{flexBasis: '50%'}}>
+                                <View style={{width: '50%'}}>
                                     <Button mode="contained" onPress={() => {
                                         setModalConfirm(!isModalConfirm);
                                         onSubmit();

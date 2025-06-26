@@ -43,12 +43,12 @@ export function SettingsScreen() {
                             <View style={{marginBottom: 10}}><Text style={[theme.listNavTitle, {textAlign: 'center'}]}>Não tem código definido.{"\n"}Definir definir agora?</Text></View>
                             <View><Text style={[theme.paragraph, {textAlign: 'center',color: theme.colors.darkgray}]}>Para ativar o {authenticationType == 1 ? 'Touch ID' : 'Face ID'} necessita de ter um código definido.</Text></View>
                             <View style={{flexDirection: 'row', justifyContent: 'space-between',gap: 14,marginTop: 20}}>
-                                <View style={{flexBasis: '50%'}}>
+                                <View style={{width: '50%'}}>
                                     <Button mode="outlined" onPress={() => {
                                         setModalDefinePinVisible(!modalDefinePinVisible);
                                     }}>Cancelar</Button>
                                 </View>
-                                <View style={{flexBasis: '50%'}}>
+                                <View style={{width: '50%'}}>
                                     <Button mode="contained" onPress={() => {
                                         setModalDefinePinVisible(!modalDefinePinVisible);
                                         navigation.navigate({name: 'SettingsCodeAddScreen', params: {action: auxcodeAddAction, title: 'Definir código'}});
@@ -76,12 +76,12 @@ export function SettingsScreen() {
                             <View style={{marginBottom: 10}}><Text style={[theme.listNavTitle, {textAlign: 'center'}]}>É necessário ativar o código.{"\n"}Deseja ativar agora?</Text></View>
                             <View><Text style={[theme.paragraph, {textAlign: 'center',color: theme.colors.darkgray}]}>Para ativar o {authenticationType == 1 ? 'Touch ID' : 'Face ID'} necessita de ativar código.</Text></View>
                             <View style={{flexDirection: 'row', justifyContent: 'space-between',gap: 14,marginTop: 20}}>
-                                <View style={{flexBasis: '50%'}}>
+                                <View style={{width: '50%'}}>
                                     <Button mode="outlined" onPress={() => {
                                         setModalEnablePinVisible(!modalEnablePinVisible);
                                         }}>Cancelar</Button>
                                 </View>
-                                <View style={{flexBasis: '50%'}}>
+                                <View style={{width: '50%'}}>
                                     <Button mode="contained" onPress={() => {
                                         if(userState.code == '****')
                                             navigation.navigate({name: 'SettingsCodeAddScreen', params: {action: auxcodeAddAction, title: 'Definir código'}});

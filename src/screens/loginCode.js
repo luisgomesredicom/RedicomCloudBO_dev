@@ -136,13 +136,13 @@ export function LoginCodeScreen() {
                         <View style={{marginBottom: 10}}><Text style={[theme.listNavTitle, {textAlign: 'center'}]}>{authenticationType == 1 ? 'Ativar login com Touch ID?' : 'Ativar login com Face ID?'}</Text></View>
                         <View><Text style={[theme.paragraph, {textAlign: 'center',color: theme.colors.darkgray}]}>O {authenticationType == 1 ? 'Touch ID' : 'Face ID'} aumenta a segurança e facilita a autenticação na App.</Text></View>
                         <View style={{flexDirection: 'row',justifyContent: 'space-between',gap: 14,marginTop: 20}}>
-                            <View style={{flexBasis: '50%'}}>
+                            <View style={{width: '50%'}}>
                                 <Button mode="outlined" onPress={() => {
                                     setModalVisible(!modalVisible);
                                     cancelAuthentication();
                                 }}>Mais tarde</Button>
                             </View>
-                            <View style={{flexBasis: '50%'}}>
+                            <View style={{width: '50%'}}>
                                 <Button mode="contained" onPress={() => {
                                     setModalVisible(!modalVisible);
                                     acceptAuthentication();
