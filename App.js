@@ -32,7 +32,7 @@ export default function App() {
                 // Pre-load fonts, make any API calls you need to do here
                 await Font.loadAsync({
                     'RedicomUI': require('./assets/fonts/RedicomUI-SemiBold.ttf'),
-                    'RedicomIcons': require('./assets/fonticon/redicom_app_bo.ttf'),
+                    'RedicomIcons': require('./assets/fonticon/fonts/RDC-BO_APP.ttf'),
                     'SF Mono 500': require('./assets/fonts/SFMonoMedium.ttf')
                 });
 
