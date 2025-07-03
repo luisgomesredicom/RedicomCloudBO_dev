@@ -52,7 +52,7 @@ export function DetCampaignEmail() {
                     option: optionSubmit.option
                 }
             });
-    
+      console.log(data);
             updateCampaign(data);
 
         } catch (error) {
