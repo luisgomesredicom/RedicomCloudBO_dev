@@ -1,6 +1,5 @@
 import React, {useState} from 'react'
 import { Searchbar } from 'react-native-paper'
-import { Octicons } from '@expo/vector-icons';
 import { theme } from '../styles/styles'
 import { Icon } from './elements';
 

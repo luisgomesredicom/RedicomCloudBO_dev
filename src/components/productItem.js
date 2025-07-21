@@ -11,16 +11,18 @@ export const ProductItem = ({index, item, updateItem, total, linkAction}) => {
     
     return (
         <>
-            {index == 0 && (
-                <View style={{flexDirection: 'row',alignItems: 'center',justifyContent: 'space-between',gap: 10,marginBottom: 28}}>
+            {index == 0 ? (
+                <View style={{flexDirection: 'row',alignItems: 'center',justifyContent: 'space-between',gap: 10,marginBottom: 28,paddingHorizontal: theme.containerPadding}}>
                     <View><Text style={[theme.listNavSubtitle, {color: theme.colors.darktheme}]}>Produtos</Text></View>
                     <View><Link text="Filtrar Produtos" onPress={() => linkAction({ type: "toggleFilters" })}/></View>
                 </View>
+            ) : (
+                <View style={{height: 6,backgroundColor: theme.colors.background,marginTop: 10,marginBottom: 10}}></View>
             )}
 
             <TouchableOpacity
                 key={item.index}
-                style={{marginTop: 0,marginBottom: 20}}
+                style={{marginTop: 0,marginBottom: 0,marginHorizontal: theme.containerPadding}}
                 onPress={() => {
                     navigation.navigate({
                         name: 'DetProductsScreen',
@@ -61,18 +63,18 @@ export const ProductItem = ({index, item, updateItem, total, linkAction}) => {
 
                                 <View style={{gap: 1,marginTop: 2}}>
                                     <View style={{flexDirection: 'row',alignItems: 'center'}}>
-                                        <View style={{width: 70,marginRight: 10}}><Text style={[theme.small]}>Ref. SKU</Text></View>
+                                        <View style={{width: 74,marginRight: 10}}><Text style={[theme.small]}>Ref. Modelo</Text></View>
                                         <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.skuFamily}</Text></View>
                                     </View>
 
                                     <View style={{flexDirection: 'row',alignItems: 'center'}}>
-                                        <View style={{width: 70,marginRight: 10}}><Text style={[theme.small]}>Ref. Cor</Text></View>
+                                        <View style={{width: 74,marginRight: 10}}><Text style={[theme.small]}>Ref. Cor</Text></View>
                                         <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.skuGroup}</Text></View>
                                     </View>
                                     
                                     {(item.color && item.color.multiLanguageContent) && (
                                         <View style={{flexDirection: 'row',alignItems: 'center'}}>
-                                            <View style={{width: 70,marginRight: 10}}><Text style={[theme.small]}>Cor</Text></View>
+                                            <View style={{width: 74,marginRight: 10}}><Text style={[theme.small]}>Cor</Text></View>
                                             <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.color.multiLanguageContent.pt.name}</Text></View>
                                         </View>
                                     )}

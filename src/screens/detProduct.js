@@ -127,31 +127,31 @@ export function DetProduct() {
 
                                         <View style={{gap: 1,marginTop: 2}}>
                                             <View style={{flexDirection: 'row',alignItems: 'center'}}>
-                                                <View style={{width: 70,marginRight: 10}}><Text style={[theme.small]}>Ref. SKU</Text></View>
+                                                <View style={{width: 74,marginRight: 10}}><Text style={[theme.small]}>Ref. Modelo</Text></View>
                                                 <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{product.skuFamily}</Text></View>
                                             </View>
 
                                             <View style={{flexDirection: 'row',alignItems: 'center'}}>
-                                                <View style={{width: 70,marginRight: 10}}><Text style={[theme.small]}>Ref. Cor</Text></View>
+                                                <View style={{width: 74,marginRight: 10}}><Text style={[theme.small]}>Ref. Cor</Text></View>
                                                 <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{product.skuGroup}</Text></View>
                                             </View>
                                             
                                             {(product.color && product.color.multiLanguageContent) && (
                                                 <View style={{flexDirection: 'row',alignItems: 'center'}}>
-                                                    <View style={{width: 70,marginRight: 10}}><Text style={[theme.small]}>Cor</Text></View>
+                                                    <View style={{width: 74,marginRight: 10}}><Text style={[theme.small]}>Cor</Text></View>
                                                     <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{product.color.multiLanguageContent.pt.name}</Text></View>
                                                 </View>
                                             )}
 
                                             <View style={{flexDirection: 'row',alignItems: 'center'}}>
-                                                <View style={{width: 70,marginRight: 10}}><Text style={[theme.small]}>Novidade</Text></View>
+                                                <View style={{width: 74,marginRight: 10}}><Text style={[theme.small]}>Novidade</Text></View>
                                                 <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{product.new == true ? 'Sim' : 'Não'}</Text></View>
                                             </View>
 
-                                            <View style={{flexDirection: 'row',alignItems: 'center'}}>
-                                                <View style={{width: 70,marginRight: 10}}><Text style={[theme.small]}>Ativo</Text></View>
+                                            {/*<View style={{flexDirection: 'row',alignItems: 'center'}}>
+                                                <View style={{width: 74,marginRight: 10}}><Text style={[theme.small]}>Ativo</Text></View>
                                                 <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{product.active == 1 ? 'Sim' : 'Não'}</Text></View>
-                                            </View>
+                                            </View>*/}
                                         </View>
                                     </View>
                                 </View>
@@ -167,34 +167,34 @@ export function DetProduct() {
                             </View>
 
                             <View style={stylesTable.tableInfo_head}>
-                                <View style={[stylesTable.tableInfo_head_td, {marginLeft: 0,flexBasis: 120}]}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]}>Produto</Text></View>
-                                <View style={[stylesTable.tableInfo_head_td, {width: 55,alignItems: 'center'}]}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]}>Preço</Text></View>
-                                <View style={[stylesTable.tableInfo_head_td, {width: 55,alignItems: 'center'}]}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]}>Stock</Text></View>
-                                <View style={[stylesTable.tableInfo_head_td, {marginRight: 0,width: 55,alignItems: 'center'}]}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]}>Ativo</Text></View>
+                                <View style={[stylesTable.tableInfo_head_td, {marginLeft: 0,width: '55%'}]}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]}>Produto</Text></View>
+                                <View style={[stylesTable.tableInfo_head_td, {width: '12%',alignItems: 'center'}]}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]}>Preço</Text></View>
+                                <View style={[stylesTable.tableInfo_head_td, {width: '12%',alignItems: 'center'}]}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]}>Stock</Text></View>
+                                <View style={[stylesTable.tableInfo_head_td, {marginRight: 0,width: 60,alignItems: 'center'}]}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]}>Ativo</Text></View>
                             </View>
                             
                             {dataMatiz.map((item, index) => (
                                 <View key={item.id}>
                                     <View style={stylesTable.tableInfo_body}>
-                                        <View style={[stylesTable.tableInfo_body_td, {marginLeft: 0,flexBasis: 120}]}>
+                                        <View style={[stylesTable.tableInfo_body_td, {marginLeft: 0,width: '55%'}]}>
                                             <Text numberOfLines={3} ellipsizeMode='tail' style={[theme.small, {fontWeight: 500,color: theme.colors.black,marginBottom: 6}]}>{item.sku}</Text>
                                             <Text numberOfLines={1} ellipsizeMode='tail' style={[theme.small, {fontWeight: 500,color: theme.colors.black}]}><Text style={theme.small}>Tam.:</Text>  {item.size.multiLanguageContent.pt.name}</Text>
                                         </View>
-                                        <View style={[stylesTable.tableInfo_body_td, {width: 55,alignItems: 'center'}]}>
+                                        <View style={[stylesTable.tableInfo_body_td, {width: '12%',alignItems: 'center'}]}>
                                             {item.hasPrice ? (
                                                 <Icon code="805" size={24} style={{color: theme.colors.success}} />
                                             ) : (
                                                 <Icon code="807" size={28} style={{color: theme.colors.error}} />
                                             )}
                                         </View>
-                                        <View style={[stylesTable.tableInfo_body_td, {width: 55,alignItems: 'center'}]}>
+                                        <View style={[stylesTable.tableInfo_body_td, {width: '12%',alignItems: 'center'}]}>
                                             {item.hasIncentory ? (
                                                 <Icon code="805" size={24} style={{color: theme.colors.success}} />
                                             ) : (
                                                 <Icon code="807" size={28} style={{color: theme.colors.error}} />
                                             )}
                                         </View>
-                                        <View style={[stylesTable.tableInfo_body_td, {marginRight: 0,width: 55,alignItems: 'center'}]}>
+                                        <View style={[stylesTable.tableInfo_body_td, {marginRight: 0,width: 60,alignItems: 'center'}]}>
                                             <SwitchItem active={item.active} sku={item.sku}/>
                                         </View>
                                     </View>

@@ -203,7 +203,7 @@ export function ListProducts() {
                         <>
                         {
                             pageStatus != 0 ? (
-                                <View style={[theme.wrapperContentStyle, {paddingTop: 0, paddingRight: 0}]}>
+                                <View style={[theme.wrapperContentStyle, {padding: 0}]}>
                                     {
                                     pageStatus < 0 ? (
                                         <View style={{height: 80,paddingBottom: 15,justifyContent: 'center'}}>
@@ -219,7 +219,7 @@ export function ListProducts() {
                                                 contentContainerStyle={{paddingBottom: Math.max(insets.bottom)}}
                                                 data={items}
                                                 keyExtractor={ item => item.id }
-                                                renderItem={ ({item, index}) => <View style={{paddingRight: theme.containerPadding}}><ProductItem index={index} item={item} updateItem={updateItem} total={resultsLength} linkAction={modalFiltersDispatch}/></View> }
+                                                renderItem={ ({item, index}) => <ProductItem index={index} item={item} updateItem={updateItem} total={resultsLength} linkAction={modalFiltersDispatch}/> }
                                                 onEndReached={loadResults}
                                                 onEndReachedThreshold={ 0.15 }
                                                 ListFooterComponent={ <FooterList load={nextPageLoading} /> }
