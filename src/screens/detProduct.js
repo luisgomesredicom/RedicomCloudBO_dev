@@ -177,18 +177,18 @@ export function DetProduct() {
                                 <View key={item.id}>
                                     <View style={stylesTable.tableInfo_body}>
                                         <View style={[stylesTable.tableInfo_body_td, {marginLeft: 0,width: '55%'}]}>
-                                            <Text numberOfLines={3} ellipsizeMode='tail' style={[theme.small, {fontWeight: 500,color: theme.colors.black,marginBottom: 6}]}>{item.sku}</Text>
+                                            <Text numberOfLines={3} ellipsizeMode='tail' style={[theme.small, {fontWeight: 500,color: theme.colors.black,marginBottom: 6}]}>{item.sku} </Text>
                                             <Text numberOfLines={1} ellipsizeMode='tail' style={[theme.small, {fontWeight: 500,color: theme.colors.black}]}><Text style={theme.small}>Tam.:</Text>  {item.size.multiLanguageContent.pt.name}</Text>
                                         </View>
                                         <View style={[stylesTable.tableInfo_body_td, {width: '12%',alignItems: 'center'}]}>
-                                            {item.hasPrice ? (
+                                            {item.hasPrice=='true' ? (
                                                 <Icon code="805" size={24} style={{color: theme.colors.success}} />
                                             ) : (
                                                 <Icon code="807" size={28} style={{color: theme.colors.error}} />
                                             )}
                                         </View>
                                         <View style={[stylesTable.tableInfo_body_td, {width: '12%',alignItems: 'center'}]}>
-                                            {item.hasInventory ? (
+                                            {item.hasInventory=='true' ? (
                                                 <Icon code="805" size={24} style={{color: theme.colors.success}} />
                                             ) : (
                                                 <Icon code="807" size={28} style={{color: theme.colors.error}} />
