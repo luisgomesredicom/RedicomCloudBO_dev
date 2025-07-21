@@ -1,12 +1,15 @@
 import React, {useState, useEffect, useReducer, useCallback} from 'react';
-import { StatusBar, View, FlatList, TouchableOpacity, StyleSheet, RefreshControl, Image } from 'react-native';
+import { StatusBar, View, FlatList, TouchableOpacity, StyleSheet, RefreshControl, Image, Dimensions } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SvgXml } from 'react-native-svg';
-import { remoteAPI, numberFormat } from '../core/utils';
-import { LoadingFullscreen, Noresults } from '../components/elements';
+import { remoteAPI, numberFormat, dateFormatter } from '../core/utils';
+import { Badge, CountryFlag, LoadingFullscreen, Noresults } from '../components/elements';
 import { SearchBar } from '../components/searchBar';
 import { theme } from '../styles/styles'
 import { Text, ActivityIndicator } from 'react-native-paper';
+import { Icon } from '../components/elements';
+import { Link } from '../components/buttons';
+import { ModalFilters, ModalFiltersContext, ModalFiltersReducer, ModalFiltersState} from '../components/modalFilters'
 
 export function ListOrders() {
     /* 0 => Início da página | -1 => Pedido à API | 1 => Tudo carregado */
@@ -68,28 +71,23 @@ export function ListOrders() {
     }
     /* Search */
 
-    function RemoteSVG(src) {
+    function getPaymentImage(src) {
         if(src == '') return null;
 
-        /*
-        const [svgXmlData, setSvgXmlData] = useState(null);
-
-        useEffect(() => {
-            fetch(`https://www.redicom.pt/${pathOnly}`)
-            .then((response) => response.text())
-            .then((text) => {
-                setSvgXmlData(text);
-            })
-            .catch((error) => {
-                console.error('Erro ao carregar SVG', error);
-            });
-        }, []);
-
-        if (!svgXmlData) {
-            return null;
-        }*/
-
         const paymentImage = `https://www.redicom.pt/checkout${src.split("/checkout")[1]}`;
+
+        return (
+            <View style={{width: 34,minHeight: 24}}>
+                {/*<SvgXml xml={svgXmlData} width="100%" />*/}
+                <Image source={{uri: paymentImage}} style={{resizeMode: 'contain',flex: 1,width: 34,height: 24}} />
+            </View>
+        );
+    }
+
+    function getShippingImage(src) {
+        //if(src == '') return null;
+
+        const paymentImage = `https://www.redicom.pt/checkout/v1/images/shipping_type_7.jpg`;
 
         return (
             <View style={{width: 34,minHeight: 24}}>
@@ -103,7 +101,7 @@ export function ListOrders() {
         const [aspectRatio, setAspectRatio] = useState(1);
 
         useEffect(() => {
-            if(uri) {
+            if (uri) {
                 Image.getSize(
                     uri,
                     (width, height) => {
@@ -116,41 +114,57 @@ export function ListOrders() {
             }
         }, [uri]);
 
+        // Calcula 1/6 da largura do ecrã
+        const screenWidth = Dimensions.get('window').width;
+        const imageWidth = (screenWidth - (theme.containerPadding * 2) - 20) / 6;
+
         return (
-            <View style={{backgroundColor: 'whitesmoke',alignItems: 'center'}}>
-                <Image source={{ uri }} style={{width: 60,aspectRatio,resizeMode: 'contain'}}/>
-            </View>
+            <>
+                <View style={{ backgroundColor: 'whitesmoke', alignItems: 'center' }}>
+                    <Image
+                        source={{ uri }}
+                        style={{
+                            width: imageWidth,
+                            aspectRatio,
+                            resizeMode: 'contain',
+                        }}
+                    />
+                </View>
+            </>
         );
     }
 
+
+
     const CardItem = ({index, item}) => {
+        const { date: startDate, time: startTime } = dateFormatter(item.date);
+
         return (
             <>
                 {index == 0 ? (
-                    <View style={{paddingHorizontal: theme.containerPadding,marginTop: 28,marginBottom: 13}}><Text style={[theme.listNavSubtitle, {color: theme.colors.darktheme}]}>Encomendas</Text></View>
+                    <View style={{flexDirection: 'row',alignItems: 'center',justifyContent: 'space-between',gap: 10,marginTop: 28,marginBottom: 28,paddingHorizontal: theme.containerPadding}}>
+                        <View><Text style={[theme.listNavSubtitle, {color: theme.colors.darktheme}]}>Encomendas</Text></View>
+                        <View><Link text="Filtrar" onPress={() => modalFiltersDispatch({ type: "toggleFilters" })}/></View>
+                    </View>
                 ) : (
                     <View style={{height: 6,backgroundColor: theme.colors.background}}></View>
                 )}
                 
                 <View style={[theme.cardItem, {flexDirection: 'column',flexGrow: 1,gap: 8}]}>
-                    <View>
-                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                            <View style={{width: 100, marginRight: 10}}>
-                                <Text style={theme.small}>Cliente</Text>
-                            </View>
-                            <View style={{flex: 1, flexDirection: 'row',gap: 6,alignItems: 'center'}}>
-                                <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.customerName}</Text>
+                    <View style={{gap: 2}}>
+                        <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between'}}>
+                            <Text style={theme.small}>No. Enc. <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]}>{item.orderRef}</Text></Text>
+                            <View style={{flexDirection: 'row',alignItems: 'center',marginLeft: 'auto',gap: 10}}>
+                                {/*<Icon code="808" size={18} style={{color: theme.colors.success}}/>*/}
                                 <Text style={theme.small} ellipsizeMode='tail'>{item.customerSince}</Text>
-                                <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]}>{item.customerCountry}</Text>
+                                <CountryFlag code="pt" size={20} />
                             </View>
                         </View>
 
-                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                            <View style={{width: 100, marginRight: 10}}>
-                                <Text style={theme.small}>No. Encomenda</Text>
-                            </View>
-                            <View style={{flex: 1}}>
-                                <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]}>{item.orderRef}</Text>
+                        <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between'}}>
+                            <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.customerName}</Text>
+                            <View>
+                                <Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{startDate}  <Text style={{color: theme.colors.darkgray}}>{startTime}</Text></Text>
                             </View>
                         </View>
                     </View>
@@ -161,14 +175,59 @@ export function ListOrders() {
                         ))}
                     </View>
 
-                    <View style={{flexDirection: 'row',gap: 10, alignItems: 'center'}}>
-                        {RemoteSVG(item.paymentImage)}
-                        <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.totalAmount} <Text style={{color: theme.colors.darkgray}}>{item.currency}</Text></Text>
+                    <View style={{flexDirection: 'row',gap: 10,alignItems: 'center',justifyContent: 'space-between'}}>
+                        <View style={{flexDirection: 'row',gap: 10,alignItems: 'center'}}>
+                            {getPaymentImage(item.paymentImage)}
+                            <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.totalAmount} <Text style={{color: theme.colors.darkgray}}>{item.currency}</Text></Text>
+                        </View>
+                        
+                        <Text style={theme.small}>Qnt. <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]}>2</Text></Text>
+                        
+                        {getShippingImage()}
+
+                        <Badge type="tag" text="Em Pagamento" style={theme.stats_4}/>
                     </View>
                 </View>
             </>
         )
     }
+
+    /* Filters */
+    const [modalFilters, modalFiltersDispatch] = useReducer(ModalFiltersReducer, ModalFiltersState);
+    const [filtersLength, setFiltersLength] = useState(0);
+
+    useEffect(() => {
+        if(filtersApplied != null || (filtersApplied == null && Object.keys(modalFilters.filtersActive).length > 0)) {
+            endList = false;
+            currentPage = null;
+            nextPage = '';
+
+            /*if(Object.keys(modalFilters.filtersActive).length > 0) {
+                filtersApplied = true;
+            } else {
+                filtersApplied = false;
+            }*/
+
+            loadResults();
+        }
+    }, [modalFilters.filtersActive]);
+
+    async function loadFilters() {
+        try {
+            const data = await remoteAPI({
+                request: `catalog/products/filters`,
+                method: 'GET'
+            });
+
+            if(data.status && data.response) {
+                modalFiltersDispatch({type: "setFilters", filters: data.response.filters || []});
+            }
+
+        } catch (e) {
+            console.warn(e);
+        }
+    }
+    /* Filters */
 
     async function loadResults() {
         try {
@@ -182,6 +241,9 @@ export function ListOrders() {
             }
 
             var requestHTTP = `${nextPage == '' ? `orders/search` : nextPage}`;
+            if(searchValue != '' || filtersApplied) {
+                requestHTTP = `catalog/products/search`;
+            }
             
             var bodyHTTP = {
                 trackingStatus: '80,103'
@@ -190,15 +252,29 @@ export function ListOrders() {
                 bodyHTTP.search = searchValue;
             }
 
-            console.log(bodyHTTP)
+            if(filtersApplied) {
+                bodyHTTP = {
+                    ...bodyHTTP,
+                    ...modalFilters.filtersActive
+                }
+                setFiltersLength(1);
+            } else {
+                setFiltersLength(0);
+            }
+
+            //console.log(bodyHTTP)
 
             const data = await remoteAPI({
                 request: requestHTTP,
-                method: 'POST',//searchValue != '' ? 'POST' : 'GET',
+                method: 'POST',
                 body: Object.keys(bodyHTTP).length > 0 ? bodyHTTP : null
             });
 
             const newItems = data.response.results;
+
+            if(items.length == 0 && newItems.length > 0 && nextPage == '' && !filtersApplied) {
+                loadFilters();
+            }
 
             nextPage = data.response.nextPage.substring(1);
             setNextPageLoading(false);
@@ -232,6 +308,10 @@ export function ListOrders() {
     return (
         <SafeAreaView style={theme.safeAreaView} edges={['right','left']}>
             <StatusBar barStyle='default'/>
+
+            <ModalFiltersContext.Provider value={[ modalFilters, modalFiltersDispatch ]}>
+                <ModalFilters title="Filtrar Encomendas" />
+            </ModalFiltersContext.Provider>
 
             <View style={{flex: 1,backgroundColor: theme.colors.darktheme}}>
                 <View style={{paddingHorizontal: 15,paddingVertical: 10}}>

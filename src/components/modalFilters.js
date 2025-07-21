@@ -39,7 +39,7 @@ export const ModalFiltersReducer = (state, action) => {
     }
 }
 
-export const ModalFilters = (aux) => {
+export const ModalFilters = (params) => {
     const [filterCatrgoryActiveIndex, sFilterCatrgoryActiveIndex] = useState(0);
     const [status, setStatus] = useState(0);
     const [data, dispatch] = useContext(ModalFiltersContext);
@@ -150,7 +150,7 @@ export const ModalFilters = (aux) => {
                             </TouchableOpacity>
                         </View>
 
-                        <Text style={[theme.subtitle, {color: theme.colors.white,fontSize: 18}]}>Filtrar Produtos</Text>
+                        <Text style={[theme.subtitle, {color: theme.colors.white,fontSize: 18}]}>{params.title}</Text>
 
                         <View style={{width: 80}}>
                             <View style={{marginLeft: 'auto',paddingRight: theme.containerPadding}}>

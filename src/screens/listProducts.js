@@ -187,7 +187,7 @@ export function ListProducts() {
             <StatusBar barStyle='default'/>
 
             <ModalFiltersContext.Provider value={[ modalFilters, modalFiltersDispatch ]}>
-                <ModalFilters />
+                <ModalFilters title="Filtrar Produtos" />
             </ModalFiltersContext.Provider>
 
             <View style={{flex: 1,backgroundColor: theme.colors.darktheme}}>

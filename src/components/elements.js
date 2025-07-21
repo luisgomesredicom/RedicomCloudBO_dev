@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { View, StyleSheet, Dimensions, Animated, TouchableOpacity, TouchableHighlight } from 'react-native';
+import { View, StyleSheet, Dimensions, Animated, TouchableOpacity, TouchableHighlight, Image } from 'react-native';
 import { Canvas, Path, Skia, Paint, SweepGradient, vec } from '@shopify/react-native-skia';
 import { useNavigation } from '@react-navigation/native'
 import { ActivityIndicator, Text, Switch } from 'react-native-paper';
@@ -373,3 +373,27 @@ export const CountDown = ({ targetDate, onComplete }) => {
         </View>
     );
 }
+
+export const CountryFlag = ({ code, size = 80 }) => {
+    const url = `https://flagcdn.com/h60/${code.toLowerCase()}.png`;
+
+    return (
+        <View
+            style={{
+                borderRadius: 4,
+                overflow: 'hidden',
+                width: size,
+                height: size * 0.75
+            }}
+        >
+            <Image
+                source={{ uri: url }}
+                style={{
+                    width: size,
+                    height: size * 0.75,
+                }}
+                resizeMode="cover"
+            />
+        </View>
+    );
+};
