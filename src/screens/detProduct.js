@@ -188,7 +188,7 @@ export function DetProduct() {
                                             )}
                                         </View>
                                         <View style={[stylesTable.tableInfo_body_td, {width: '12%',alignItems: 'center'}]}>
-                                            {item.hasIncentory ? (
+                                            {item.hasInventory ? (
                                                 <Icon code="805" size={24} style={{color: theme.colors.success}} />
                                             ) : (
                                                 <Icon code="807" size={28} style={{color: theme.colors.error}} />
