@@ -52,6 +52,8 @@
 		'rdc-no-wifi': '&#xe811;',
 		'rdc-notification-full': '&#xe812;',
 		'rdc-unlock': '&#xe820;',
+		'rdc-client-new': '&#xe900;',
+		'rdc-client-no': '&#xe901;',
 		'rdc-charts': '&#xe829;',
 		'rdc-promotions': '&#xe816;',
 		'rdc-products': '&#xe817;',

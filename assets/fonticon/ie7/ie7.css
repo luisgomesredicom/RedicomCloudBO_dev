@@ -115,6 +115,12 @@
 .rdc-unlock {
   *zoom: expression(this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe820;');
 }
+.rdc-client-new {
+  *zoom: expression(this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe900;');
+}
+.rdc-client-no {
+  *zoom: expression(this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe901;');
+}
 .rdc-charts {
   *zoom: expression(this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe829;');
 }

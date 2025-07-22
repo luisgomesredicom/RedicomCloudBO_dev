@@ -168,7 +168,7 @@ export function ListCampaignEmail() {
                 >
                     <View style={[theme.cardItem, {flexDirection: 'row',alignItems: 'stretch',flexGrow: 1,gap: 10}]}>
                         <View style={{width: 122,flexShrink: 0}}>
-                            <View style={{height: 122,flexShrink: 0,backgroundColor: 'whitesmoke'}}>
+                            <View style={{height: 122,flexShrink: 0,backgroundColor: 'whitesmoke',marginBottom: 4}}>
                                 <Image source={{uri: item.image.src}} style={{resizeMode: 'contain',flex: 1,width: 122,height: 122}} />
                             </View>
 
@@ -184,12 +184,12 @@ export function ListCampaignEmail() {
                         </View>
                         
                         <View style={{flexGrow: 1,width: 1}}>
-                            <View style={{height: 122,justifyContent: 'space-between',paddingTop: 2,paddingBottom: 12}}>
+                            <View style={{height: 122,justifyContent: 'space-between',paddingTop: 2,paddingBottom: 12,marginBottom: 4}}>
                                 <View>
                                     <Text numberOfLines={1} ellipsizeMode='tail' style={[theme.listNavSubtitle, {color: theme.colors.black,paddingRight: 30}]}>{item.title}</Text>
                                 </View>
 
-                                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                <View style={{flexDirection: 'row', alignItems: 'center',marginTop: 12}}>
                                     <View style={{width: 80, marginRight: 10}}>
                                         <Text style={theme.small}>Iniciado</Text>
                                     </View>
@@ -256,7 +256,7 @@ export function ListCampaignEmail() {
                         
                         <View style={{marginRight: -6,justifyContent: 'center'}}>
                             {tab == 0 && (
-                                <View style={{position: 'absolute',top: -4,right: 0}}>
+                                <View style={{position: 'absolute',top: -4,right: 22}}>
                                     <SwitchItem item={item} status={item.status}/>
                                 </View>
                             )}

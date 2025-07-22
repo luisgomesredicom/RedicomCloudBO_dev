@@ -287,11 +287,11 @@ export const HalfDonutChart = (props) => {
                     </Paint>
                 </Path>
             </Canvas>
-            <View style={{position: 'absolute',bottom: 6,width: '100%',alignItems: 'center'}}>
-                <Text style={{fontWeight: '700',fontSize: 28,color: theme.colors.white}}>{percentage * 100}%</Text>
+            <View style={{position: 'absolute',bottom: 0,width: '100%',alignItems: 'center'}}>
+                <Text style={{fontWeight: '700',fontSize: 28,color: theme.colors.white,marginBottom: 4}}>{percentage * 100}%</Text>
                 <Text style={[theme.small, {fontSize: 12,color: theme.colors.gray}]}>{numberFormat(props.value1value)}{props.value1title && props.value1title != '' ? ' ' + props.value1title : ''}</Text>
                 {props.value2value && (
-                  <Text style={[theme.small, {fontSize: 12,color: theme.colors.gray}]}>{numberFormat(props.value2value)}{props.value2title && props.value2title != '' ? ' ' + props.value2title : ''}</Text>
+                  <Text style={[theme.small, {fontSize: 12,color: theme.colors.gray,marginTop: -2}]}>{numberFormat(props.value2value)}{props.value2title && props.value2title != '' ? ' ' + props.value2title : ''}</Text>
                 )}
             </View>
         </View>

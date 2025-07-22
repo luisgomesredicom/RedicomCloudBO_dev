@@ -25,6 +25,7 @@ export function ListOrders() {
         endList     = false,
         searchValue = '',
         searchSubmited = false,
+        filtersApplied = null;
 
         loadResults();
     }, []);
@@ -74,12 +75,12 @@ export function ListOrders() {
     function getPaymentImage(src) {
         if(src == '') return null;
 
-        const paymentImage = `https://www.redicom.pt/checkout${src.split("/checkout")[1]}`;
+        const image = `https://www.redicom.pt/checkout${src.split("/checkout")[1]}`;
 
         return (
             <View style={{width: 34,minHeight: 24}}>
                 {/*<SvgXml xml={svgXmlData} width="100%" />*/}
-                <Image source={{uri: paymentImage}} style={{resizeMode: 'contain',flex: 1,width: 34,height: 24}} />
+                <Image source={{uri: image}} style={{resizeMode: 'contain',flex: 1,width: 34,height: 24}} />
             </View>
         );
     }
@@ -87,12 +88,12 @@ export function ListOrders() {
     function getShippingImage(src) {
         //if(src == '') return null;
 
-        const paymentImage = `https://www.redicom.pt/checkout/v1/images/shipping_type_7.jpg`;
+        const image = `https://www.redicom.pt/checkout${src.split("/checkout")[1]}`;
 
         return (
             <View style={{width: 34,minHeight: 24}}>
                 {/*<SvgXml xml={svgXmlData} width="100%" />*/}
-                <Image source={{uri: paymentImage}} style={{resizeMode: 'contain',flex: 1,width: 34,height: 24}} />
+                <Image source={{uri: image}} style={{resizeMode: 'contain',flex: 1,width: 34,height: 24}} />
             </View>
         );
     }
@@ -155,9 +156,12 @@ export function ListOrders() {
                         <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between'}}>
                             <Text style={theme.small}>No. Enc. <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]}>{item.orderRef}</Text></Text>
                             <View style={{flexDirection: 'row',alignItems: 'center',marginLeft: 'auto',gap: 10}}>
-                                {/*<Icon code="808" size={18} style={{color: theme.colors.success}}/>*/}
+                                {/*
+                                    <Icon code="900" size={20} style={{color: theme.colors.success}}/>
+                                    <Icon code="901" size={20} style={{color: theme.colors.error}}/>
+                                */}
                                 <Text style={theme.small} ellipsizeMode='tail'>{item.customerSince}</Text>
-                                <CountryFlag code="pt" size={20} />
+                                <CountryFlag code={item.countryCode} size={20} />
                             </View>
                         </View>
 
@@ -181,11 +185,15 @@ export function ListOrders() {
                             <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.totalAmount} <Text style={{color: theme.colors.darkgray}}>{item.currency}</Text></Text>
                         </View>
                         
-                        <Text style={theme.small}>Qnt. <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]}>2</Text></Text>
+                        <Text style={theme.small}>Qnt. <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]}>{item.qtd}</Text></Text>
                         
-                        {getShippingImage()}
+                        {getShippingImage(item.shippingImage)}
 
-                        <Badge type="tag" text="Em Pagamento" style={theme.stats_4}/>
+                        {item.status.map((value, index) => {
+                            return (
+                                <Badge type="tag" text={value.name} style={[theme.stats_1, {backgroundColor: value.color}]}/>
+                            )
+                        })}
                     </View>
                 </View>
             </>
@@ -271,6 +279,7 @@ export function ListOrders() {
             });
 
             const newItems = data.response.results;
+            //console.log(JSON.stringify(newItems));
 
             if(items.length == 0 && newItems.length > 0 && nextPage == '' && !filtersApplied) {
                 loadFilters();

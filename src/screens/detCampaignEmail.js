@@ -147,7 +147,7 @@ export function DetCampaignEmail() {
                                 
                                 <View style={{flexDirection: 'row',alignItems: 'stretch',gap: 10,marginBottom: 30}}>
                                     <View style={{width: 122,flexShrink: 0}}>
-                                        <View style={{height: 122,flexShrink: 0,backgroundColor: 'whitesmoke'}}>
+                                        <View style={{height: 122,flexShrink: 0,backgroundColor: 'whitesmoke',marginBottom: 4}}>
                                             <Image source={{uri: campaign.image.src}} style={{resizeMode: 'contain',flex: 1,width: 122,height: 122}} />
                                         </View>
             
@@ -169,12 +169,12 @@ export function DetCampaignEmail() {
                                     </View>
                                     
                                     <View style={{flexGrow: 1}}>
-                                        <View style={{height: 122,justifyContent: 'space-between',paddingTop: 2,paddingBottom: 12}}>
+                                        <View style={{height: 122,justifyContent: 'space-between',paddingTop: 2,paddingBottom: 12,marginBottom: 4}}>
                                             <View>
                                                 <Text style={[theme.listNavSubtitle, {color: theme.colors.black}]}>{campaign.title}</Text>
                                             </View>
             
-                                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                            <View style={{flexDirection: 'row', alignItems: 'center',marginTop: 12}}>
                                                 <View style={{width: 80, marginRight: 10}}>
                                                     <Text style={theme.small}>Iniciado</Text>
                                                 </View>

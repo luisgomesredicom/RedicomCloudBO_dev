@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'RDC-BO_APP';
-  src:  url('fonts/RDC-BO_APP.eot?iivm8l');
-  src:  url('fonts/RDC-BO_APP.eot?iivm8l#iefix') format('embedded-opentype'),
-    url('fonts/RDC-BO_APP.ttf?iivm8l') format('truetype'),
-    url('fonts/RDC-BO_APP.woff?iivm8l') format('woff'),
-    url('fonts/RDC-BO_APP.svg?iivm8l#RDC-BO_APP') format('svg');
+  src:  url('fonts/RDC-BO_APP.eot?hqt8kt');
+  src:  url('fonts/RDC-BO_APP.eot?hqt8kt#iefix') format('embedded-opentype'),
+    url('fonts/RDC-BO_APP.ttf?hqt8kt') format('truetype'),
+    url('fonts/RDC-BO_APP.woff?hqt8kt') format('woff'),
+    url('fonts/RDC-BO_APP.svg?hqt8kt#RDC-BO_APP') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -141,6 +141,12 @@
 }
 .rdc-unlock:before {
   content: "\e820";
+}
+.rdc-client-new:before {
+  content: "\e900";
+}
+.rdc-client-no:before {
+  content: "\e901";
 }
 .rdc-charts:before {
   content: "\e829";
