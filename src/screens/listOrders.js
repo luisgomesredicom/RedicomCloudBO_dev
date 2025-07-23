@@ -12,12 +12,13 @@ import { Link } from '../components/buttons';
 import { ModalFilters, ModalFiltersContext, ModalFiltersReducer, ModalFiltersState} from '../components/modalFilters'
 
 export function ListOrders() {
-    /* 0 => Início da página | -1 => Pedido à API | 1 => Tudo carregado */
+    /* 0 => InÃ­cio da pÃ¡gina | -1 => Pedido Ã  API | 1 => Tudo carregado */
     const [pageStatus, setPageStatus] = useState(0);
     const [items, setItems] = useState([]);
     const [nextPageLoading, setNextPageLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
     const insets = useSafeAreaInsets();
+    const [trackingStatusActive, setTrackingStatus] = useState(false);
 
     useEffect(() => {
         currentPage = null,
@@ -115,7 +116,7 @@ export function ListOrders() {
             }
         }, [uri]);
 
-        // Calcula 1/6 da largura do ecrã
+        // Calcula 1/6 da largura do ecrÃ£
         const screenWidth = Dimensions.get('window').width;
         const imageWidth = (screenWidth - (theme.containerPadding * 2) - 20) / 6;
 
@@ -156,11 +157,13 @@ export function ListOrders() {
                         <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between'}}>
                             <Text style={theme.small}>No. Enc. <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]}>{item.orderRef}</Text></Text>
                             <View style={{flexDirection: 'row',alignItems: 'center',marginLeft: 'auto',gap: 10}}>
-                                {/*
-                                    <Icon code="900" size={20} style={{color: theme.colors.success}}/>
+                                {item.customerSince == 'SEM_REGISTO' ? (
                                     <Icon code="901" size={20} style={{color: theme.colors.error}}/>
-                                */}
-                                <Text style={theme.small} ellipsizeMode='tail'>{item.customerSince}</Text>
+                                ) : item.customerSince == 'NOVO' ? (
+                                    <Icon code="900" size={20} style={{color: theme.colors.success}}/>
+                                ) : (
+                                    <Text style={theme.small} ellipsizeMode='tail'>{item.customerSince}</Text>
+                                )}
                                 <CountryFlag code={item.countryCode} size={20} />
                             </View>
                         </View>
@@ -174,9 +177,11 @@ export function ListOrders() {
                     </View>
 
                     <View style={{flexDirection: 'row',gap: 4}}>
+                        {/*
                         {item.products.map((product, index) => (
                             <ProductImage key={index} uri={product.image} />
                         ))}
+                        */}
                     </View>
 
                     <View style={{flexDirection: 'row',gap: 10,alignItems: 'center',justifyContent: 'space-between'}}>
@@ -189,7 +194,7 @@ export function ListOrders() {
                         
                         {getShippingImage(item.shippingImage)}
 
-                        {item.status.map((value, index) => {
+                        {trackingStatusActive == false && item.status.map((value, index) => {
                             return (
                                 <Badge type="tag" text={value.name} style={[theme.stats_1, {backgroundColor: value.color}]}/>
                             )
@@ -210,11 +215,11 @@ export function ListOrders() {
             currentPage = null;
             nextPage = '';
 
-            /*if(Object.keys(modalFilters.filtersActive).length > 0) {
+            if(Object.keys(modalFilters.filtersActive).length > 0) {
                 filtersApplied = true;
             } else {
                 filtersApplied = false;
-            }*/
+            }
 
             loadResults();
         }
@@ -223,11 +228,14 @@ export function ListOrders() {
     async function loadFilters() {
         try {
             const data = await remoteAPI({
-                request: `catalog/products/filters`,
+                request: `orders/filters`,
                 method: 'GET'
             });
 
             if(data.status && data.response) {
+                //console.log('filters');
+                //console.log(JSON.stringify(data.response.filters));
+
                 modalFiltersDispatch({type: "setFilters", filters: data.response.filters || []});
             }
 
@@ -249,15 +257,8 @@ export function ListOrders() {
             }
 
             var requestHTTP = `${nextPage == '' ? `orders/search` : nextPage}`;
-            if(searchValue != '' || filtersApplied) {
-                requestHTTP = `catalog/products/search`;
-            }
-            
             var bodyHTTP = {
-                trackingStatus: '80,103'
-            }
-            if(searchValue != '') {
-                bodyHTTP.search = searchValue;
+                search: searchValue
             }
 
             if(filtersApplied) {
@@ -270,7 +271,12 @@ export function ListOrders() {
                 setFiltersLength(0);
             }
 
-            //console.log(bodyHTTP)
+            console.log(JSON.stringify(bodyHTTP))
+
+            if(bodyHTTP.trackingStatus)
+                setTrackingStatus(true);
+            else
+                setTrackingStatus(false);
 
             const data = await remoteAPI({
                 request: requestHTTP,
