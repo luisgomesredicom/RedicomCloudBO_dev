@@ -59,8 +59,30 @@ export const ModalFilters = (params) => {
     useEffect(() => {
         if(data.filters.length > 0) {
             setStatus(1);
-            if(Object.keys(filterStates).length != Object.keys(data.filtersActive).length) {
-                setFilterStates(data.filtersActive);
+            //console.log('filterStates', filterStates)
+            //console.log('data.filtersActive', data.filtersActive)
+
+            const transformedFilters = {};
+            let dateStart, dateEnd;
+
+            for (const [key, value] of Object.entries(data.filtersActive)) {
+                if (key.startsWith("dateStart")) {
+                    dateStart = value;
+                } else if (key.startsWith("dateEnd")) {
+                    dateEnd = value;
+                } else {
+                    transformedFilters[key] = value;
+                }
+            }
+
+            if (dateStart || dateEnd) {
+                transformedFilters.date = `${dateStart ?? ''}|${dateEnd ?? ''}`;
+            }
+
+            //console.log('transformedFilters', transformedFilters);
+
+            if(Object.keys(filterStates).length != Object.keys(transformedFilters).length) {
+                setFilterStates(transformedFilters);
             }
         }
     }, [data]);
@@ -85,9 +107,16 @@ export const ModalFilters = (params) => {
 
     const handleFilterToggle = (type, value) => {
         setFilterStates((prevState) => {
+            var updatedType = type;
+            var updatedValue = value;
+            if(updatedType.startsWith('date')) {
+                value = type;
+                type = 'date';
+            }
+            
             const isBoolean = prevState[type]?.boolean === 'true';
             let updatedOptions = prevState[type]?.options ?? {};
-            
+
             if (isBoolean) {
                 // Desativar todos os filtros da mesma categoria
                 updatedOptions = Object.keys(updatedOptions).reduce((options, option) => {
@@ -102,7 +131,7 @@ export const ModalFilters = (params) => {
                     ...prevState[type],
                     options: {
                         ...updatedOptions,
-                        [value]: !updatedOptions[value],
+                        [value]: type == 'date' ? updatedValue : !updatedOptions[value],
                     },
                 },
             };
@@ -113,6 +142,7 @@ export const ModalFilters = (params) => {
                 return restFilters;
             }
             
+            //console.log(updatedFilterState);
             return updatedFilterState;
         });
     };
@@ -122,18 +152,28 @@ export const ModalFilters = (params) => {
         Object.entries(filterStates).forEach(([key, value]) => {
             var options = [];
             Object.entries(value.options).forEach(([keyOption, valueOption]) => {
-                if(valueOption) options.push(keyOption);
+                if(valueOption) {
+                    if(key != 'date') {
+                        options.push(keyOption);
+                    } else {
+                        filters[keyOption] = valueOption;
+                    }
+                }
             });
 
-            filters[key] = options.toString();
+            if(key != 'date')
+                filters[key] = options.toString();
         });
-        
+
+        //console.log('setFiltersActive', filters);
         dispatch({ type: "setFiltersActive", filters: filters });
         CloseFilters();
     }
 
     const ClearFilters = function () {
         setFilterStates([]);
+        setDateStart(null);
+        setDateEnd(null);
         dispatch({ type: "setFiltersActive", filters: [] });
         CloseFilters();
     }
@@ -192,12 +232,6 @@ export const ModalFilters = (params) => {
                                     var isSelected = fieldSelected || typeSelected;
 
                                     if(data.filters[filterCatrgoryActiveIndex].type == 'date') {
-                                        const name = option;
-                                        option = {
-                                            id: index,
-                                            name: name
-                                        }
-
                                         isSelected = false;
 
                                         if(index == 0) {
@@ -208,6 +242,7 @@ export const ModalFilters = (params) => {
                                                 isSelected = true;
                                         }
                                     }
+                                    
                                     return (
                                         <Chip mode='flat'
                                             key={option.id ?? option.value}
@@ -237,19 +272,26 @@ export const ModalFilters = (params) => {
                                             selected={isSelected}
                                             onPress={() => {
                                                 if(data.filters[filterCatrgoryActiveIndex].type == 'date') {
-                                                    
-                                                    if(option.id == 0) {
-                                                        if(dateStart == null)
-                                                            setDateStart(new Date());
-                                                        else
-                                                            setDateStart(null);
-                                                    } else {
-                                                        if(dateEnd == null)
-                                                            setDateEnd(new Date());
-                                                        else
-                                                            setDateEnd(null);
-                                                    }
+                                                    var formattedDate = '';
+                                                    const newDate = new Date();
 
+                                                    if(option.id == 'dateStart') {
+                                                        if(dateStart == null) {
+                                                            setDateStart(newDate);
+                                                            formattedDate = newDate.toISOString().replace('T', ' ').substring(0, 10);
+                                                        } else {
+                                                            setDateStart(null);
+                                                        }
+                                                    } else {
+                                                        if(dateEnd == null) {
+                                                            setDateEnd(newDate);
+                                                            formattedDate = newDate.toISOString().replace('T', ' ').substring(0, 10);
+                                                        } else {
+                                                            setDateEnd(null);
+                                                        }
+                                                    }
+                                                    
+                                                    handleFilterToggle(option.id, formattedDate);
                                                     return;
                                                 }
                                                 
@@ -257,7 +299,7 @@ export const ModalFilters = (params) => {
                                             }}>
                                             {(() => {
                                                 if(data.filters[filterCatrgoryActiveIndex].type == 'date') {
-                                                    const date = option.id == 0 ? dateStart : dateEnd;
+                                                    const date = option.id == 'dateStart' ? dateStart : dateEnd;
                                                     if(date != null) {
                                                         return (
                                                             <View style={{height: 22,alignItems: center,justifyContent: 'center'}}>
@@ -269,27 +311,16 @@ export const ModalFilters = (params) => {
                                                                         display='compact'
                                                                         locale="pt-PT"
                                                                         onChange={(event, selectedDate) => {
-                                                                            var field = '';
+                                                                            const newDate = new Date(selectedDate);
+                                                                            const formattedDate = newDate.toISOString().replace('T', ' ').substring(0, 10);
                                                                             
-                                                                            const adjustedDate = new Date(selectedDate);
-                                                                            if(option.id === 0) {
-                                                                                adjustedDate.setHours(0, 0, 0);
-                                                                            } else {
-                                                                                adjustedDate.setHours(23, 59, 59);
-                                                                            }
-
-                                                                            const formattedDate = adjustedDate.toISOString().replace('T', ' ').substring(0, 19);
-
-                                                                            
-                                                                            if(option.id == 0) {
-                                                                                field = 'dateStart';
+                                                                            if(option.id == 'dateStart') {
                                                                                 setDateStart(selectedDate);
                                                                             } else {
-                                                                                field = 'dateEnd';
                                                                                 setDateEnd(selectedDate);
                                                                             }
 
-                                                                            handleFilterToggle(field, formattedDate);
+                                                                            handleFilterToggle(option.id, formattedDate);
                                                                         }}
                                                                     />
                                                                 </View>
