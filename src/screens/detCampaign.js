@@ -164,7 +164,7 @@ export function DetCampaign() {
                                     <View style={[theme.cardItem, {marginTop: 0,marginBottom: 0,borderWidth: 0,backgroundColor: theme.colors.background}]}>
                                         <View style={{flex: 1,gap: 5}}>
                                             {campaign.active == 1 && (
-                                                <Badge type="label" text="Ativo" style={{position: 'absolute',top: -4,right: -4,zIndex: 1}} />
+                                                <Badge type="dot" style={{position: 'absolute',top: -4,right: -4,zIndex: 1}} />
                                             )}
                                             
                                             <View>
@@ -182,7 +182,7 @@ export function DetCampaign() {
                                         <View style={{flexDirection: 'row',alignItems: 'center',gap: 10,borderTopWidth: 1,borderColor: theme.colors.lines,paddingTop: 11,marginTop: 15}}>
                                             {campaign.flags.map((flag, index) => (
                                                 flag.title && flag.title != '' && (
-                                                    <Badge type="number" text={flag.title} style={flag.style > 0 && flag.style < 5 ? theme[`stats_${flag.style}`] : {}} key={index} />
+                                                    <Badge type="dot" text={flag.title} style={flag.style > 0 && flag.style < 5 ? theme[`stats_${flag.style}`] : {}} key={index} />
                                                 )
                                             ))}
                                         </View>

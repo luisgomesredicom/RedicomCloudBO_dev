@@ -10,7 +10,7 @@ const colors = {
     brandtheme: '#4C88BE',
     theme: '#24303D',
     lighttheme: '#DFE6ED',
-    black: '#333333',
+    black: '#24303D',
     darkgray: '#70757F',
     gray: '#999999',
     lightgray: '#CCCCCC',
@@ -175,21 +175,6 @@ export const theme = {
     buttonDateModal: {opacity: 1,position: 'absolute',backgroundColor: 'transparent',top: 0,left: 0,zIndex: 10,width: '100%',height: '100%'},
     buttonTimeModal: {position: 'absolute',zIndex: 10,backgroundColor: 'transparent',width: '100%',left: 2,bottom: 2},
    
-    /*
-     * Labels, Tags & Numbers
-    */
-    //labelItem: {borderRadius: 8,paddingVertical: 7,paddingHorizontal: 10,backgroundColor: colors.success,alignSelf: 'flex-start'},
-    labelItem: {alignSelf: 'flex-start',borderRadius: 100,backgroundColor: colors.success,width: 10,height: 10,borderWidth: 2,borderColor: 'white'},
-    labelItemText: {...paragraph,textAlign: 'center',color: colors.white,fontWeight: '700',fontSize: 10,lineHeight: 12},
-    numberItem: {/*borderRadius: 50,paddingVertical: 6,paddingHorizontal: 10,backgroundColor: colors.theme,alignSelf: 'flex-start'*/},
-    numberItemText: {...paragraph,fontSize: 14/*,textAlign: 'center',color: colors.white,fontWeight: '400',fontSize: 12,lineHeight: 14*/},
-    tagItem: {borderRadius: 4,paddingVertical: 4,paddingHorizontal: 4,backgroundColor: colors.error,alignSelf: 'flex-start'},
-    tagItemText: {...paragraph,textAlign: 'center',color: colors.white,fontWeight: '400',fontSize: 10,lineHeight: 12},
-    stats_1: {backgroundColor: colors.theme,borderColor: colors.theme},
-    stats_2: {backgroundColor: colors.error,borderColor: colors.error},
-    stats_3: {backgroundColor: colors.success,borderColor: colors.success},
-    stats_4: {backgroundColor: colors.warning,borderColor: colors.warning},
-    
     /*
      * Modal
     */

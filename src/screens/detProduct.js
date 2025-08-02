@@ -109,7 +109,7 @@ export function DetProduct() {
                                     <Image source={{uri: product.image.default}} style={{resizeMode: 'cover',flex: 1}} />
 
                                     {product.active == 1 && (
-                                        <Badge type="label" style={{position: 'absolute',top: 4,right: 4,zIndex: 1}} />
+                                        <Badge type="dot" style={{position: 'absolute',top: 4,right: 4,zIndex: 1}} />
                                     )}
                                 </View>
 

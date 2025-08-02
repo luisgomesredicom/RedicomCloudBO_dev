@@ -3,7 +3,7 @@ import { StatusBar, View, FlatList, TouchableOpacity, StyleSheet, Image, Refresh
 import { useNavigation } from '@react-navigation/native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { remoteAPI, numberFormat, dateFormatter } from '../core/utils';
-import { LoadingFullscreen, Noresults, ListStatistics, FooterList, Icon, ProgressBar } from '../components/elements';
+import { LoadingFullscreen, Noresults, ListStatistics, FooterList, Icon, ProgressBar, Badge } from '../components/elements';
 import { theme } from '../styles/styles'
 import { Text, ActivityIndicator, Switch } from 'react-native-paper';
 import {TabsProvider, Tabs, TabScreen, useTabNavigation, useTabIndex} from '../components/paperTabs';
@@ -177,7 +177,7 @@ export function ListCampaignEmail() {
                                     <View>
                                         <View><Text style={[statistics.text1, {textAlign: 'center'}]}>Destinatários</Text></View>
                                         <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'center'}]}>{numberFormat(item.stats.totalRecipients)}</Text></View>
-                                        <View style={[statistics.value, {alignSelf: 'center',width: 'auto',minWidth: 70,paddingHorizontal: 15,backgroundColor: theme.colors.infolight}]}><Text style={[statistics.valueText, {color: theme.colors.info}]}>{item.stats.recipientsType}</Text></View>
+                                        <Badge text={item.stats.recipientsType} style={{backgroundColor: theme.colors.infolight,color: theme.colors.info,marginTop: 3,minWidth: 70,marginHorizontal: 'auto'}}></Badge>
                                     </View>
                                 </View>
                             </View>
@@ -234,7 +234,7 @@ export function ListCampaignEmail() {
                                         </View>
                                         <View style={statistics.columnRight}>
                                             <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{item.stats.totalOpeningsPercent}%</Text></View>
-                                            <View style={statistics.value}><Text style={statistics.valueText}>{numberFormat(item.stats.totalOpenings)}</Text></View>
+                                            <Badge text={item.stats.totalOpenings} style={{backgroundColor: theme.colors.successlight,color: theme.colors.success,marginTop: 3,width: '100%'}}></Badge>
                                         </View>
                                     </View>
                                     <View style={statistics.item}>
@@ -244,7 +244,7 @@ export function ListCampaignEmail() {
                                         </View>
                                         <View style={statistics.columnRight}>
                                             <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{item.stats.totalClicksPercent}%</Text></View>
-                                            <View style={statistics.value}><Text style={statistics.valueText}>{numberFormat(item.stats.totalClicks)}</Text></View>
+                                            <Badge text={item.stats.totalClicks} style={{backgroundColor: theme.colors.successlight,color: theme.colors.success,marginTop: 3,width: '100%'}}></Badge>
                                         </View>
                                     </View>
                                 </View>
@@ -454,7 +454,5 @@ const statistics = StyleSheet.create({
     columnRight: {width: 42},
     text1: [theme.small, {textAlign: 'right'}],
     text2: [theme.small, {fontWeight: '500',color: theme.colors.black}],
-    value: {marginTop: 3,borderRadius: 2,backgroundColor: theme.colors.successlight,padding: 2,width: '100%'},
-    valueText: [theme.small, {fontWeight: '500',color: theme.colors.success,textAlign: 'center'}],
     bottom: {marginTop: 5}
 });

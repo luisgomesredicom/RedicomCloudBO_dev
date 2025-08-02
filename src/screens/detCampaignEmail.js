@@ -3,7 +3,7 @@ import { ScrollView, StatusBar, View, StyleSheet, Modal, RefreshControl, Image }
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { Portal } from "react-native-paper";
-import { LoadingFullscreen, HalfDonutChart, Icon, CountDown, LoadingRefreshFullscreen } from '../components/elements';
+import { LoadingFullscreen, HalfDonutChart, Icon, CountDown, LoadingRefreshFullscreen, Badge } from '../components/elements';
 import { theme } from '../styles/styles'
 import { Text } from 'react-native-paper';
 import Button from '../components/buttons'
@@ -156,13 +156,11 @@ export function DetCampaignEmail() {
                                                 <View>
                                                     <View>
                                                         <Text style={[statistics.text1, {textAlign: 'center'}]}>Destinatários</Text>
-                                                        </View>
+                                                    </View>
                                                     <View style={statistics.bottom}>
                                                         <Text style={[statistics.text2, {textAlign: 'center'}]}>{numberFormat(campaign.stats.totalRecipients)}</Text>
                                                     </View>
-                                                    <View style={[statistics.value, {alignSelf: 'center',width: 'auto',minWidth: 70,paddingHorizontal: 15,backgroundColor: theme.colors.infolight}]}>
-                                                        <Text style={[statistics.valueText, {color: theme.colors.info}]}>{campaign.stats.recipientsType}</Text>
-                                                    </View>
+                                                    <Badge text={campaign.stats.recipientsType} style={{backgroundColor: theme.colors.infolight,color: theme.colors.info,marginTop: 3,minWidth: 70,marginHorizontal: 'auto'}}></Badge>
                                                 </View>
                                             </View>
                                         </View>
@@ -219,7 +217,7 @@ export function DetCampaignEmail() {
                                                     </View>
                                                     <View style={statistics.columnRight}>
                                                         <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{campaign.stats.totalOpeningsPercent}%</Text></View>
-                                                        <View style={statistics.value}><Text style={statistics.valueText}>{numberFormat(campaign.stats.totalOpenings)}</Text></View>
+                                                        <Badge text={campaign.stats.totalOpenings} style={{backgroundColor: theme.colors.successlight,color: theme.colors.success,marginTop: 3,width: '100%'}}></Badge>
                                                     </View>
                                                 </View>
                                                 <View style={statistics.item}>
@@ -229,7 +227,7 @@ export function DetCampaignEmail() {
                                                     </View>
                                                     <View style={statistics.columnRight}>
                                                         <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{campaign.stats.totalClicksPercent}%</Text></View>
-                                                        <View style={statistics.value}><Text style={statistics.valueText}>{numberFormat(campaign.stats.totalClicks)}</Text></View>
+                                                        <Badge text={campaign.stats.totalClicks} style={{backgroundColor: theme.colors.successlight,color: theme.colors.success,marginTop: 3,width: '100%'}}></Badge>
                                                     </View>
                                                 </View>
                                             </View>
@@ -303,24 +301,5 @@ const statistics = StyleSheet.create({
     columnRight: {width: 42},
     text1: [theme.small, {textAlign: 'right'}],
     text2: [theme.small, {fontWeight: '500',color: theme.colors.black}],
-    value: {marginTop: 3,borderRadius: 2,backgroundColor: theme.colors.successlight,padding: 2,width: '100%'},
-    valueText: [theme.small, {fontWeight: '500',color: theme.colors.success,textAlign: 'center'}],
     bottom: {marginTop: 5}
-});
-
-const styles = StyleSheet.create({
-    saleBox: {
-        flexGrow: 1,
-        borderWidth: 1,
-        borderColor: theme.colors.lines,
-        paddingHorizontal: 9,
-        borderRadius: 4,
-        minHeight: 50
-    },
-    saleTitle: {},
-    saleCurrency: {},
-    saleDesc: {
-        color: theme.colors.gray,
-        marginTop: -2
-    }
 });

@@ -3,7 +3,7 @@ import { StatusBar, View, FlatList, TouchableOpacity, StyleSheet, Image, Refresh
 import { useNavigation } from '@react-navigation/native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { remoteAPI, dateFormatter } from '../core/utils';
-import { LoadingFullscreen, Noresults, ListStatistics, FooterList, Icon, ProgressBar } from '../components/elements';
+import { LoadingFullscreen, Noresults, ListStatistics, FooterList, Icon, ProgressBar, Badge } from '../components/elements';
 import { theme } from '../styles/styles'
 import { Text, ActivityIndicator } from 'react-native-paper';
 import {TabsProvider, Tabs, TabScreen, useTabNavigation, useTabIndex} from '../components/paperTabs';
@@ -167,11 +167,6 @@ export function ListCampaignSMS() {
                                         <View style={{width: 62,marginRight: 10}}><Text style={[theme.small]}>Finalizado</Text></View>
                                         <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{finishedDate}  <Text style={{color: theme.colors.darkgray}}>{finishedTime}</Text></Text></View>
                                     </View>
-
-                                    {/*<View style={{flexDirection: 'row',alignItems: 'center'}}>
-                                        <View style={{width: 62,marginRight: 10}}><Text style={[theme.small]}>Demo</Text></View>
-                                        <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>0 000,00 <Text style={{color: theme.colors.darkgray}}>EUR</Text></Text></View>
-                                    </View>*/}
                                     
                                     <View style={{marginTop: 6}}>
                                         <ProgressBar percentage={item.stats.totalSentPercent}/>
@@ -179,20 +174,10 @@ export function ListCampaignSMS() {
                                 </View>
                             </View>
                             <View style={statistics.container}>
-                                {/*<View style={statistics.item}>
-                                    <View>
-                                        <View><Text style={statistics.text1}>Demo</Text></View>
-                                        <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'right'}]}>0</Text></View>
-                                    </View>
-                                    <View style={statistics.columnRight}>
-                                        <View><Text style={[statistics.text2, {textAlign: 'center'}]}>0%</Text></View>
-                                        <View style={statistics.value}><Text style={statistics.valueText}>0</Text></View>
-                                    </View>
-                                </View>*/}
                                 <View style={statistics.item}>
                                     <View>
                                         <View><Text style={statistics.text1}>Destinatários</Text></View>
-                                        <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'right'}]}>{item.stats.totalRecipients}</Text></View>
+                                        <Badge text={item.stats.totalRecipients} style={{backgroundColor: theme.colors.white,color: theme.colors.black,marginTop: 3,marginLeft: 'auto',paddingHorizontal: 0}}></Badge>
                                     </View>
                                 </View>
                                 <View style={statistics.item}>
@@ -201,14 +186,14 @@ export function ListCampaignSMS() {
                                     </View>
                                     <View style={statistics.columnRight}>
                                         <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{item.stats.totalSentPercent}%</Text></View>
-                                        <View style={statistics.value}><Text style={statistics.valueText}>{item.stats.totalSent}</Text></View>
+                                        <Badge text={item.stats.totalSent} style={{backgroundColor: theme.colors.successlight,color: theme.colors.success,marginTop: 3,width: '100%'}}></Badge>
                                     </View>
                                 </View>
                                 <View style={statistics.item}>
                                     <View>
                                         <View><Text style={statistics.text1}>SMS Gastas</Text></View>
                                         <View style={[statistics.columnRight, {marginLeft: 'auto'}]}>
-                                            <View style={[statistics.value, {backgroundColor: theme.colors.errorlight}]}><Text style={[statistics.valueText, {color: theme.colors.error}]}>{item.stats.totalSpent}</Text></View>
+                                            <Badge text={item.stats.totalSpent} style={{backgroundColor: theme.colors.errorlight,color: theme.colors.error,marginTop: 3,width: '100%'}}></Badge>
                                         </View>
                                     </View>
                                 </View>
@@ -408,8 +393,5 @@ const statistics = StyleSheet.create({
     item: {flexDirection: 'row',gap: 10},
     columnRight: {width: 42},
     text1: [theme.small, {textAlign: 'right'}],
-    text2: [theme.small, {fontWeight: '500',color: theme.colors.black}],
-    value: {marginTop: 3,borderRadius: 2,backgroundColor: theme.colors.successlight,padding: 2,width: '100%'},
-    valueText: [theme.small, {fontWeight: '500',color: theme.colors.success,textAlign: 'center'}],
-    bottom: {marginTop: 5}
+    text2: [theme.small, {fontWeight: '500',color: theme.colors.black}]
 });

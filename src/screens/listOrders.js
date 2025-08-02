@@ -12,7 +12,7 @@ import { Link } from '../components/buttons';
 import { ModalFilters, ModalFiltersContext, ModalFiltersReducer, ModalFiltersState} from '../components/modalFilters'
 
 export function ListOrders() {
-    /* 0 => InÃ­cio da pÃ¡gina | -1 => Pedido Ã  API | 1 => Tudo carregado */
+    /* 0 => Início da página | -1 => Pedido à API | 1 => Tudo carregado */
     const [pageStatus, setPageStatus] = useState(0);
     const [items, setItems] = useState([]);
     const [nextPageLoading, setNextPageLoading] = useState(false);
@@ -145,7 +145,7 @@ export function ListOrders() {
             <>
                 {index == 0 ? (
                     <View style={{flexDirection: 'row',alignItems: 'center',justifyContent: 'space-between',gap: 10,marginTop: 28,marginBottom: 28,paddingHorizontal: theme.containerPadding}}>
-                        <View><Text style={[theme.listNavSubtitle, {color: theme.colors.darktheme}]}>Encomendas</Text></View>
+                        <View><Text style={[theme.listNavSubtitle, {color: theme.colors.darkgray}]}>Encomendas</Text></View>
                         <View><Link text="Filtrar" onPress={() => modalFiltersDispatch({ type: "toggleFilters" })}/></View>
                     </View>
                 ) : (
@@ -177,11 +177,9 @@ export function ListOrders() {
                     </View>
 
                     <View style={{flexDirection: 'row',gap: 4}}>
-                        {/*
                         {item.products.map((product, index) => (
                             <ProductImage key={index} uri={product.image} />
                         ))}
-                        */}
                     </View>
 
                     <View style={{flexDirection: 'row',gap: 10,alignItems: 'center',justifyContent: 'space-between'}}>
@@ -196,7 +194,7 @@ export function ListOrders() {
 
                         {trackingStatusActive == false && item.status.map((value, index) => {
                             return (
-                                <Badge type="tag" text={value.name} style={[theme.stats_1, {backgroundColor: value.color}]}/>
+                                <Badge text={value.name} style={[{backgroundColor: value.color}]}/>
                             )
                         })}
                     </View>

@@ -171,7 +171,7 @@ export function DetPromo() {
                                     <View style={[theme.cardItem, {marginTop: 0,marginBottom: 0,borderWidth: 0,backgroundColor: theme.colors.background}]}>
                                         <View style={{flex: 1,gap: 5}}>
                                             {promotion.active == 1 && (
-                                                <Badge type="label" text="Ativo" style={{position: 'absolute',top: -4,right: -4,zIndex: 1}} />
+                                                <Badge type="dot" style={{position: 'absolute',top: -4,right: -4,zIndex: 1}} />
                                             )}
                                             
                                             <View>
@@ -188,7 +188,7 @@ export function DetPromo() {
 
                                         <View style={{flexDirection: 'row',alignItems: 'center',gap: 10,borderTopWidth: 1,borderColor: theme.colors.lines,paddingTop: 11,marginTop: 15}}>
                                             <View><Text style={theme.paragraph}>Tipo de redução ao preço:</Text></View>
-                                            <Badge type="number" text={promotion.multiLanguageContent.pt.type} style={theme.stats_1} />
+                                            <Badge text={promotion.multiLanguageContent.pt.type} />
                                         </View>
                                     </View>
 

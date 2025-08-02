@@ -110,10 +110,12 @@ export const ListMenu = (props) => {
         
         <Text style={[theme.paragraph, {flex: 1, flexWrap: 'wrap'}]}>{item.name}</Text>
         
-        {(item.badgeTotal && item.badgeTotal != '' && (
-            <Badge type="number" text={item.badgeTotal} styleText={{color: theme.colors.darkgray}}/>
-        ))}
-        
+        {item.badgeTotal && item.badgeTotal != '' && (
+            <Text style={[theme.paragraph, {color: theme.colors.darkgray,fontSize: 14}]}>
+                {item.badgeTotal}
+            </Text>
+        )}
+
         <View style={{marginLeft: 10}}>
           {item.hrefTemplate && (
             <Icon code="818" size={16} color={theme.colors.darkgray}/>
@@ -157,7 +159,7 @@ export const ListMenu = (props) => {
                 style={styles.menuItem} 
                 onPress={() => {
                   if(item.hrefTemplate == 'ListPromoScreen' || item.hrefTemplate == 'ListCampaignScreen') {
-                    showToast({text: 'Página em desenvolvimento'});
+                    showToast({text: 'PÃ¡gina em desenvolvimento'});
                   }
                   
                   navigation.navigate({name: item.hrefTemplate, params: {id: item.id, title: item.name}});
@@ -181,31 +183,39 @@ export const ListMenu = (props) => {
 }
 
 export const Badge = (props) => {
-    var styleType = theme.labelItem;
-    var styleTextType = theme.labelItemText;
+    let badgeText = props.text;
 
-    if(props.type == 'number') {
-        styleType = theme.numberItem;
-        styleTextType = theme.numberItemText;
-    } else if(props.type == 'tag') {
-        styleType = theme.tagItem;
-        styleTextType = theme.tagItemText;
+    let styleType = stylesBadge.tag;
+    let styleTextType = stylesBadge.tagText;
+
+    if (props.type == 'dot') {
+        badgeText = '';
+        styleType = stylesBadge.dot;
     }
+
+    const customColor = props.style?.color;
 
     return (
         <View style={[styleType, props.style && props.style != '' ? props.style : {}]}>
-            {props.text != '' && (
-                <Text style={[styleTextType, , props.styleText && props.styleText != '' ? props.styleText : {}]}>{props.text}</Text>
+            {badgeText != '' && (
+                <Text style={[
+                    styleTextType, 
+                    customColor ? { color: customColor } : {}, 
+                    props.styleText && props.styleText != '' ? props.styleText : {}
+                ]}>
+                    {badgeText}
+                </Text>
             )}
         </View>
-    )
-}
+    );
+};
+
 
 export const Icon = ({code, size = 24, color = theme.colors.black, style}) => {
     if(!code) return null;
 
     const hex = code.replace(/^\\?e/i, ''); // remove "\e" ou "e"
-    const unicode = String.fromCharCode(parseInt('E' + hex, 16)); // força E800, E801, etc.
+    const unicode = String.fromCharCode(parseInt('E' + hex, 16)); // forÃ§a E800, E801, etc.
 
     return (
         <Text style={[{fontFamily: 'RedicomIcons', fontSize: size, color}, style]}>{unicode}</Text>
@@ -397,3 +407,9 @@ export const CountryFlag = ({ code, size = 80 }) => {
         </View>
     );
 };
+
+const stylesBadge = StyleSheet.create({
+    dot: {alignSelf: 'flex-start',borderRadius: 100,backgroundColor: theme.colors.success,width: 10,height: 10,borderWidth: 2,borderColor: theme.colors.white},
+    tag: {borderRadius: 2,paddingVertical: 3,paddingHorizontal: 6,backgroundColor: theme.colors.darktheme},
+    tagText: [{fontWeight: '500',fontSize: 12,color: theme.colors.white,textAlign: 'center'}]
+});

@@ -14,7 +14,7 @@ export const CardItem = ({template, index, item, updateItem, total}) => {
     switch (template) {
         case 'promotions':
             navigate_page = 'DetPromoScreen';
-            navigationTitle = `Editar promoção`;
+            navigationTitle = `Editar promoÃ§Ã£o`;
           break;
         case 'campaigns':
             navigate_page = 'DetCampaignScreen';
@@ -52,7 +52,7 @@ export const CardItem = ({template, index, item, updateItem, total}) => {
                     <View style={{flexDirection: 'row',alignItems: 'center',gap: 10,borderTopWidth: 1,borderColor: theme.colors.lines,paddingTop: 11,marginTop: 15}}>
                         {
                             badges.map((badge, index) => (
-                                <Badge type="number" text={badge.text} style={badge.styles} key={index}/>
+                                <Badge text={badge.text} style={badge.styles} key={index}/>
                             ))
                         }
                     </View>
@@ -69,7 +69,7 @@ export const CardItem = ({template, index, item, updateItem, total}) => {
         )}
         <TouchableOpacity key={item.index} onPress={() => {
             if(navigate_page == null) {
-                showToast({text: 'Temporariamente indisponível'});
+                showToast({text: 'Temporariamente indisponÃ­vel'});
                 return;
             }
 
@@ -86,7 +86,7 @@ export const CardItem = ({template, index, item, updateItem, total}) => {
             <View style={theme.cardItem}>
                 <View style={{position: 'relative'}}>
                     {item.active == 1 && (
-                        <Badge type="label" text="Ativo" style={{position: 'absolute',top: -4,right: -4,zIndex: 1}}/>
+                        <Badge type="dot" style={{position: 'absolute',top: -4,right: -4,zIndex: 1}}/>
                     )}
 
                     <View style={{flexDirection: 'row',alignItems: 'flex-end',flex: 1}}>
@@ -131,21 +131,21 @@ export const CardItem = ({template, index, item, updateItem, total}) => {
                             
                                 {item.startDate && (
                                     <View style={{flexDirection: 'row',alignItems: 'center'}}>
-                                        <View style={{width: 90,marginRight: 10}}><Text style={[theme.listNavSubtitle, {color: theme.colors.gray,lineHeight: 15}]}>{item.endDate ? 'Ativo de' : 'Data início'}:</Text></View>
+                                        <View style={{width: 90,marginRight: 10}}><Text style={[theme.listNavSubtitle, {color: theme.colors.gray,lineHeight: 15}]}>{item.endDate ? 'Ativo de' : 'Data inÃ­cio'}:</Text></View>
                                         <View style={{flex: 1}}><Text style={[theme.small, {lineHeight: 15}]} numberOfLines={1} ellipsizeMode='tail'>{item.startDate.substr(0, 16)}</Text></View>
                                     </View>
                                 )}
 
                                 {item.endDate && (
                                     <View style={{flexDirection: 'row',alignItems: 'center'}}>
-                                        <View style={{width: 90,marginRight: 10}}><Text style={[theme.listNavSubtitle, {color: theme.colors.gray,lineHeight: 15}]}>até:</Text></View>
+                                        <View style={{width: 90,marginRight: 10}}><Text style={[theme.listNavSubtitle, {color: theme.colors.gray,lineHeight: 15}]}>atÃ©:</Text></View>
                                         <View style={{flex: 1}}><Text style={[theme.small, {lineHeight: 15}]} numberOfLines={1} ellipsizeMode='tail'>{item.endDate.substr(0, 16)}</Text></View>
                                     </View>
                                 )}
 
                                 {(item.stats && item.stats.totalRecipients) && (
                                     <View style={{flexDirection: 'row',alignItems: 'center'}}>
-                                        <View style={{width: 90,marginRight: 10}}><Text style={[theme.listNavSubtitle, {color: theme.colors.gray,lineHeight: 15}]}>Destinatários:</Text></View>
+                                        <View style={{width: 90,marginRight: 10}}><Text style={[theme.listNavSubtitle, {color: theme.colors.gray,lineHeight: 15}]}>DestinatÃ¡rios:</Text></View>
                                         <View style={{flex: 1}}><Text style={[theme.small, {lineHeight: 15}]} numberOfLines={1} ellipsizeMode='tail'>{item.stats.totalRecipients}</Text></View>
                                     </View>
                                 )}

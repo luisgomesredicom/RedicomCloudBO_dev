@@ -13,8 +13,8 @@ export const ProductItem = ({index, item, updateItem, total, linkAction}) => {
         <>
             {index == 0 ? (
                 <View style={{flexDirection: 'row',alignItems: 'center',justifyContent: 'space-between',gap: 10,marginBottom: 28,paddingHorizontal: theme.containerPadding}}>
-                    <View><Text style={[theme.listNavSubtitle, {color: theme.colors.darktheme}]}>Produtos</Text></View>
-                    <View><Link text="Filtrar Produtos" onPress={() => linkAction({ type: "toggleFilters" })}/></View>
+                    <View><Text style={[theme.listNavSubtitle, {color: theme.colors.darkgray}]}>Produtos</Text></View>
+                    <View><Link text="Filtrar" onPress={() => linkAction({ type: "toggleFilters" })}/></View>
                 </View>
             ) : (
                 <View style={{height: 6,backgroundColor: theme.colors.background,marginTop: 10,marginBottom: 10}}></View>
@@ -40,7 +40,7 @@ export const ProductItem = ({index, item, updateItem, total, linkAction}) => {
                         <Image source={{uri: item.image.default}} style={{resizeMode: 'cover',flex: 1}} />
 
                         {item.active == 1 && (
-                            <Badge type="label" style={{position: 'absolute',top: 4,right: 4,zIndex: 1}} />
+                            <Badge type="dot" style={{position: 'absolute',top: 4,right: 4,zIndex: 1}} />
                         )}
                     </View>
                     
