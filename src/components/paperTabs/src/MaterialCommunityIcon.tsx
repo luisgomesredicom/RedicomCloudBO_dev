@@ -9,7 +9,7 @@ try {
   );
 } catch (_e: any) {
   const e = _e;
-  console.log({ e });
+  //console.log({ e });
   let isErrorLogged = false;
 
   // Fallback component for icons

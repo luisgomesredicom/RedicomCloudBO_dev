@@ -43,7 +43,6 @@ export function ListPromo() {
     const updateItem_active = (item) => {
         const updatedList = items_active.map((_item) => {
             if (_item.id === item.id) {
-                console.log(item.endDate);
                 return { ..._item, ...item };
             }
             return _item;

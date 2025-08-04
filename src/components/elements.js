@@ -390,7 +390,6 @@ export const CountryFlag = ({ code, size = 80 }) => {
     return (
         <View
             style={{
-                borderRadius: 4,
                 overflow: 'hidden',
                 width: size,
                 height: size * 0.75
@@ -411,5 +410,5 @@ export const CountryFlag = ({ code, size = 80 }) => {
 const stylesBadge = StyleSheet.create({
     dot: {alignSelf: 'flex-start',borderRadius: 100,backgroundColor: theme.colors.success,width: 10,height: 10,borderWidth: 2,borderColor: theme.colors.white},
     tag: {borderRadius: 2,paddingVertical: 3,paddingHorizontal: 6,backgroundColor: theme.colors.darktheme},
-    tagText: [{fontWeight: '500',fontSize: 12,color: theme.colors.white,textAlign: 'center'}]
+    tagText: [{fontWeight: '500',fontSize: 11,color: theme.colors.white,textAlign: 'center'}]
 });

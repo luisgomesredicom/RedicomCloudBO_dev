@@ -30,6 +30,9 @@ export function DashboardDetails() {
     const CardItem = ({index, item}) => {
         return (
             <>
+                {index > 0 ? (
+                    <View style={{height: 6,backgroundColor: theme.colors.background}}></View>
+                ) : ''}
                 <View style={[theme.cardItem, {paddingBottom: 30}]}>
                     <View style={{marginBottom: 20}}><Text style={[theme.listNavSubtitle]}>{item.title}</Text></View>
                     <View style={{flexDirection: 'row',alignItems: 'stretch'}}>

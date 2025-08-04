@@ -128,7 +128,7 @@ export function DetPromo() {
             const amountValue = amount.value;
 
             //console.log('startDate: ', startDateValue);
-            console.log('endDate: ', endDateValue);
+            //console.log('endDate: ', endDateValue);
             //console.log('amount: ', amountValue);
             
             const data = await remoteAPI({

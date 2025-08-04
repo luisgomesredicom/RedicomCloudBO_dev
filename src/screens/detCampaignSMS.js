@@ -41,7 +41,7 @@ export function DetCampaignSMS() {
         {status: 10, icon: '002', color: 'gray'} //Cancelada
     ];
     const currentSendStatus = sendStatus.find(s => s.status == campaign.status);
-    console.log('status', campaign.status);
+    
     useEffect(() => {
         setPageIsReady(true);
     }, []);

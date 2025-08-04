@@ -143,35 +143,46 @@ export function ListOrders() {
 
         return (
             <>
-                {index == 0 ? (
-                    <View style={{flexDirection: 'row',alignItems: 'center',justifyContent: 'space-between',gap: 10,marginTop: 28,marginBottom: 28,paddingHorizontal: theme.containerPadding}}>
-                        <View><Text style={[theme.listNavSubtitle, {color: theme.colors.darkgray}]}>Encomendas</Text></View>
-                        <View><Link text="Filtrar" onPress={() => modalFiltersDispatch({ type: "toggleFilters" })}/></View>
-                    </View>
-                ) : (
+                {index == 0 ? (() => {
+                    const totalFilters = getActiveFiltersCount();
+
+                    return (
+                        <View style={{flexDirection: 'row',alignItems: 'center',justifyContent: 'space-between',gap: 10,marginTop: 28,marginBottom: 13,paddingHorizontal: theme.containerPadding}}>
+                            <View><Text style={[theme.listNavSubtitle, {color: theme.colors.darkgray}]}>Encomendas</Text></View>
+                            <View><Link text={totalFilters > 0 ? `Filtrar (${totalFilters})` : 'Filtrar'} onPress={() => modalFiltersDispatch({ type: "toggleFilters" })}/></View>
+                        </View>
+                    )
+                })() : (
                     <View style={{height: 6,backgroundColor: theme.colors.background}}></View>
                 )}
                 
                 <View style={[theme.cardItem, {flexDirection: 'column',flexGrow: 1,gap: 8}]}>
                     <View style={{gap: 2}}>
                         <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between'}}>
-                            <Text style={theme.small}>No. Enc. <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]}>{item.orderRef}</Text></Text>
+                            <Text style={[theme.listNavSubtitle, {color: theme.colors.black}]}>{item.orderRef}</Text>
                             <View style={{flexDirection: 'row',alignItems: 'center',marginLeft: 'auto',gap: 10}}>
-                                {item.customerSince == 'SEM_REGISTO' ? (
-                                    <Icon code="901" size={20} style={{color: theme.colors.error}}/>
-                                ) : item.customerSince == 'NOVO' ? (
-                                    <Icon code="900" size={20} style={{color: theme.colors.success}}/>
-                                ) : (
-                                    <Text style={theme.small} ellipsizeMode='tail'>{item.customerSince}</Text>
-                                )}
                                 <CountryFlag code={item.countryCode} size={20} />
                             </View>
                         </View>
 
-                        <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between'}}>
+                        <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between',marginTop: 2}}>
                             <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.customerName}</Text>
-                            <View>
-                                <Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{startDate}  <Text style={{color: theme.colors.darkgray}}>{startTime}</Text></Text>
+                            <View style={{flexDirection: 'row',alignItems: 'center',gap: 10}}>
+                                {item.customerSince == 'SEM_REGISTO' ? (
+                                    <>
+                                        <Text style={theme.small} ellipsizeMode='tail'>Sem registo</Text>
+                                        <Icon code="901" size={20} style={{color: theme.colors.error}}/>
+                                    </>
+                                ) : item.customerSince == 'NOVO' ? (
+                                    <>
+                                        <Text style={theme.small} ellipsizeMode='tail'>Cliente novo</Text>
+                                        <Icon code="900" size={18} style={{color: theme.colors.success}}/>
+                                    </>
+                                ) : (
+                                    <Text style={theme.small} ellipsizeMode='tail'>{item.customerSince}</Text>
+                                )}
+
+                                {/*<Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{startDate}  <Text style={{color: theme.colors.darkgray}}>{startTime}</Text></Text>*/}
                             </View>
                         </View>
                     </View>
@@ -190,13 +201,15 @@ export function ListOrders() {
                         
                         <Text style={theme.small}>Qnt. <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]}>{item.qtd}</Text></Text>
                         
-                        {getShippingImage(item.shippingImage)}
+                        <View style={{flexDirection: 'row',gap: 4,alignItems: 'center'}}>
+                            {trackingStatusActive == false && item.status.map((value, index) => {
+                                return (
+                                    <Badge text={value.name} style={[{backgroundColor: value.color}]}/>
+                                )
+                            })}
 
-                        {trackingStatusActive == false && item.status.map((value, index) => {
-                            return (
-                                <Badge text={value.name} style={[{backgroundColor: value.color}]}/>
-                            )
-                        })}
+                            {getShippingImage(item.shippingImage)}
+                        </View>
                     </View>
                 </View>
             </>
@@ -205,7 +218,6 @@ export function ListOrders() {
 
     /* Filters */
     const [modalFilters, modalFiltersDispatch] = useReducer(ModalFiltersReducer, ModalFiltersState);
-    const [filtersLength, setFiltersLength] = useState(0);
 
     useEffect(() => {
         if(filtersApplied != null || (filtersApplied == null && Object.keys(modalFilters.filtersActive).length > 0)) {
@@ -241,6 +253,23 @@ export function ListOrders() {
             console.warn(e);
         }
     }
+
+    function getActiveFiltersCount() {
+        var total = 0;
+
+        Object.entries(modalFilters.filtersActive).forEach(([key, value]) => {
+            if(key.startsWith("dateStart") || key.startsWith("dateEnd")) {
+                if(value) total += 1;
+            } else {
+                if(typeof value == "string" && value != "") {
+                    total += value.split(",").length;
+                }
+            }
+        });
+
+        return total;
+    }
+
     /* Filters */
 
     async function loadResults() {
@@ -264,9 +293,6 @@ export function ListOrders() {
                     ...bodyHTTP,
                     ...modalFilters.filtersActive
                 }
-                setFiltersLength(1);
-            } else {
-                setFiltersLength(0);
             }
 
             console.log(JSON.stringify(bodyHTTP))

@@ -14,9 +14,6 @@ try {
   MaterialCommunityIcons = _reactNative.Animated.createAnimatedComponent(require('react-native-vector-icons/MaterialCommunityIcons').default);
 } catch (_e) {
   const e = _e;
-  console.log({
-    e
-  });
   let isErrorLogged = false;
 
   // Fallback component for icons

@@ -210,16 +210,33 @@ export const ModalFilters = (params) => {
                     <View style={{width: 160,backgroundColor: 'white'}}>
                         <ScrollView>
                             {
-                                data.filters.map((filter, index) => (
-                                    <TouchableOpacity
-                                        key={filter.field ?? filter.type}
-                                        activeOpacity={1}
-                                        onPress={() => { sFilterCatrgoryActiveIndex(index); }}
-                                        style={[stylesFilters.categoryButton, filterCatrgoryActiveIndex == index ? stylesFilters.categoryButtonActive : '']}>
-                                        <Text style={[stylesFilters.categoryButtonText, filterCatrgoryActiveIndex == index ? stylesFilters.categoryButtonActiveText : '']}>{filter.name}</Text>
-                                    </TouchableOpacity>
-                                ))
+                                data.filters.map((filter, index) => {
+                                    const keyField = filter.field ?? filter.type;
+                                    const options = filterStates?.[keyField]?.options ?? {};
+
+                                    // Total de filtros ativos
+                                    const activeCount = filter.type == 'date' ? (dateStart || dateEnd ? 1 : 0) : Object.values(options).filter(v => v == true).length;
+
+                                    return (
+                                        <TouchableOpacity
+                                            key={filter.field ?? filter.type}
+                                            activeOpacity={1}
+                                            onPress={() => { sFilterCatrgoryActiveIndex(index); }}
+                                            style={[stylesFilters.categoryButton, filterCatrgoryActiveIndex == index ? stylesFilters.categoryButtonActive : '']}
+                                        >
+                                            <View style={{flexDirection: 'row',gap: 10,justifyContent: 'space-between', alignItems: 'center'}}>
+                                                <Text style={[stylesFilters.categoryButtonText, filterCatrgoryActiveIndex == index ? stylesFilters.categoryButtonActiveText : '', {width: '75%'}]}>
+                                                    {filter.name}
+                                                </Text>
+                                                <Text style={[theme.paragraph, {color: theme.colors.darkgray}]}>
+                                                    {activeCount > 0 ? activeCount : ''}
+                                                </Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    );
+                                })
                             }
+
                         </ScrollView>
                     </View>
                     <View style={{flex: 1}}>

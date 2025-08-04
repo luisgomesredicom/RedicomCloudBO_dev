@@ -6,7 +6,7 @@ import { theme } from '../styles/styles'
 import { Badge, Icon } from './elements';
 import { Link } from './buttons';
 
-export const ProductItem = ({index, item, updateItem, total, linkAction}) => {
+export const ProductItem = ({index, item, updateItem, total, linkAction, totalFilters}) => {
     const navigation = useNavigation();
     
     return (
@@ -14,7 +14,7 @@ export const ProductItem = ({index, item, updateItem, total, linkAction}) => {
             {index == 0 ? (
                 <View style={{flexDirection: 'row',alignItems: 'center',justifyContent: 'space-between',gap: 10,marginBottom: 28,paddingHorizontal: theme.containerPadding}}>
                     <View><Text style={[theme.listNavSubtitle, {color: theme.colors.darkgray}]}>Produtos</Text></View>
-                    <View><Link text="Filtrar" onPress={() => linkAction({ type: "toggleFilters" })}/></View>
+                    <View><Link text={totalFilters > 0 ? `Filtrar (${totalFilters})` : 'Filtrar'} onPress={() => linkAction({ type: "toggleFilters" })}/></View>
                 </View>
             ) : (
                 <View style={{height: 6,backgroundColor: theme.colors.background,marginTop: 10,marginBottom: 10}}></View>

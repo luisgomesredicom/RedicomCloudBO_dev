@@ -107,6 +107,22 @@ export function ListProducts() {
             console.warn(e);
         }
     }
+
+    function getActiveFiltersCount() {
+        var total = 0;
+
+        Object.entries(modalFilters.filtersActive).forEach(([key, value]) => {
+            if(key.startsWith("dateStart") || key.startsWith("dateEnd")) {
+                if(value) total += 1;
+            } else {
+                if(typeof value == "string" && value != "") {
+                    total += value.split(",").length;
+                }
+            }
+        });
+
+        return total;
+    }
     /* Filters */
 
     async function loadResults() {
@@ -213,21 +229,25 @@ export function ListProducts() {
                                         <>
                                         {items.length == 0 ? (
                                             <Noresults />
-                                        ) : (
-                                            <FlatList
-                                                style={theme.wrapperContainerList}
-                                                contentContainerStyle={{paddingBottom: Math.max(insets.bottom)}}
-                                                data={items}
-                                                keyExtractor={ item => item.id }
-                                                renderItem={ ({item, index}) => <ProductItem index={index} item={item} updateItem={updateItem} total={resultsLength} linkAction={modalFiltersDispatch}/> }
-                                                onEndReached={loadResults}
-                                                onEndReachedThreshold={ 0.15 }
-                                                ListFooterComponent={ <FooterList load={nextPageLoading} /> }
-                                                refreshControl={
-                                                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                                                }
-                                            />
-                                        )}
+                                        ) : (() => {
+                                            const totalFilters = getActiveFiltersCount();
+
+                                            return (
+                                                <FlatList
+                                                    style={theme.wrapperContainerList}
+                                                    contentContainerStyle={{paddingBottom: Math.max(insets.bottom)}}
+                                                    data={items}
+                                                    keyExtractor={ item => item.id }
+                                                    renderItem={ ({item, index}) => <ProductItem index={index} item={item} updateItem={updateItem} total={resultsLength} linkAction={modalFiltersDispatch} totalFilters={totalFilters}/> }
+                                                    onEndReached={loadResults}
+                                                    onEndReachedThreshold={ 0.15 }
+                                                    ListFooterComponent={ <FooterList load={nextPageLoading} /> }
+                                                    refreshControl={
+                                                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                                                    }
+                                                />
+                                            )
+                                        })()}
                                         </>
                                     )}
                                 </View>
