@@ -159,7 +159,7 @@ export const ListMenu = (props) => {
                 style={styles.menuItem} 
                 onPress={() => {
                   if(item.hrefTemplate == 'ListPromoScreen' || item.hrefTemplate == 'ListCampaignScreen') {
-                    showToast({text: 'PÃ¡gina em desenvolvimento'});
+                    showToast({text: 'Página em desenvolvimento'});
                   }
                   
                   navigation.navigate({name: item.hrefTemplate, params: {id: item.id, title: item.name}});
@@ -408,7 +408,7 @@ export const CountryFlag = ({ code, size = 80 }) => {
 };
 
 const stylesBadge = StyleSheet.create({
-    dot: {alignSelf: 'flex-start',borderRadius: 100,backgroundColor: theme.colors.success,width: 10,height: 10,borderWidth: 2,borderColor: theme.colors.white},
+    dot: {alignSelf: 'flex-start',borderRadius: 100,backgroundColor: theme.colors.success,width: 9,height: 9,borderWidth: 1,borderColor: theme.colors.white},
     tag: {borderRadius: 2,paddingVertical: 3,paddingHorizontal: 6,backgroundColor: theme.colors.darktheme},
     tagText: [{fontWeight: '500',fontSize: 11,color: theme.colors.white,textAlign: 'center'}]
 });

@@ -101,10 +101,10 @@ export function DetProduct() {
                             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                         }
                         >
-                            <View style={{marginBottom: 30}}><Text style={theme.listNavSubtitle}>Detalhe de Produto</Text></View>
+                            <View style={{marginBottom: 30}}><Text style={[theme.listNavSubtitle, {fontWeight: 700}]}>Detalhe de Produto</Text></View>
 
                             <View style={{flexDirection: 'row',gap: 10,alignItems: 'flex-start'}}>
-                                <View style={{position: 'relative',width: 105,height: 140,flexShrink: 0}}>
+                                <View style={{position: 'relative',width: 82,height: 120,flexShrink: 0}}>
                                     <View style={theme.productMaskImage}></View>
                                     <Image source={{uri: product.image.default}} style={{resizeMode: 'cover',flex: 1}} />
 
@@ -114,38 +114,38 @@ export function DetProduct() {
                                 </View>
 
                                 <View style={{flex: 1}}>
-                                    <View style={{gap: 3,flex: 1}}>
+                                    <View style={{gap: 0,flex: 1}}>
                                         {(product.brand && product.brand.multiLanguageContent && product.brand.multiLanguageContent.pt.name != '') && (
                                             <Text style={[theme.small, {color: theme.colors.black}]}>
                                                 {product.brand.multiLanguageContent.pt.name}
                                             </Text>
                                         )}
 
-                                        <Text style={[theme.listNavSubtitle, {color: theme.colors.black}]}>
+                                        <Text style={[theme.listNavSubtitle, {color: theme.colors.black, fontWeight: 700}]}>
                                             {product.multiLanguageContent.pt.nameListing}
                                         </Text>
 
-                                        <View style={{gap: 1,marginTop: 2}}>
+                                        <View style={{gap: 1,marginTop: 20}}>
                                             <View style={{flexDirection: 'row',alignItems: 'center'}}>
                                                 <View style={{width: 74,marginRight: 10}}><Text style={[theme.small]}>Ref. Modelo</Text></View>
-                                                <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{product.skuFamily}</Text></View>
+                                                <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 700,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{product.skuFamily}</Text></View>
                                             </View>
 
                                             <View style={{flexDirection: 'row',alignItems: 'center'}}>
                                                 <View style={{width: 74,marginRight: 10}}><Text style={[theme.small]}>Ref. Cor</Text></View>
-                                                <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{product.skuGroup}</Text></View>
+                                                <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 700,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{product.skuGroup}</Text></View>
                                             </View>
                                             
                                             {(product.color && product.color.multiLanguageContent) && (
                                                 <View style={{flexDirection: 'row',alignItems: 'center'}}>
                                                     <View style={{width: 74,marginRight: 10}}><Text style={[theme.small]}>Cor</Text></View>
-                                                    <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{product.color.multiLanguageContent.pt.name}</Text></View>
+                                                    <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 700,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{product.color.multiLanguageContent.pt.name}</Text></View>
                                                 </View>
                                             )}
 
                                             <View style={{flexDirection: 'row',alignItems: 'center'}}>
                                                 <View style={{width: 74,marginRight: 10}}><Text style={[theme.small]}>Novidade</Text></View>
-                                                <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{product.new == true ? 'Sim' : 'Não'}</Text></View>
+                                                <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 700,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{product.new == true ? 'Sim' : 'Não'}</Text></View>
                                             </View>
 
                                             {/*<View style={{flexDirection: 'row',alignItems: 'center'}}>
@@ -163,22 +163,22 @@ export function DetProduct() {
                             <View style={{height: 6,backgroundColor: theme.colors.background,marginTop: 30,marginHorizontal: theme.ncontainerPadding}}></View>
                             
                             <View style={{marginTop: theme.containerPadding,marginBottom: 24}}>
-                                <Text style={theme.listNavSubtitle}>Variantes</Text>
+                                <Text style={[theme.listNavSubtitle, {fontWeight: 700}]}>Variantes</Text>
                             </View>
 
                             <View style={stylesTable.tableInfo_head}>
-                                <View style={[stylesTable.tableInfo_head_td, {marginLeft: 0,width: '55%'}]}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]}>Produto</Text></View>
-                                <View style={[stylesTable.tableInfo_head_td, {width: '12%',alignItems: 'center'}]}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]}>Preço</Text></View>
-                                <View style={[stylesTable.tableInfo_head_td, {width: '12%',alignItems: 'center'}]}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]}>Stock</Text></View>
-                                <View style={[stylesTable.tableInfo_head_td, {marginRight: 0,width: 60,alignItems: 'center'}]}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]}>Ativo</Text></View>
+                                <View style={[stylesTable.tableInfo_head_td, {marginLeft: 0,width: '55%'}]}><Text style={[theme.small, {fontWeight: 700,color: theme.colors.black}]}>Produto</Text></View>
+                                <View style={[stylesTable.tableInfo_head_td, {width: '12%',alignItems: 'center'}]}><Text style={[theme.small, {fontWeight: 700,color: theme.colors.black}]}>Preço</Text></View>
+                                <View style={[stylesTable.tableInfo_head_td, {width: '12%',alignItems: 'center'}]}><Text style={[theme.small, {fontWeight: 700,color: theme.colors.black}]}>Stock</Text></View>
+                                <View style={[stylesTable.tableInfo_head_td, {marginRight: 0,width: 60,alignItems: 'center'}]}><Text style={[theme.small, {fontWeight: 700,color: theme.colors.black}]}>Ativo</Text></View>
                             </View>
                             
                             {dataMatiz.map((item, index) => (
                                 <View key={item.id}>
                                     <View style={stylesTable.tableInfo_body}>
                                         <View style={[stylesTable.tableInfo_body_td, {marginLeft: 0,width: '55%'}]}>
-                                            <Text numberOfLines={3} ellipsizeMode='tail' style={[theme.small, {fontWeight: 500,color: theme.colors.black,marginBottom: 6}]}>{item.sku} </Text>
-                                            <Text numberOfLines={1} ellipsizeMode='tail' style={[theme.small, {fontWeight: 500,color: theme.colors.black}]}><Text style={theme.small}>Tam.:</Text>  {item.size.multiLanguageContent.pt.name}</Text>
+                                            <Text numberOfLines={3} ellipsizeMode='tail' style={[theme.small, {fontWeight: 700,color: theme.colors.black,marginBottom: 6}]}>{item.sku} </Text>
+                                            <Text numberOfLines={1} ellipsizeMode='tail' style={[theme.small, {fontWeight: 700,color: theme.colors.black}]}><Text style={theme.small}>Tam.:</Text>  {item.size.multiLanguageContent.pt.name}</Text>
                                         </View>
                                         <View style={[stylesTable.tableInfo_body_td, {width: '12%',alignItems: 'center'}]}>
                                             {item.hasPrice=='true' ? (

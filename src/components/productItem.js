@@ -12,12 +12,12 @@ export const ProductItem = ({index, item, updateItem, total, linkAction, totalFi
     return (
         <>
             {index == 0 ? (
-                <View style={{flexDirection: 'row',alignItems: 'center',justifyContent: 'space-between',gap: 10,marginBottom: 28,paddingHorizontal: theme.containerPadding}}>
+                <View style={{flexDirection: 'row',alignItems: 'center',justifyContent: 'space-between',gap: 10,marginBottom: 32,paddingHorizontal: theme.containerPadding, paddingTop: 8}}>
                     <View><Text style={[theme.listNavSubtitle, {color: theme.colors.darkgray}]}>Produtos</Text></View>
                     <View><Link text={totalFilters > 0 ? `Filtrar (${totalFilters})` : 'Filtrar'} onPress={() => linkAction({ type: "toggleFilters" })}/></View>
                 </View>
             ) : (
-                <View style={{height: 6,backgroundColor: theme.colors.background,marginTop: 10,marginBottom: 10}}></View>
+                <View style={{height: 0,backgroundColor: theme.colors.background,marginTop: 10,marginBottom: 10}}></View>
             )}
 
             <TouchableOpacity
@@ -34,8 +34,8 @@ export const ProductItem = ({index, item, updateItem, total, linkAction, totalFi
                     })
                 }}
             >
-                <View style={{flexDirection: 'row',gap: 14,alignItems: 'flex-start'}}>
-                    <View style={{position: 'relative',width: 78,height: 104,flexShrink: 0}}>
+                <View style={{flexDirection: 'row',gap: 10,alignItems: 'flex-start'}}>
+                    <View style={{position: 'relative',width: 60,height: 80,flexShrink: 0}}>
                         <View style={theme.productMaskImage}></View>
                         <Image source={{uri: item.image.default}} style={{resizeMode: 'cover',flex: 1}} />
 
@@ -45,18 +45,18 @@ export const ProductItem = ({index, item, updateItem, total, linkAction, totalFi
                     </View>
                     
                     <View style={{flex: 1}}>
-                        <View style={{marginTop: 2,flex: 1,flexDirection: 'row',alignItems: 'center',position: 'relative'}}>
-                            <View style={{gap: 3,flex: 1,minHeight: 100}}>
+                        <View style={{marginTop: 0,flex: 1,flexDirection: 'row',alignItems: 'center',position: 'relative'}}>
+                            <View style={{gap: 0,flex: 1,minHeight: 86}}>
                                 {item.brand && item.brand.multiLanguageContent.pt.name != '' && (
-                                    <View style={{paddingRight: 36,marginBottom: -3}}>
+                                    <View style={{paddingRight: 36,marginBottom: 0}}>
                                         <Text style={[theme.small, {color: theme.colors.black}]}>
                                             {item.brand.multiLanguageContent.pt.name}
                                         </Text>
                                     </View>
                                 )}
 
-                                <View style={{paddingRight: 36}}>
-                                    <Text style={[theme.listNavSubtitle, {color: theme.colors.black}]}>
+                                <View style={{paddingRight: 36, paddingBottom: 5}}>
+                                    <Text style={[theme.listNavSubtitle, {fontWeight: 700, color: theme.colors.black}]}>
                                         {item.multiLanguageContent.pt.nameListing}
                                     </Text>
                                 </View>
@@ -64,24 +64,24 @@ export const ProductItem = ({index, item, updateItem, total, linkAction, totalFi
                                 <View style={{gap: 1,marginTop: 2}}>
                                     <View style={{flexDirection: 'row',alignItems: 'center'}}>
                                         <View style={{width: 74,marginRight: 10}}><Text style={[theme.small]}>Ref. Modelo</Text></View>
-                                        <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.skuFamily}</Text></View>
+                                        <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 700,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.skuFamily}</Text></View>
                                     </View>
 
                                     <View style={{flexDirection: 'row',alignItems: 'center'}}>
                                         <View style={{width: 74,marginRight: 10}}><Text style={[theme.small]}>Ref. Cor</Text></View>
-                                        <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.skuGroup}</Text></View>
+                                        <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 700,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.skuGroup}</Text></View>
                                     </View>
                                     
                                     {(item.color && item.color.multiLanguageContent) && (
                                         <View style={{flexDirection: 'row',alignItems: 'center'}}>
                                             <View style={{width: 74,marginRight: 10}}><Text style={[theme.small]}>Cor</Text></View>
-                                            <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.color.multiLanguageContent.pt.name}</Text></View>
+                                            <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 700,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.color.multiLanguageContent.pt.name}</Text></View>
                                         </View>
                                     )}
                                 </View>
                             </View>
                             <View style={{marginLeft: 10,marginRight: -6}}>
-                                <Icon code="818" size={22} style={{color: theme.colors.darkgray}}/>
+                                <Icon code="818" size={22} style={{color: theme.colors.black}}/>
                             </View>
                         </View>
                     </View>

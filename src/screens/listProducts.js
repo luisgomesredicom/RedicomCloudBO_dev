@@ -207,7 +207,7 @@ export function ListProducts() {
             </ModalFiltersContext.Provider>
 
             <View style={{flex: 1,backgroundColor: theme.colors.darktheme}}>
-                <View style={{paddingHorizontal: 15,paddingVertical: 10}}>
+                <View style={{paddingHorizontal: 15,paddingVertical: 10, paddingBottom: 12}}>
                     <SearchBar onChangeText={onChangeSearch}/>
                 </View>
 

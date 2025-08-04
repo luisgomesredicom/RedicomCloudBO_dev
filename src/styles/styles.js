@@ -43,7 +43,7 @@ const secondarySubtitle = {fontWeight: 700,fontSize: 18,lineHeight: 24,color: co
 const listNavTitle = {fontWeight: 700,fontSize: 16,lineHeight: 22,color: colors.darktheme}
 const listNavSubtitle = {fontWeight: 600,fontSize: 15,lineHeight: 20,color: colors.darkgray}
 const paragraph = {fontWeight: 400,fontSize: 15,lineHeight: 20,color: colors.black}
-const small = {fontWeight: 400,fontSize: 13,lineHeight: 18,color: colors.darkgray}
+const small = {fontWeight: 400,fontSize: 12,lineHeight: 16,color: colors.darkgray}
 
 /*
  * Container

@@ -13,20 +13,22 @@ export const SearchBar = ({onChangeText}) => {
 
     return (
         <Searchbar
-            icon={() => (<Icon code="819" size={24} style={{color: theme.colors.darkgray}}/>)}
+            icon={() => (<Icon code="819" size={22} style={{color: theme.colors.black, marginLeft: -10, width: 22, height: 22}}/>)}
             placeholder="Pesquisar"
+            placeholderTextColor={theme.colors.gray}
             onChangeText={onChangeSearch}
             value={searchQuery}
-            inputStyle={{fontSize: 16,color: theme.colors.black,minHeight: 0}}
+            inputStyle={{fontSize: 16, color: theme.colors.black, minHeight: 0, paddingTop: 0, paddingBottom: 0, height: 36, marginLeft: -8}}
             Type='view'
             style={{
                 borderWidth: 0,
                 backgroundColor: 'white',
                 marginVertical: 0,
                 paddingVertical: 0,
+                paddingHorizontal: 0,
                 borderRadius: 6,
-                height: 42,
-                minHeight: 42,
+                height: 36,
+                minHeight: 36,
             }}
             allowFontScaling={false}
         />
