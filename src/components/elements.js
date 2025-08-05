@@ -158,7 +158,7 @@ export const ListMenu = (props) => {
               <TouchableOpacity 
                 style={styles.menuItem} 
                 onPress={() => {
-                  if(item.hrefTemplate == 'ListPromoScreen' || item.hrefTemplate == 'ListCampaignScreen') {
+                  if(item.hrefTemplate == 'ListCampaignScreen') {
                     showToast({text: 'Página em desenvolvimento'});
                   }
                   
@@ -224,6 +224,7 @@ export const Icon = ({code, size = 24, color = theme.colors.black, style}) => {
 
 export const ListStatistics = ({template, value, datetime}) => {
     const { date, time } = dateFormatter(datetime);
+    let descrition = '';
 
     switch (template) {
         case 'listCampaignSMS':
@@ -409,6 +410,6 @@ export const CountryFlag = ({ code, size = 80 }) => {
 
 const stylesBadge = StyleSheet.create({
     dot: {alignSelf: 'flex-start',borderRadius: 100,backgroundColor: theme.colors.success,width: 9,height: 9,borderWidth: 1,borderColor: theme.colors.white},
-    tag: {borderRadius: 2,paddingVertical: 3,paddingHorizontal: 6,backgroundColor: theme.colors.darktheme},
-    tagText: [{fontWeight: '500',fontSize: 11,color: theme.colors.white,textAlign: 'center'}]
+    tag: {borderRadius: 2,paddingVertical: 3,paddingHorizontal: 6,backgroundColor: theme.colors.infolight},
+    tagText: [{fontWeight: '500',fontSize: 11,color: theme.colors.info,textAlign: 'center'}]
 });

@@ -5,8 +5,8 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { remoteAPI, dateFormatter } from '../core/utils';
 import { LoadingFullscreen, Noresults, ListStatistics, FooterList, Icon, ProgressBar, Badge } from '../components/elements';
 import { theme } from '../styles/styles'
-import { Text, ActivityIndicator } from 'react-native-paper';
-import {TabsProvider, Tabs, TabScreen, useTabNavigation, useTabIndex} from '../components/paperTabs';
+import { Text, ActivityIndicator, Switch } from 'react-native-paper';
+import {TabsProvider, Tabs, TabScreen} from '../components/paperTabs';
 
 export function ListCampaignSMS() {
     /* 0 => Início da página | -1 => Pedido à API | 1 => Tudo carregado */
@@ -123,6 +123,39 @@ export function ListCampaignSMS() {
         ];
         const currentSendStatus = sendStatus.find(s => s.status == item.status);
 
+        const SwitchItem = (...props) => {
+            const toggleSwitch = async (...dataSwitch) => {
+                dataSwitch = dataSwitch[0];
+                
+                const switchKey = item.options.find(opt => opt.buttonStyle == 'principal')?.option;
+                
+                const data = await remoteAPI({
+                    request: `marketing/campaigns/sms`,
+                    method: 'PUT',
+                    body: {
+                        id: item.id,
+                        option: switchKey
+                    }
+                });
+                
+                updateItem(data, false);
+
+                if(!data || !data.response) return;
+
+                const updatedItem = data.response;
+
+                const updatedListActive = items_active.map((_item) =>
+                    _item.id === item.id ? updatedItem : _item
+                );
+
+                setItems_active(updatedListActive);
+            };
+
+            return (
+                <Switch value={item.active == 0 ? false : true} onValueChange={(status) => toggleSwitch({status: status})} color={theme.colors.success} style={{ transform: [{ scaleX: .85 }, { scaleY: .85 }] }}/>
+            );
+        }
+
         return (
             <>
                 <View style={{height: 6,backgroundColor: theme.colors.background}}></View>
@@ -202,6 +235,12 @@ export function ListCampaignSMS() {
                         <View style={{marginLeft: 10,marginRight: -6}}>
                             <Icon code="818" size={22} style={{color: theme.colors.darkgray}}/>
                         </View>
+
+                        {tab == 0 && (
+                            <View style={{position: 'absolute',top: 10,right: 37}}>
+                                <SwitchItem item={item} status={item.status}/>
+                            </View>
+                        )}
                     </View>
                 </TouchableOpacity>
             </>

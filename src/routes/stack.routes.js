@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createStackNavigator } from '@react-navigation/stack';
 import { useNavigation } from "@react-navigation/native";
 import { View, Text, TouchableOpacity, Alert, Image, Dimensions, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons, Octicons } from '@expo/vector-icons';
 //import { useActionSheet } from '@expo/react-native-action-sheet';
 import { UserContext, AuthContext, remoteAPI } from '../core/utils';
@@ -25,7 +26,6 @@ import { ListCampaignSMS } from '../screens/listCampaignSMS'
 import { ListCampaignEmail } from "../screens/listCampaignEmail";
 import { ListOrders } from '../screens/listOrders'
 
-import { ListOrdersInfo } from "../screens/listOrdersInfo";
 import { DetProduct } from '../screens/detProduct'
 import { DetPromo } from '../screens/detPromo'
 import { DetCampaign } from "../screens/detCampaign";
@@ -58,11 +58,12 @@ export function MainStackRoutes() {
     const userState = useContext(UserContext);
     const MainStack = createStackNavigator();
     const { width } = Dimensions.get('window');
+    const insets = useSafeAreaInsets();
 
     const styles = StyleSheet.create({
         header: {
             backgroundColor: theme.colors.darktheme,
-            height: width <= 375 ? 92 : 76
+            height: 46 + insets.top
         } 
     });
 
@@ -216,15 +217,6 @@ export function MainStackRoutes() {
                                 headerTitle: () => (
                                     <HearderTitle title={route.params.title} />
                                 ),
-                                title: route.params.title
-                            })}
-                        />
-
-                        <MainStack.Screen
-                            name="ListOrdersInfoScreen"
-                            component={ListOrdersInfo}
-                            options={({route, navigation}) => ({
-                                headerLeft: () => <HearderLeft />,
                                 title: route.params.title
                             })}
                         />

@@ -12,7 +12,7 @@ import { Link } from '../components/buttons';
 import { ModalFilters, ModalFiltersContext, ModalFiltersReducer, ModalFiltersState} from '../components/modalFilters'
 
 export function ListOrders() {
-    /* 0 => Início da página | -1 => Pedido à API | 1 => Tudo carregado */
+    /* 0 => InÃ­cio da pÃ¡gina | -1 => Pedido Ã  API | 1 => Tudo carregado */
     const [pageStatus, setPageStatus] = useState(0);
     const [items, setItems] = useState([]);
     const [nextPageLoading, setNextPageLoading] = useState(false);
@@ -116,7 +116,7 @@ export function ListOrders() {
             }
         }, [uri]);
 
-        // Calcula 1/6 da largura do ecrÃ£
+        // Calcula 1/6 da largura do ecrÃƒÂ£
         const screenWidth = Dimensions.get('window').width;
         const imageWidth = (screenWidth - (theme.containerPadding * 2) - 20) / 6;
 
@@ -206,7 +206,7 @@ export function ListOrders() {
                         <View style={{flexDirection: 'row',gap: 4,alignItems: 'center'}}>
                             {trackingStatusActive == false && item.status.map((value, index) => {
                                 return (
-                                    <Badge text={value.name} style={[{backgroundColor: value.color}]}/>
+                                    <Badge text={value.name} style={{backgroundColor: value.color,color: theme.colors.white}}/>
                                 )
                             })}
 
