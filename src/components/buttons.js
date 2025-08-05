@@ -14,7 +14,7 @@ export default function Button({ mode, style, ...props }) {
         },
         text: {
             fontWeight: 500,
-            fontSize: props.loading == 1 ? 25 : 16,
+            fontSize: props.loading == 1 ? 25 : 18,
             marginVertical: 10,
             marginHorizontal: 15,
             padding: 0,

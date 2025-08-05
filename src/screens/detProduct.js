@@ -103,7 +103,7 @@ export function DetProduct() {
                         >
                             <View style={{marginBottom: 30}}><Text style={[theme.listNavSubtitle, {fontWeight: 700}]}>Detalhe de Produto</Text></View>
 
-                            <View style={{flexDirection: 'row',gap: 10,alignItems: 'flex-start'}}>
+                            <View style={{flexDirection: 'row',gap: 10,alignItems: 'center'}}>
                                 <View style={{position: 'relative',width: 82,height: 120,flexShrink: 0}}>
                                     <View style={theme.productMaskImage}></View>
                                     <Image source={{uri: product.image.default}} style={{resizeMode: 'cover',flex: 1}} />
@@ -125,7 +125,7 @@ export function DetProduct() {
                                             {product.multiLanguageContent.pt.nameListing}
                                         </Text>
 
-                                        <View style={{gap: 1,marginTop: 20}}>
+                                        <View style={{gap: 1,marginTop: 15}}>
                                             <View style={{flexDirection: 'row',alignItems: 'center'}}>
                                                 <View style={{width: 74,marginRight: 10}}><Text style={[theme.small]}>Ref. Modelo</Text></View>
                                                 <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 700,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{product.skuFamily}</Text></View>
@@ -232,7 +232,7 @@ const stylesTable = StyleSheet.create({
         flexGrow: 1
     },
     tableInfo_body_td: {
-        paddingVertical: 8,
+        paddingVertical: 5,
         paddingHorizontal: 8,
         borderColor: theme.colors.lines,
         borderStyle: 'solid',

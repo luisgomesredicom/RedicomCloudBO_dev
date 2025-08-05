@@ -11,12 +11,7 @@ export const ProductItem = ({index, item, updateItem, total, linkAction, totalFi
     
     return (
         <>
-            {index == 0 ? (
-                <View style={{flexDirection: 'row',alignItems: 'center',justifyContent: 'space-between',gap: 10,marginBottom: 32,paddingHorizontal: theme.containerPadding, paddingTop: 8}}>
-                    <View><Text style={[theme.listNavSubtitle, {color: theme.colors.darkgray}]}>Produtos</Text></View>
-                    <View><Link text={totalFilters > 0 ? `Filtrar (${totalFilters})` : 'Filtrar'} onPress={() => linkAction({ type: "toggleFilters" })}/></View>
-                </View>
-            ) : (
+            {index > 0 && (
                 <View style={{height: 0,backgroundColor: theme.colors.background,marginTop: 10,marginBottom: 10}}></View>
             )}
 
