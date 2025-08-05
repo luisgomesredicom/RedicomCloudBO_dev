@@ -1,101 +1,137 @@
 import React from 'react';
 import { View, Image, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native';
 import { Text } from 'react-native-paper';
-import { theme } from '../styles/styles'
+import { theme } from '../styles/styles';
 import { Badge, Icon } from './elements';
 import { Link } from './buttons';
 
-export const ProductItem = ({index, item, updateItem, total, linkAction, totalFilters}) => {
+export const ProductItem = ({ index, item, updateItem, linkAction, totalFilters }) => {
     const navigation = useNavigation();
-    
+
+    const renderLabel = (label, value) => (
+        value && (
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ width: 74, marginRight: 10 }}>
+                    <Text style={theme.small}>{label}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                    <Text 
+                        style={[theme.small, { fontWeight: '700', color: theme.colors.black }]} 
+                        numberOfLines={1} 
+                        ellipsizeMode='tail'
+                    >
+                        {value}
+                    </Text>
+                </View>
+            </View>
+        )
+    );
+
     return (
         <>
-            {index > 0 && (
-                <View style={{height: 0,backgroundColor: theme.colors.background,marginTop: 10,marginBottom: 10}}></View>
+            {index === 0 ? (
+                <View style={styles.headerContainer}>
+                    <Text style={[theme.listNavSubtitle, { color: theme.colors.darkgray }]}>Produtos</Text>
+                    <Link 
+                        text={totalFilters > 0 ? `Filtrar (${totalFilters})` : 'Filtrar'} 
+                        onPress={() => linkAction({ type: 'toggleFilters' })} 
+                    />
+                </View>
+            ) : (
+                <View style={styles.separator} />
             )}
 
             <TouchableOpacity
-                key={item.index}
-                style={{marginTop: 0,marginBottom: 0,marginHorizontal: theme.containerPadding}}
-                onPress={() => {
-                    navigation.navigate({
-                        name: 'DetProductsScreen',
-                        params: {
-                            title: item.multiLanguageContent.pt.nameListing,
-                            product: item,
-                            update: updateItem,
-                        }
-                    })
-                }}
+                style={styles.itemContainer}
+                onPress={() => navigation.navigate('DetProductsScreen', {
+                    title: item.multiLanguageContent.pt.nameListing,
+                    product: item,
+                    update: updateItem,
+                })}
             >
-                <View style={{flexDirection: 'row',gap: 10,alignItems: 'flex-start'}}>
-                    <View style={{position: 'relative',width: 60,height: 80,flexShrink: 0}}>
+                <View style={{ flexDirection: 'row', gap: 10, alignItems: 'flex-start' }}>
+                    
+                    {/* Imagem */}
+                    <View style={styles.imageWrapper}>
                         <View style={theme.productMaskImage}></View>
-                        <Image source={{uri: item.image.default}} style={{resizeMode: 'cover',flex: 1}} />
-
+                        <Image 
+                            source={{ uri: item.image.default }} 
+                            style={{ resizeMode: 'cover', flex: 1 }} 
+                        />
                         {item.active == 1 && (
-                            <Badge type="dot" style={{position: 'absolute',top: 4,right: 4,zIndex: 1}} />
+                            <Badge type="dot" style={styles.badge} />
                         )}
                     </View>
-                    
-                    <View style={{flex: 1}}>
-                        <View style={{marginTop: 0,flex: 1,flexDirection: 'row',alignItems: 'center',position: 'relative'}}>
-                            <View style={{gap: 0,flex: 1,minHeight: 86}}>
-                                {item.brand && item.brand.multiLanguageContent.pt.name != '' && (
-                                    <View style={{paddingRight: 36,marginBottom: 0}}>
-                                        <Text style={[theme.small, {color: theme.colors.black}]}>
+
+                    {/* Informações */}
+                    <View style={{ flex: 1 }}>
+                        <View style={styles.infoWrapper}>
+                            <View style={{ gap: 0, flex: 1, minHeight: 86 }}>
+                                {item.brand?.multiLanguageContent.pt.name && (
+                                    <View style={{ paddingRight: 36 }}>
+                                        <Text style={[theme.small, { color: theme.colors.black }]}>
                                             {item.brand.multiLanguageContent.pt.name}
                                         </Text>
                                     </View>
                                 )}
 
-                                <View style={{paddingRight: 36, paddingBottom: 5}}>
-                                    <Text style={[theme.listNavSubtitle, {fontWeight: 700, color: theme.colors.black}]}>
+                                <View style={{ paddingRight: 36, paddingBottom: 5 }}>
+                                    <Text style={[theme.listNavSubtitle, { fontWeight: '700', color: theme.colors.black }]}>
                                         {item.multiLanguageContent.pt.nameListing}
                                     </Text>
                                 </View>
 
-                                <View style={{gap: 1,marginTop: 2}}>
-                                    <View style={{flexDirection: 'row',alignItems: 'center'}}>
-                                        <View style={{width: 74,marginRight: 10}}><Text style={[theme.small]}>Ref. Modelo</Text></View>
-                                        <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 700,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.skuFamily}</Text></View>
-                                    </View>
-
-                                    <View style={{flexDirection: 'row',alignItems: 'center'}}>
-                                        <View style={{width: 74,marginRight: 10}}><Text style={[theme.small]}>Ref. Cor</Text></View>
-                                        <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 700,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.skuGroup}</Text></View>
-                                    </View>
-                                    
-                                    {(item.color && item.color.multiLanguageContent) && (
-                                        <View style={{flexDirection: 'row',alignItems: 'center'}}>
-                                            <View style={{width: 74,marginRight: 10}}><Text style={[theme.small]}>Cor</Text></View>
-                                            <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 700,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.color.multiLanguageContent.pt.name}</Text></View>
-                                        </View>
-                                    )}
+                                <View style={{ gap: 1, marginTop: 2 }}>
+                                    {renderLabel('Ref. Modelo', item.skuFamily)}
+                                    {renderLabel('Ref. Cor', item.skuGroup)}
+                                    {renderLabel('Cor', item.color?.multiLanguageContent?.pt?.name)}
                                 </View>
                             </View>
-                            <View style={{marginLeft: 10,marginRight: -6}}>
-                                <Icon code="818" size={22} style={{color: theme.colors.black}}/>
-                            </View>
+
+                            <Icon code="818" size={22} style={{ color: theme.colors.black, marginLeft: 10, marginRight: -6 }} />
                         </View>
                     </View>
                 </View>
             </TouchableOpacity>
         </>
-    )
+    );
+};
 
-    /*const SwitchTemplate = function(props) {
-        const [isEnabled, setIsEnabled] = useState(props.active == 1 ? true : false);
-        const toggleSwitch = () => setIsEnabled(!isEnabled);
-    
-        return (
-        <View style={{flexDirection: 'row',alignItems: 'center'}}>
-            <View style={{paddingHorizontal: 4,width: 50}}>
-            {isEnabled == true && <Text style={{color: theme.colors.success,fontWeight: '400'}}>Ativo</Text>}
-            </View>
-            <Switch value={isEnabled} onValueChange={toggleSwitch} color='#71cf6d' style={{ transform: [{ scaleX: .85 }, { scaleY: .85 }] }}/>
-        </View>
-        );
-    }*/
-}
+const styles = {
+    headerContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 10,
+        marginBottom: 32,
+        paddingHorizontal: theme.containerPadding,
+        paddingTop: 8,
+    },
+    separator: {
+        height: 0,
+        backgroundColor: theme.colors.background,
+        marginVertical: 10,
+    },
+    itemContainer: {
+        marginHorizontal: theme.containerPadding,
+    },
+    imageWrapper: {
+        position: 'relative',
+        width: 60,
+        height: 80,
+        flexShrink: 0,
+    },
+    badge: {
+        position: 'absolute',
+        top: 4,
+        right: 4,
+        zIndex: 1,
+    },
+    infoWrapper: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        position: 'relative',
+    },
+};

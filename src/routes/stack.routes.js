@@ -252,7 +252,8 @@ export function MainStackRoutes() {
                                 headerTitle: () => (
                                     <HearderTitle title={route.params.title} />
                                 ),
-                                title: route.params.title
+                                title: route.params.title,
+                                headerTitleAlign: 'center'
                             })}
                         />
 

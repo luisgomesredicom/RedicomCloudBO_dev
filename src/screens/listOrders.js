@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useReducer, useCallback} from 'react';
-import { StatusBar, View, FlatList, TouchableOpacity, StyleSheet, RefreshControl, Image, Dimensions } from 'react-native';
+import { ScrollView, StatusBar, View, FlatList, TouchableOpacity, StyleSheet, RefreshControl, Image, Dimensions } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SvgXml } from 'react-native-svg';
 import { remoteAPI, numberFormat, dateFormatter } from '../core/utils';
@@ -159,7 +159,7 @@ export function ListOrders() {
                 <View style={[theme.cardItem, {flexDirection: 'column',flexGrow: 1,gap: 8}]}>
                     <View style={{gap: 2}}>
                         <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between'}}>
-                            <Text style={[theme.listNavSubtitle, {color: theme.colors.black}]}>{item.orderRef}</Text>
+                            <Text style={[theme.listNavSubtitle, {color: theme.colors.black, fontWeight: 700}]}>{item.orderRef}</Text>
                             <View style={{flexDirection: 'row',alignItems: 'center',marginLeft: 'auto',gap: 10}}>
                                 <CountryFlag code={item.countryCode} size={20} />
                             </View>
@@ -186,12 +186,14 @@ export function ListOrders() {
                             </View>
                         </View>
                     </View>
-
-                    <View style={{flexDirection: 'row',gap: 4}}>
-                        {item.products.map((product, index) => (
-                            <ProductImage key={index} uri={product.image} />
-                        ))}
-                    </View>
+                    
+                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
+                        <View style={{flexDirection: 'row',gap: 4}}>
+                            {item.products.map((product, index) => (
+                                <ProductImage key={index} uri={product.image} />
+                            ))}
+                        </View>
+                    </ScrollView>
 
                     <View style={{flexDirection: 'row',gap: 10,alignItems: 'center',justifyContent: 'space-between'}}>
                         <View style={{flexDirection: 'row',gap: 10,alignItems: 'center'}}>
