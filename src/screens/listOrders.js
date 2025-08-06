@@ -3,16 +3,15 @@ import { ScrollView, StatusBar, View, FlatList, TouchableOpacity, StyleSheet, Re
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SvgXml } from 'react-native-svg';
 import { remoteAPI, numberFormat, dateFormatter } from '../core/utils';
-import { Badge, CountryFlag, LoadingFullscreen, Noresults } from '../components/elements';
+import { Badge, CountryFlag, LoadingFullscreen, Noresults, Icon } from '../components/elements';
 import { SearchBar } from '../components/searchBar';
 import { theme } from '../styles/styles'
 import { Text, ActivityIndicator } from 'react-native-paper';
-import { Icon } from '../components/elements';
 import { Link } from '../components/buttons';
 import { ModalFilters, ModalFiltersContext, ModalFiltersReducer, ModalFiltersState} from '../components/modalFilters'
 
 export function ListOrders() {
-    /* 0 => InÃ­cio da pÃ¡gina | -1 => Pedido Ã  API | 1 => Tudo carregado */
+    /* 0 => Iní­cio da página | -1 => Pedido á  API | 1 => Tudo carregado */
     const [pageStatus, setPageStatus] = useState(0);
     const [items, setItems] = useState([]);
     const [nextPageLoading, setNextPageLoading] = useState(false);
@@ -79,9 +78,9 @@ export function ListOrders() {
         const image = `https://www.redicom.pt/checkout${src.split("/checkout")[1]}`;
 
         return (
-            <View style={{width: 34,minHeight: 24}}>
+            <View style={{width: 34,minHeight: 22}}>
                 {/*<SvgXml xml={svgXmlData} width="100%" />*/}
-                <Image source={{uri: image}} style={{resizeMode: 'contain',flex: 1,width: 34,height: 24}} />
+                <Image source={{uri: image}} style={{resizeMode: 'contain',flex: 1,width: 34,height: 22}} />
             </View>
         );
     }
@@ -92,9 +91,9 @@ export function ListOrders() {
         const image = `https://www.redicom.pt/checkout${src.split("/checkout")[1]}`;
 
         return (
-            <View style={{width: 34,minHeight: 24}}>
+            <View style={{width: 34,minHeight: 22}}>
                 {/*<SvgXml xml={svgXmlData} width="100%" />*/}
-                <Image source={{uri: image}} style={{resizeMode: 'contain',flex: 1,width: 34,height: 24}} />
+                <Image source={{uri: image}} style={{resizeMode: 'contain',flex: 1,width: 34,height: 22}} />
             </View>
         );
     }
@@ -116,7 +115,7 @@ export function ListOrders() {
             }
         }, [uri]);
 
-        // Calcula 1/6 da largura do ecrÃƒÂ£
+        // Calcula 1/6 da largura do ecrã
         const screenWidth = Dimensions.get('window').width;
         const imageWidth = (screenWidth - (theme.containerPadding * 2) - 20) / 6;
 
@@ -136,36 +135,27 @@ export function ListOrders() {
         );
     }
 
-
-
     const CardItem = ({index, item}) => {
         const { date: startDate, time: startTime } = dateFormatter(item.date);
 
         return (
             <>
                 {index == 0 ? (() => {
-                    const totalFilters = getActiveFiltersCount();
-
-                    return (
-                        <View style={{flexDirection: 'row',alignItems: 'center',justifyContent: 'space-between',gap: 10,marginTop: 28,marginBottom: 13,paddingHorizontal: theme.containerPadding}}>
-                            <View><Text style={[theme.listNavSubtitle, {color: theme.colors.darkgray}]}>Encomendas</Text></View>
-                            <View><Link text={totalFilters > 0 ? `Filtrar (${totalFilters})` : 'Filtrar'} onPress={() => modalFiltersDispatch({ type: "toggleFilters" })}/></View>
-                        </View>
-                    )
+                    <View style={{height: 0,backgroundColor: theme.colors.background}}></View>
                 })() : (
-                    <View style={{height: 6,backgroundColor: theme.colors.background}}></View>
+                    <View style={statistics.separator} />
                 )}
                 
                 <View style={[theme.cardItem, {flexDirection: 'column',flexGrow: 1,gap: 8}]}>
                     <View style={{gap: 2}}>
-                        <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between'}}>
+                        <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between', marginBottom: 4}}>
                             <Text style={[theme.listNavSubtitle, {color: theme.colors.black, fontWeight: 700}]}>{item.orderRef}</Text>
                             <View style={{flexDirection: 'row',alignItems: 'center',marginLeft: 'auto',gap: 10}}>
-                                <CountryFlag code={item.countryCode} size={20} />
+                                <CountryFlag code={item.countryCode} size={22} />
                             </View>
                         </View>
 
-                        <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between',marginTop: 2}}>
+                        <View style={{flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between',marginTop: 2, marginBottom: 2}}>
                             <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.customerName}</Text>
                             <View style={{flexDirection: 'row',alignItems: 'center',gap: 10}}>
                                 {item.customerSince == 'SEM_REGISTO' ? (
@@ -195,7 +185,7 @@ export function ListOrders() {
                         </View>
                     </ScrollView>
 
-                    <View style={{flexDirection: 'row',gap: 10,alignItems: 'center',justifyContent: 'space-between'}}>
+                    <View style={{flexDirection: 'row',gap: 10,alignItems: 'center',justifyContent: 'space-between', marginTop: 2}}>
                         <View style={{flexDirection: 'row',gap: 10,alignItems: 'center'}}>
                             {getPaymentImage(item.paymentImage)}
                             <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{item.totalAmount} <Text style={{color: theme.colors.darkgray}}>{item.currency}</Text></Text>
@@ -215,11 +205,12 @@ export function ListOrders() {
                     </View>
                 </View>
             </>
-        )
+        )        
     }
 
     /* Filters */
     const [modalFilters, modalFiltersDispatch] = useReducer(ModalFiltersReducer, ModalFiltersState);
+    const [filtersLength, setFiltersLength] = useState(0);
 
     useEffect(() => {
         if(filtersApplied != null || (filtersApplied == null && Object.keys(modalFilters.filtersActive).length > 0)) {
@@ -346,7 +337,40 @@ export function ListOrders() {
         )
     }
 
-    return (
+    const HeaderList = ({ style, totalFilters, modalFiltersDispatch }) => (
+        <View 
+            style={[
+                {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',                    
+                    paddingHorizontal: theme.containerPadding,
+                    paddingTop: 0
+                },
+                style
+            ]}
+        >
+            <View>
+                <Text style={[theme.listNavSubtitle, {color: theme.colors.darkgray, fontWeight: 700, fontSize: 16}]}>
+                    Encomendas
+                </Text>
+            </View>
+            <View>
+                <Link 
+                    text={totalFilters > 0 ? `Filtrar (${totalFilters})` : 'Filtrar'} 
+                    onPress={() => modalFiltersDispatch({ type: "toggleFilters" })} 
+                    />
+            </View>
+        </View>
+    );
+    
+    const totalFilters = getActiveFiltersCount();
+
+    const isEmpty = items.length === 0;
+    const isLoading = pageStatus < 0;
+    const hasStarted = pageStatus !== 0;
+
+    return ( 
         <SafeAreaView style={theme.safeAreaView} edges={['right','left']}>
             <StatusBar barStyle='default'/>
 
@@ -360,48 +384,47 @@ export function ListOrders() {
                 </View>
 
                 <View style={[theme.wrapperPage]}>
-                {
-                    pageStatus != 0 && items.length == 0 ? (
-                        <Noresults />
-                    ) : (
+                    {!hasStarted && <LoadingFullscreen />}
+
+                    {hasStarted && (
                         <>
-                        {
-                            pageStatus != 0 ? (
+                            {isEmpty && !isLoading && (
                                 <>
-                                    {
-                                    pageStatus < 0 ? (
-                                        <View style={{height: 80,paddingBottom: 15,justifyContent: 'center'}}>
-                                            <ActivityIndicator size={32} color={theme.colors.darktheme} />
-                                        </View>
-                                    ) : (
-                                        <>
-                                        {items.length == 0 ? (
-                                            <Noresults />
-                                        ) : (
-                                            <FlatList 
-                                                style={theme.cardList}
-                                                contentContainerStyle={{paddingBottom: Math.max(insets.bottom)}}
-                                                data={items}
-                                                keyExtractor={ item => item.id }
-                                                renderItem={ ({item, index}) => <CardItem index={index} item={item}/> }
-                                                onEndReached={loadResults}
-                                                onEndReachedThreshold={ 0.15 }
-                                                ListFooterComponent={ <FooterList load={nextPageLoading} /> }
-                                                refreshControl={
-                                                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                                                }
-                                            />
-                                        )}
-                                        </>
-                                    )}
+                                    <HeaderList style={{ marginTop: 33 }} totalFilters={totalFilters} modalFiltersDispatch={modalFiltersDispatch} />
+                                    <Noresults />
                                 </>
-                            ) : (
-                                <LoadingFullscreen />
-                            )
-                        }
+                            )}
+
+                            {!isEmpty && !isLoading && (
+                                <FlatList 
+                                    ListHeaderComponent={
+                                        <HeaderList
+                                            style={{ gap: 10, marginBottom: 15, marginTop: 10 }}
+                                            totalFilters={totalFilters}
+                                            modalFiltersDispatch={modalFiltersDispatch}
+                                        />
+                                    }
+                                    style={[theme.cardList, theme.wrapperContainerList]}
+                                    contentContainerStyle={{paddingBottom: Math.max(insets.bottom)}}
+                                    data={items}
+                                    keyExtractor={ item => item.id }
+                                    renderItem={ ({item, index}) => <CardItem index={index} item={item}/> }
+                                    onEndReached={loadResults}
+                                    onEndReachedThreshold={ 0.15 }
+                                    ListFooterComponent={ <FooterList load={nextPageLoading} /> }
+                                    refreshControl={
+                                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                                    }
+                                />
+                            )}
+
+                            {isLoading && (
+                                <View style={{height: 80,paddingBottom: 15,justifyContent: 'center'}}>
+                                    <ActivityIndicator size={32} color={theme.colors.darktheme} />
+                                </View>
+                            )}
                         </>
-                    )
-                }
+                    )}                
                 </View>
             </View>
         </SafeAreaView>
@@ -416,5 +439,6 @@ const statistics = StyleSheet.create({
     text2: [theme.small, {fontWeight: '500',color: theme.colors.black}],
     value: {marginTop: 3,borderRadius: 2,backgroundColor: theme.colors.successlight,padding: 2,width: '100%'},
     valueText: [theme.small, {fontWeight: '500',color: theme.colors.success,textAlign: 'center'}],
-    bottom: {marginTop: 5}
+    bottom: {marginTop: 5},
+    separator: {height: 6,backgroundColor: theme.colors.background}
 });
