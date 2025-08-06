@@ -8,9 +8,7 @@ import { Badge, LoadingFullscreen, Noresults } from '../components/elements';
 import { SearchBar } from '../components/searchBar';
 import { theme } from '../styles/styles'
 import { ActivityIndicator } from 'react-native-paper';
-import { Link } from '../components/buttons';
-import { Text } from 'react-native-paper';
-import { ModalFilters, ModalFiltersContext, ModalFiltersReducer, ModalFiltersState} from '../components/modalFilters';
+import { ModalFilters, ModalFiltersContext, ModalFiltersReducer, ModalFiltersState} from '../components/modalFilters'
 
 export function ListProducts() {
     /* 0 => Iní­cio da página | -1 => Pedido á  API | 1 => Tudo carregado */
@@ -200,34 +198,6 @@ export function ListProducts() {
         )
     }
 
-    const HeaderList = () => {
-        <View 
-            style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: 10,
-                marginBottom: 10,
-                marginTop: 31,
-                paddingHorizontal: theme.containerPadding,
-                paddingTop: 0
-            }}
-        >
-            <View>
-                <Text style={[theme.listNavSubtitle, {color: theme.colors.darkgray}]}>
-                    Produtos
-                </Text>
-            </View>
-            <View>
-                <Link 
-                    text={totalFilters > 0 ? `Filtrar (${totalFilters})` : 'Filtrar'} 
-                    onPress={() => modalFiltersDispatch({ type: "toggleFilters" })} 
-                />
-            </View>
-        </View>
-    }
-
-    const totalFilters = getActiveFiltersCount();
     return (
         <SafeAreaView style={theme.safeAreaView} edges={['right','left']}>
             <StatusBar barStyle='default'/>
@@ -237,114 +207,57 @@ export function ListProducts() {
             </ModalFiltersContext.Provider>
 
             <View style={{flex: 1,backgroundColor: theme.colors.darktheme}}>
-                <View style={{paddingHorizontal: 15,paddingVertical: 10, paddingBottom: 12}}>
+                <View style={{paddingHorizontal: 15,paddingVertical: 10}}>
                     <SearchBar onChangeText={onChangeSearch}/>
                 </View>
 
-
                 <View style={[theme.wrapperPage]}>
-                    
-                    {
-                        pageStatus != 0 && items.length == 0 ? (
-                            <>
-                                <View 
-                                    style={{
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between',
-                                        gap: 10,
-                                        marginBottom: 10,
-                                        marginTop: 31,
-                                        paddingHorizontal: theme.containerPadding,
-                                        paddingTop: 0
-                                    }}
-                                >
-                                    <View>
-                                        <Text style={[theme.listNavSubtitle, {color: theme.colors.darkgray}]}>
-                                            Produtos
-                                        </Text>
-                                    </View>
-                                    <View>
-                                        <Link 
-                                            text={totalFilters > 0 ? `Filtrar (${totalFilters})` : 'Filtrar'} 
-                                            onPress={() => modalFiltersDispatch({ type: "toggleFilters" })} 
-                                        />
-                                    </View>
+                {
+                    pageStatus != 0 && items.length == 0 ? (
+                        <Noresults />
+                    ) : (
+                        <>
+                        {
+                            pageStatus != 0 ? (
+                                <View style={[theme.wrapperContentStyle, {padding: 0}]}>
+                                    {
+                                    pageStatus < 0 ? (
+                                        <View style={{height: 80,paddingBottom: 15,justifyContent: 'center'}}>
+                                            <ActivityIndicator size={32} color={theme.colors.darktheme} />
+                                        </View>
+                                    ) : (
+                                        <>
+                                        {items.length == 0 ? (
+                                            <Noresults />
+                                        ) : (() => {
+                                            const totalFilters = getActiveFiltersCount();
+
+                                            return (
+                                                <FlatList
+                                                    style={theme.wrapperContainerList}
+                                                    contentContainerStyle={{paddingBottom: Math.max(insets.bottom)}}
+                                                    data={items}
+                                                    keyExtractor={ item => item.id }
+                                                    renderItem={ ({item, index}) => <ProductItem index={index} item={item} updateItem={updateItem} total={resultsLength} linkAction={modalFiltersDispatch} totalFilters={totalFilters}/> }
+                                                    onEndReached={loadResults}
+                                                    onEndReachedThreshold={ 0.15 }
+                                                    ListFooterComponent={ <FooterList load={nextPageLoading} /> }
+                                                    refreshControl={
+                                                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                                                    }
+                                                />
+                                            )
+                                        })()}
+                                        </>
+                                    )}
                                 </View>
-
-                                <Noresults />
-                            </>
-                        ) : (
-                            <>
-                                {pageStatus != 0 ? (
-                                    <View style={[theme.wrapperContentStyle, {padding: 0}]}>
-                                        {pageStatus < 0 ? (
-                                            <View style={{height: 80,paddingBottom: 15,justifyContent: 'center'}}>
-                                                <ActivityIndicator size={32} color={theme.colors.darktheme} />
-                                            </View>
-                                        ) : (
-                                            <>
-                                                {items.length == 0 ? (
-                                                    <>
-                                                        <View
-                                                            style={{
-                                                                flexDirection: 'row',
-                                                                alignItems: 'center',
-                                                                justifyContent: 'space-between',
-                                                                gap: 10,
-                                                                marginBottom: 10,
-                                                                marginTop: 31,
-                                                                paddingHorizontal: theme.containerPadding,
-                                                                paddingTop: 0
-                                                            }}
-                                                        >
-                                                            <View>
-                                                                <Text style={[theme.listNavSubtitle, { color: theme.colors.darkgray }]}>
-                                                                    Produtos
-                                                                </Text>
-                                                            </View>
-                                                            <View>
-                                                                <Link
-                                                                    text={totalFilters > 0 ? `Filtrar (${totalFilters})` : 'Filtrar'}
-                                                                    onPress={() => modalFiltersDispatch({ type: "toggleFilters" })} />
-                                                            </View>
-                                                        </View>
-                                                        <Noresults />
-                                                        </>
-                                                ) : (
-                                                    <FlatList
-                                                        style={theme.wrapperContainerList}
-                                                        contentContainerStyle={{paddingBottom: Math.max(insets.bottom)}}
-                                                        data={items}
-                                                        keyExtractor={item => item.id}
-                                                        renderItem={({item, index}) => (
-                                                            <ProductItem 
-                                                                index={index} 
-                                                                item={item} 
-                                                                updateItem={updateItem} 
-                                                                linkAction={modalFiltersDispatch}
-                                                                total={resultsLength} 
-                                                                totalFilters={totalFilters} 
-                                                            />
-                                                        )}
-                                                        onEndReached={loadResults}
-                                                        onEndReachedThreshold={0.15}
-                                                        ListFooterComponent={<FooterList load={nextPageLoading} />}
-                                                        refreshControl={
-                                                            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                                                        }
-                                                    />
-                                                )}
-                                            </>
-                                        )}
-                                    </View>
-                                ) : (
-                                    <LoadingFullscreen />
-                                )}
-                            </>
-                        )
-                    }
-
+                            ) : (
+                                <LoadingFullscreen />
+                            )
+                        }
+                        </>
+                    )
+                }
                 </View>
             </View>
         </SafeAreaView>
