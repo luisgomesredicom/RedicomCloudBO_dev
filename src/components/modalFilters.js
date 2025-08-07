@@ -1,13 +1,14 @@
 import React, {useState, createContext, useContext, useEffect} from 'react';
-import { View, ScrollView, Pressable, TouchableOpacity, Modal, TouchableHighlight, StyleSheet, Dimensions, StatusBar } from 'react-native';
+import { View, ScrollView, Pressable, TouchableOpacity, Modal, TouchableHighlight, StyleSheet, Dimensions, StatusBar, Platform } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { theme } from '../styles/styles'
 import { Text, Chip } from 'react-native-paper';
 import { Icon } from "../components/elements";
 import { Link } from '../components/buttons';
 import Button from '../components/buttons'
 import { center } from '@shopify/react-native-skia';
+
 export const ModalFiltersState = {
     active: false,
     filters: [],
@@ -50,6 +51,7 @@ export const ModalFilters = (params) => {
 
     const [dateStart, setDateStart] = useState(null);
     const [dateEnd, setDateEnd] = useState(null);
+    const [showPickerDate, setShowPickerDate] = useState(false);
 
     useEffect(() => {
         setFilterStates([]);
@@ -188,15 +190,15 @@ export const ModalFilters = (params) => {
         <Modal animationType="slide" transparent={true} visible={data.active}>
             <SafeAreaView style={theme.safeAreaView} edges={['right','left','bottom']}>
                 <StatusBar barStyle='light-content'/>
-                <View style={{backgroundColor: theme.colors.darktheme,paddingTop: Math.max(insets.top)}}>
-                    <View style={{flexDirection: 'row',justifyContent: 'space-between',alignItems: 'center',height: 52}}>
+                <View style={{backgroundColor: theme.colors.darktheme}}> {/*paddingTop: Math.max(insets.top)*/}
+                    <View style={{flexDirection: 'row',justifyContent: 'space-between',alignItems: 'center',height: 46}}>
                         <View style={{width: 80}}>
                             <TouchableOpacity style={{paddingHorizontal: theme.containerPadding,height: 50,justifyContent: 'center'}} onPress={CloseFilters}>
                                 <Icon code="807" size={28} style={{color: theme.colors.white}} />
                             </TouchableOpacity>
                         </View>
 
-                        <Text style={[theme.subtitle, {color: theme.colors.white,fontSize: 18}]}>{params.title}</Text>
+                        <Text style={[theme.subtitle, {color: theme.colors.white,fontSize: 20}]}>{params.title}</Text>
 
                         <View style={{width: 80}}>
                             <View style={{marginLeft: 'auto',paddingRight: theme.containerPadding}}>
@@ -225,10 +227,10 @@ export const ModalFilters = (params) => {
                                             style={[stylesFilters.categoryButton, filterCatrgoryActiveIndex == index ? stylesFilters.categoryButtonActive : '']}
                                         >
                                             <View style={{flexDirection: 'row',gap: 10,justifyContent: 'space-between', alignItems: 'center'}}>
-                                                <Text style={[stylesFilters.categoryButtonText, filterCatrgoryActiveIndex == index ? stylesFilters.categoryButtonActiveText : '', {width: '75%'}]}>
+                                                <Text style={[stylesFilters.categoryButtonText, filterCatrgoryActiveIndex == index ? stylesFilters.categoryButtonActiveText : '', {width: '75%', fontSize: 16}]}>
                                                     {filter.name}
                                                 </Text>
-                                                <Text style={[theme.paragraph, {color: theme.colors.darkgray}]}>
+                                                <Text style={[theme.paragraph, {color: theme.colors.darkgray, fontSize: 16}]}>
                                                     {activeCount > 0 ? activeCount : ''}
                                                 </Text>
                                             </View>
@@ -261,95 +263,153 @@ export const ModalFilters = (params) => {
                                     }
                                     
                                     return (
-                                        <Chip mode='flat'
+                                        <Chip
+                                            mode="flat"
                                             key={option.id ?? option.value}
                                             style={[
-                                                stylesFilters.optionButton, {
-                                                    backgroundColor: 'white',
-                                                    borderColor: isSelected ? theme.colors.linklight : theme.colors.lines
+                                                stylesFilters.optionButton,
+                                                {
+                                                backgroundColor: 'white',
+                                                borderColor: isSelected ? theme.colors.linklight : theme.colors.lines,
                                                 },
                                             ]}
                                             icon={() => {
-                                                if(isSelected)
-                                                    return (
-                                                        <View style={{width: 22,height: 22,alignItems: 'center',justifyContent: 'center',backgroundColor: theme.colors.background,borderRadius: 50}}>
-                                                            <Icon code="807" size={14} />
-                                                        </View>
-                                                    )
-                                                else
-                                                    return null;
+                                                if (isSelected)
+                                                return (
+                                                    <View
+                                                    style={{
+                                                        width: 22,
+                                                        height: 22,
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        backgroundColor: theme.colors.background,
+                                                        borderRadius: 50,
+                                                    }}
+                                                    >
+                                                    <Icon code="807" size={16} />
+                                                    </View>
+                                                );
+                                                return null;
                                             }}
-                                            textStyle={[
-                                                stylesFilters.optionButtonText,
-                                                {
-                                                    color: theme.colors.black,
-                                                    allowFontScaling: false,
-                                                },
-                                            ]}                                              
+                                            textStyle={{
+                                                color: theme.colors.black,
+                                                allowFontScaling: false,
+                                                fontSize: 16,
+                                            }}
                                             selected={isSelected}
                                             onPress={() => {
-                                                if(data.filters[filterCatrgoryActiveIndex].type == 'date') {
-                                                    var formattedDate = '';
-                                                    const newDate = new Date();
+                                                const isDate = data.filters[filterCatrgoryActiveIndex].type === 'date';
+                                                const isStart = option.id === 'dateStart';
 
-                                                    if(option.id == 'dateStart') {
-                                                        if(dateStart == null) {
-                                                            setDateStart(newDate);
-                                                            formattedDate = newDate.toISOString().replace('T', ' ').substring(0, 10);
-                                                        } else {
-                                                            setDateStart(null);
+                                                if (isDate) {
+                                                    const dateSelected = isStart ? dateStart : dateEnd;
+                                                    const currentDate = new Date();
+
+                                                    if (Platform.OS === 'android') {
+                                                        if (dateSelected) {
+                                                            // Limpar data se já estiver selecionada
+                                                            if (isStart) setDateStart(null);
+                                                            else setDateEnd(null);
+
+                                                            handleFilterToggle(option.id, '');
+                                                            return;
                                                         }
-                                                    } else {
-                                                        if(dateEnd == null) {
-                                                            setDateEnd(newDate);
-                                                            formattedDate = newDate.toISOString().replace('T', ' ').substring(0, 10);
-                                                        } else {
-                                                            setDateEnd(null);
-                                                        }
+
+                                                        // Abrir o DatePicker se ainda não há data
+                                                        DateTimePickerAndroid.open({
+                                                            value: currentDate,
+                                                            mode: 'date',
+                                                            is24Hour: true,
+                                                            onChange: (event, selectedDate) => {
+                                                            if (event.type === 'set' && selectedDate) {
+                                                                const newDate = new Date(selectedDate);
+                                                                const formattedDate = newDate.toISOString().split('T')[0];
+
+                                                                if (isStart) setDateStart(newDate);
+                                                                else setDateEnd(newDate);
+
+                                                                handleFilterToggle(option.id, formattedDate);
+                                                            }
+                                                            },
+                                                        });
+
+                                                        return;
                                                     }
-                                                    
-                                                    handleFilterToggle(option.id, formattedDate);
+
+                                                    // iOS
+                                                    if (dateSelected) {
+                                                        // Limpar data se já houver
+                                                        if (isStart) setDateStart(null);
+                                                        else setDateEnd(null);
+
+                                                        handleFilterToggle(option.id, '');
+                                                    } else {
+                                                        if (isStart) setDateStart(currentDate);
+                                                        else setDateEnd(currentDate);
+
+                                                        const formattedDate = currentDate.toISOString().split('T')[0];
+                                                        handleFilterToggle(option.id, formattedDate);
+                                                    }
+
                                                     return;
                                                 }
-                                                
-                                                handleFilterToggle(data.filters[filterCatrgoryActiveIndex].field || data.filters[filterCatrgoryActiveIndex].type, option.id ?? option.value);
+
+                                                // Outros tipos de filtro (não data)
+                                                handleFilterToggle(
+                                                    data.filters[filterCatrgoryActiveIndex].field ||
+                                                    data.filters[filterCatrgoryActiveIndex].type,
+                                                    option.id ?? option.value
+                                                );
                                             }}>
                                             {(() => {
-                                                if(data.filters[filterCatrgoryActiveIndex].type == 'date') {
-                                                    const date = option.id == 'dateStart' ? dateStart : dateEnd;
-                                                    if(date != null) {
-                                                        return (
-                                                            <View style={{height: 22,alignItems: center,justifyContent: 'center'}}>
-                                                                <Text>{date.toLocaleDateString('pt-PT')}</Text>
-                                                                <View style={{ transform: [{ scale: 999 },{translateX: 20}],opacity: 0.1,position: 'absolute',zIndex: 1}}>
-                                                                    <DateTimePicker
-                                                                        value={date}
-                                                                        mode="date"
-                                                                        display='compact'
-                                                                        locale="pt-PT"
-                                                                        onChange={(event, selectedDate) => {
-                                                                            const newDate = new Date(selectedDate);
-                                                                            const formattedDate = newDate.toISOString().replace('T', ' ').substring(0, 10);
-                                                                            
-                                                                            if(option.id == 'dateStart') {
-                                                                                setDateStart(selectedDate);
-                                                                            } else {
-                                                                                setDateEnd(selectedDate);
-                                                                            }
+                                                const isDate = data.filters[filterCatrgoryActiveIndex].type === 'date';
+                                                const isStart = option.id === 'dateStart';
 
-                                                                            handleFilterToggle(option.id, formattedDate);
-                                                                        }}
-                                                                    />
-                                                                </View>
-                                                            </View>
-                                                        )
-                                                    }
-                                                }
+                                                if (isDate) {
+                                                const date = isStart ? dateStart : dateEnd;
+
                                                 return (
-                                                    option.name
-                                                )
+                                                    <>
+                                                    {date ? date.toLocaleDateString('pt-PT') : option.name}
+                                                    {Platform.OS === 'ios' && date && (
+                                                        <View
+                                                        style={{
+                                                            transform: [{ scale: 999 }, { translateX: 20 }],
+                                                            opacity: 0.1,
+                                                            position: 'absolute',
+                                                            zIndex: 1,
+                                                        }}
+                                                        >
+                                                        <DateTimePicker
+                                                            value={date}
+                                                            mode="date"
+                                                            display="compact"
+                                                            locale="pt-PT"
+                                                            onChange={(event, selectedDate) => {
+                                                            if (selectedDate) {
+                                                                const newDate = new Date(selectedDate);
+                                                                const formattedDate = newDate.toISOString().split('T')[0];
+
+                                                                if (isStart) {
+                                                                setDateStart(newDate);
+                                                                } else {
+                                                                setDateEnd(newDate);
+                                                                }
+
+                                                                handleFilterToggle(option.id, formattedDate);
+                                                            }
+                                                            }}
+                                                        />
+                                                        </View>
+                                                    )}
+                                                    </>
+                                                );
+                                                }
+
+                                                return option.name;
                                             })()}
                                         </Chip>
+
                                     )
                                 })}
                             </View>
@@ -368,7 +428,8 @@ export const ModalFilters = (params) => {
 
 const stylesFilters = StyleSheet.create({
     categoryButton: {
-        padding: 12,
+        paddingHorizontal: 15,
+        paddingVertical: 12,
         minHeight: 42,
         borderLeftWidth: 3,
         borderLeftColor: 'transparent',
@@ -389,7 +450,7 @@ const stylesFilters = StyleSheet.create({
         borderWidth: 1,
         borderColor: theme.colors.lines,
         width: '100%',
-        minHeight: 36,
+        minHeight: 40,
         justifyContent: 'center'
     },
     optionButtonText: {
