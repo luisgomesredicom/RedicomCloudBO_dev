@@ -236,11 +236,11 @@ export const ListStatistics = ({template, value, datetime}) => {
     }
 
     return (
-        <View style={{minHeight: 124,backgroundColor: theme.colors.darktheme,padding: theme.containerPadding,justifyContent: 'center'}}>
+        <View style={{minHeight: 142, backgroundColor: theme.colors.darktheme, padding: theme.containerPadding, paddingTop: 15, justifyContent: 'center'}}>
             <View><Text style={[theme.small, {color: theme.colors.gray}]}>{date}</Text></View>
             <View style={{flexDirection: 'row',alignItems: 'baseline',gap: 6}}>
-                <Text style={{fontSize: 48,color: theme.colors.white,fontWeight: '300'}}>{numberFormat(value)}</Text>
-                <Text style={[theme.listNavSubtitle, {color: theme.colors.gray}]}>{descrition}</Text>
+                <Text style={{fontSize: 53,color: theme.colors.white,fontWeight: 400, lineHeight: '60'}}>{numberFormat(value)}</Text>
+                <Text style={[theme.listNavSubtitle, {color: theme.colors.gray, fontSize: 16}]}>{descrition}</Text>
             </View>
         </View>
     );

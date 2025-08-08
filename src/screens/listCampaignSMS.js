@@ -9,7 +9,7 @@ import { Text, ActivityIndicator, Switch } from 'react-native-paper';
 import {TabsProvider, Tabs, TabScreen} from '../components/paperTabs';
 
 export function ListCampaignSMS() {
-    /* 0 => Início da página | -1 => Pedido à API | 1 => Tudo carregado */
+    /* 0 => Iní­cio da página | -1 => Pedido á  API | 1 => Tudo carregado */
     const [pageStatus, setPageStatus] = useState(0);
     const [items, setItems] = useState([]);
     const [items_active, setItems_active] = useState([]);
@@ -117,7 +117,7 @@ export function ListCampaignSMS() {
             {status: 0, icon: '001', color: 'warning'}, //Agendado
             {status: 1, icon: '003', color: 'success'}, //A Enviar
             {status: 3, icon: '005', color: 'gray'}, //Parada
-            {status: 5, icon: '005', color: 'gray'}, //Em preparação
+            {status: 5, icon: '005', color: 'gray'}, //Em preparaÃ§Ã£o
             {status: 9, icon: '004', color: 'success'}, //Finalizada
             {status: 10, icon: '002', color: 'gray'} //Cancelada
         ];
@@ -161,7 +161,7 @@ export function ListCampaignSMS() {
                 <View style={{height: 6,backgroundColor: theme.colors.background}}></View>
 
                 {index == 0 && (
-                    <View style={{height: theme.containerPadding,backgroundColor: theme.colors.white}}></View>
+                    <View style={{height: theme.containerPadding,marginTop: 6,backgroundColor: theme.colors.white}}></View>
                 )}
                 
                 <TouchableOpacity key={item.index} onPress={() => {
@@ -177,31 +177,31 @@ export function ListCampaignSMS() {
                 >
                     <View style={[theme.cardItem, {flexDirection: 'row',alignItems: 'center'}]}>
                         <View style={{flexGrow: 1,width: 1}}>
-                            <View style={{marginBottom: 12}}><Text style={[theme.listNavSubtitle, {color: theme.colors.black}]}>{item.title}</Text></View>
+                            <View style={{marginBottom: 12}}><Text style={[theme.listNavSubtitle, {color: theme.colors.black, fontWeight: 700, textTransform: 'capitalize'}]}>{item.title}</Text></View>
                             <View style={{flexDirection: 'row',alignItems: 'center',gap: 10,width: '100%'}}>
-                                <View style={{flexGrow: 1,width: 1,borderRadius: 6,borderWidth: 1,borderColor: theme.colors.lightgray,backgroundColor: theme.colors.successlight,paddingVertical: 3,paddingHorizontal: 6,minHeight: 61}}>
+                                <View style={{flexGrow: 1,width: '45%',borderRadius: 6,borderWidth: 1,borderColor: theme.colors.lightgray,backgroundColor: theme.colors.successlight,paddingVertical: 3,paddingHorizontal: 6,minHeight: 70}}>
                                     <Text numberOfLines={4} ellipsizeMode='tail' style={[theme.small, {fontSize: 10,lineHeight: 13,color: '#000'}]}>{item.message}</Text>
                                 </View>
-                                <View style={{width: 220,flexShrink: 0,height: '100%'}}>
-                                    <View style={{flexDirection: 'row',alignItems: 'center'}}>
+                                <View style={{width: '50%',flexShrink: 0,height: '100%'}}>
+                                    <View style={{flexDirection: 'row',alignItems: 'center', marginTop: 1}}>
                                         <View style={{width: 62,marginRight: 10}}><Text style={[theme.small]}>Estado</Text></View>
                                         <View style={{flex: 1,flexDirection: 'row',alignItems: 'center'}}>
-                                            <Icon code={currentSendStatus.icon} size={13} style={{color: theme.colors[currentSendStatus.color],marginRight: 4}}/>
+                                            <Icon code={currentSendStatus.icon} size={15} style={{color: theme.colors[currentSendStatus.color],marginRight: 4}}/>
                                             <Text style={[theme.small, {fontWeight: 500,color: theme.colors[currentSendStatus.color]}]} numberOfLines={1} ellipsizeMode='tail'>{item.flags[0].title}</Text>
                                         </View>
                                     </View>
 
-                                    <View style={{ flexDirection: 'row',alignItems: 'center'}}>
+                                    <View style={{ flexDirection: 'row',alignItems: 'center', marginTop: 1}}>
                                         <View style={{width: 62,marginRight: 10}}><Text style={[theme.small]}>Iniciado</Text></View>
-                                        <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{startDate}  <Text style={{color: theme.colors.darkgray}}>{startTime}</Text></Text></View>
+                                        <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{startDate}  <Text>{startTime}</Text></Text></View>
                                     </View>
 
-                                    <View style={{flexDirection: 'row',alignItems: 'center'}}>
+                                    <View style={{flexDirection: 'row',alignItems: 'center', marginTop: 1}}>
                                         <View style={{width: 62,marginRight: 10}}><Text style={[theme.small]}>Finalizado</Text></View>
-                                        <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{finishedDate}  <Text style={{color: theme.colors.darkgray}}>{finishedTime}</Text></Text></View>
+                                        <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{finishedDate}  <Text>{finishedTime}</Text></Text></View>
                                     </View>
                                     
-                                    <View style={{marginTop: 6}}>
+                                    <View style={{marginTop: 8}}>
                                         <ProgressBar percentage={item.stats.totalSentPercent}/>
                                     </View>
                                 </View>
@@ -233,7 +233,7 @@ export function ListCampaignSMS() {
                             </View>
                         </View>
                         <View style={{marginLeft: 10,marginRight: -6}}>
-                            <Icon code="818" size={22} style={{color: theme.colors.darkgray}}/>
+                            <Icon code="818" size={24} style={{color: theme.colors.dark}}/>
                         </View>
 
                         {tab == 0 && (
@@ -428,7 +428,7 @@ export function ListCampaignSMS() {
 }
 
 const statistics = StyleSheet.create({
-    container: {flexDirection: 'row',gap: 10,justifyContent: 'space-between',marginTop: 4},
+    container: {flexDirection: 'row',gap: 10,justifyContent: 'space-between',marginTop: 10},
     item: {flexDirection: 'row',gap: 10},
     columnRight: {width: 42},
     text1: [theme.small, {textAlign: 'right'}],

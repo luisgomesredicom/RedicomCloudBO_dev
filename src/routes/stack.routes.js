@@ -258,7 +258,8 @@ export function MainStackRoutes() {
                                 headerTitle: () => (
                                     <HearderTitle title={route.params.title} />
                                 ),
-                                title: route.params.title
+                                title: route.params.title,
+                                headerTitleAlign: 'center'
                             })}
                         />
 
@@ -271,7 +272,8 @@ export function MainStackRoutes() {
                                 headerTitle: () => (
                                     <HearderTitle title={route.params.title} />
                                 ),
-                                title: route.params.title
+                                title: route.params.title,
+                                headerTitleAlign: 'center'
                             })}
                         />
 
@@ -284,7 +286,8 @@ export function MainStackRoutes() {
                                 headerTitle: () => (
                                     <HearderTitle title={route.params.title} />
                                 ),
-                                title: route.params.title
+                                title: route.params.title,
+                                headerTitleAlign: 'center'
                             })}
                         />
 
@@ -297,7 +300,8 @@ export function MainStackRoutes() {
                                 headerTitle: () => (
                                     <HearderTitle title={route.params.title} />
                                 ),
-                                title: route.params.title
+                                title: route.params.title,
+                                headerTitleAlign: 'center'
                             })}
                         />
 
@@ -324,7 +328,8 @@ export function MainStackRoutes() {
                                 headerTitle: () => (
                                     <HearderTitle title={route.params.title} />
                                 ),
-                                title: route.params.title
+                                title: route.params.title,
+                                headerTitleAlign: 'center'
                             })}
                         />
 
@@ -337,7 +342,8 @@ export function MainStackRoutes() {
                                 headerTitle: () => (
                                     <HearderTitle title={route.params.title} />
                                 ),
-                                title: route.params.title
+                                title: route.params.title,
+                                headerTitleAlign: 'center'
                             })}
                         />
 
@@ -350,7 +356,8 @@ export function MainStackRoutes() {
                                 headerTitle: () => (
                                     <HearderTitle title={route.params.title} />
                                 ),
-                                title: route.params.title
+                                title: route.params.title,
+                                headerTitleAlign: 'center'
                             })}
                         />
 
@@ -363,7 +370,8 @@ export function MainStackRoutes() {
                                 headerTitle: () => (
                                     <HearderTitle title={route.params.title} />
                                 ),
-                                title: route.params.title
+                                title: route.params.title,
+                                headerTitleAlign: 'center'
                             })}
                         />
                     </MainStack.Group>
@@ -389,7 +397,8 @@ export function MainStackRoutes() {
                                 headerTitle: () => (
                                     <HearderTitle title={route.params.title} />
                                 ),
-                                title: route.params.title
+                                title: route.params.title,
+                                headerTitleAlign: 'center'
                             })}
                         />
                         <MainStack.Screen
@@ -402,7 +411,8 @@ export function MainStackRoutes() {
                                     <HearderTitle title={route.params.title} />
                                 ),
                                 title: route.params.title,
-                                action: route.params.action || null
+                                action: route.params.action || null,
+                                headerTitleAlign: 'center'
                             })}
                         />
                         <MainStack.Screen
@@ -414,7 +424,8 @@ export function MainStackRoutes() {
                                 headerTitle: () => (
                                     <HearderTitle title={route.params.title} />
                                 ),
-                                title: route.params.title
+                                title: route.params.title,
+                                headerTitleAlign: 'center'
                             })}
                         />
                     </MainStack.Group>
