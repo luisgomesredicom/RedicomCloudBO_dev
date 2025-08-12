@@ -151,35 +151,41 @@ export function DetCampaignSMS() {
                                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[theme.colors.white]} tintColor={theme.colors.white}/>
                             }
                             >
-                                <View style={[theme.containerDonutChart, {marginBottom: 30}]}>
-                                    <HalfDonutChart percentage={39} value1title="SMS" value1value={'3 900'} bgcolor={campaign.flags[0].graphStyle}/>
+                                <View style={[theme.containerDonutChart, {marginBottom: 34}]}>
+                                    <HalfDonutChart percentage={campaign.stats.totalSentPercent} 
+                                        value1title="SMS" 
+                                        value1value={campaign.stats.totalSent} 
+                                        value2title="Pendentes" 
+                                        value2value={campaign.stats.totalPending} 
+                                        bgcolor={campaign.flags[0].graphStyle}/>
                                 </View>
                                 
                                 <View style={{marginBottom: 30}}>
-                                    <View style={{flexDirection: 'row',alignItems: 'center',gap: 10,width: '100%'}}>
-                                        <View style={{flexGrow: 1,width: 1,borderRadius: 6,borderWidth: 1,borderColor: theme.colors.lightgray,backgroundColor: theme.colors.successlight,paddingVertical: 3,paddingHorizontal: 6,minHeight: 61}}>
+                                    <View style={{marginBottom: 14}}><Text style={[theme.listNavSubtitle, {color: theme.colors.black, fontWeight: 700, textTransform: 'capitalize'}]}>{campaign.title}</Text></View>
+                                    <View style={{flexDirection: 'row',alignItems: 'center',gap: 12,width: '100%'}}>
+                                        <View style={{flexGrow: 1,width: '43%',borderRadius: 6,borderWidth: 1,borderColor: theme.colors.lightgray,backgroundColor: theme.colors.successlight,paddingVertical: 6,paddingHorizontal: 6,minHeight: 72}}>
                                             <Text numberOfLines={4} ellipsizeMode='tail' style={[theme.small, {fontSize: 10,lineHeight: 13,color: '#000'}]}>{campaign.message}</Text>
                                         </View>
-                                        <View style={{width: 220,flexShrink: 0,height: '100%'}}>
-                                            <View style={{flexDirection: 'row',alignItems: 'center'}}>
-                                                <View style={{width: 62,marginRight: 10}}><Text style={[theme.small]}>Estado</Text></View>
+                                        <View style={{width: '47%',flexShrink: 0,height: '100%'}}>
+                                            <View style={{flexDirection: 'row',alignItems: 'center', marginTop: 4}}>
+                                                <View style={{width: 62,marginRight: 8}}><Text style={[theme.small]}>Estado</Text></View>
                                                 <View style={{flex: 1,flexDirection: 'row',alignItems: 'center'}}>
-                                                    <Icon code={currentSendStatus.icon} size={13} style={{color: theme.colors[currentSendStatus.color],marginRight: 4}}/>
+                                                    <Icon code={currentSendStatus.icon} size={15} style={{color: theme.colors[currentSendStatus.color],marginRight: 4}}/>
                                                     <Text style={[theme.small, {fontWeight: 500,color: theme.colors[currentSendStatus.color]}]} numberOfLines={1} ellipsizeMode='tail'>{campaign.flags[0].title}</Text>
                                                 </View>
                                             </View>
         
-                                            <View style={{ flexDirection: 'row',alignItems: 'center'}}>
-                                                <View style={{width: 62,marginRight: 10}}><Text style={[theme.small]}>Iniciado</Text></View>
+                                            <View style={{ flexDirection: 'row',alignItems: 'center', marginTop: 1}}>
+                                                <View style={{width: 62,marginRight: 8}}><Text style={[theme.small]}>Iniciado</Text></View>
                                                 <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{startDate}  <Text style={{color: theme.colors.darkgray}}>{startTime}</Text></Text></View>
                                             </View>
         
-                                            <View style={{flexDirection: 'row',alignItems: 'center'}}>
-                                                <View style={{width: 62,marginRight: 10}}><Text style={[theme.small]}>Finalizado</Text></View>
+                                            <View style={{flexDirection: 'row',alignItems: 'center', marginTop: 1}}>
+                                                <View style={{width: 62,marginRight: 8}}><Text style={[theme.small]}>Finalizado</Text></View>
                                                 <View style={{flex: 1}}><Text style={[theme.small, {fontWeight: 500,color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{finishedDate}  <Text style={{color: theme.colors.darkgray}}>{finishedTime}</Text></Text></View>
                                             </View>
                                             
-                                            <View style={{marginTop: 6}}>
+                                            <View style={{marginTop: 8}}>
                                                 <ProgressBar percentage={campaign.stats.totalSentPercent}/>
                                             </View>
                                         </View>
@@ -188,7 +194,7 @@ export function DetCampaignSMS() {
                                         <View style={statistics.item}>
                                             <View>
                                                 <View><Text style={statistics.text1}>Destinatários</Text></View>
-                                                <Badge text={campaign.stats.totalRecipients} style={{backgroundColor: theme.colors.white,color: theme.colors.black,marginTop: 3,marginLeft: 'auto',paddingHorizontal: 0}}></Badge>
+                                                <Badge text={campaign.stats.totalRecipients} style={{backgroundColor: theme.colors.white,color: theme.colors.black,marginTop: 2,marginLeft: 'auto',paddingHorizontal: 0}}></Badge>
                                             </View>
                                         </View>
                                         <View style={statistics.item}>
@@ -197,14 +203,14 @@ export function DetCampaignSMS() {
                                             </View>
                                             <View style={statistics.columnRight}>
                                                 <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{campaign.stats.totalSentPercent}%</Text></View>
-                                                <Badge text={campaign.stats.totalSent} style={{backgroundColor: theme.colors.successlight,color: theme.colors.success,marginTop: 3,width: '100%'}}></Badge>
+                                                <Badge text={campaign.stats.totalSent} style={{backgroundColor: theme.colors.successlight,color: theme.colors.success,marginTop: 2,width: '100%'}}></Badge>
                                             </View>
                                         </View>
                                         <View style={statistics.item}>
                                             <View>
                                                 <View><Text style={statistics.text1}>SMS Gastas</Text></View>
                                                 <View style={[statistics.columnRight, {marginLeft: 'auto'}]}>
-                                                    <Badge text={campaign.stats.totalSpent} style={{backgroundColor: theme.colors.errorlight,color: theme.colors.error,marginTop: 3,width: '100%'}}></Badge>
+                                                    <Badge text={campaign.stats.totalSpent} style={{backgroundColor: theme.colors.errorlight,color: theme.colors.error,marginTop: 2,width: '100%'}}></Badge>
                                                 </View>
                                             </View>
                                         </View>
@@ -213,20 +219,23 @@ export function DetCampaignSMS() {
                                 
                                 {
                                     campaign.status != 0 ? (
-                                        <View style={{flexDirection: 'row',gap: 10,justifyContent: 'space-between',marginTop: 8}}>
-                                            <View style={{flexDirection: 'column'}}>
-                                                <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2}]}>{campaign.stats.totalSent}</Text>
-                                                <Text style={[theme.small, {textAlign: 'center'}]}>Emails enviados</Text>
+                                        <>
+                                            <View style={{height: 6,backgroundColor: theme.colors.background,marginHorizontal: theme.ncontainerPadding,}}></View>
+                                            <View style={{flexDirection: 'row',gap: 10,justifyContent: 'space-between',marginTop: 32}}>
+                                                <View>
+                                                    <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 1}]}>{campaign.stats.totalSent}</Text>
+                                                    <Text style={[theme.small, {textAlign: 'center'}]}>Emails enviados</Text>
+                                                </View>
+                                                <View>
+                                                    <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 1}]}>{campaign.stats.totalPending}</Text>
+                                                    <Text style={[theme.small, {textAlign: 'center'}]}>Pendentes</Text>
+                                                </View>
+                                                <View>
+                                                    <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 1}]}>{campaign.stats.bounceRate}<Text style={theme.small}> %</Text></Text>
+                                                    <Text style={[theme.small, {textAlign: 'center'}]}>Taxa de rejeição</Text>
+                                                </View>
                                             </View>
-                                            <View>
-                                                <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2}]}>{campaign.stats.totalPending}</Text>
-                                                <Text style={[theme.small, {textAlign: 'center'}]}>Pendentes</Text>
-                                            </View>
-                                            <View>
-                                                <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2}]}>{campaign.stats.bounceRate}<Text style={theme.small}> %</Text></Text>
-                                                <Text style={[theme.small, {textAlign: 'center'}]}>Taxa de rejeição</Text>
-                                            </View>
-                                        </View>
+                                        </>
                                     ) : (
                                         <>
                                             <View style={{height: 6,backgroundColor: theme.colors.background,marginHorizontal: theme.ncontainerPadding,}}></View>
@@ -272,7 +281,7 @@ export function DetCampaignSMS() {
 }
 
 const statistics = StyleSheet.create({
-    container: {flexDirection: 'row',gap: 10,justifyContent: 'space-between',marginTop: 8},
+    container: {flexDirection: 'row',gap: 10,justifyContent: 'space-between',marginTop: 10},
     item: {flexDirection: 'row',gap: 10},
     columnRight: {width: 42},
     text1: [theme.small, {textAlign: 'right'}],

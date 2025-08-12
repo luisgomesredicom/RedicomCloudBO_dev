@@ -177,13 +177,13 @@ export function ListCampaignSMS() {
                 >
                     <View style={[theme.cardItem, {flexDirection: 'row',alignItems: 'center'}]}>
                         <View style={{flexGrow: 1,width: 1}}>
-                            <View style={{marginBottom: 12}}><Text style={[theme.listNavSubtitle, {color: theme.colors.black, fontWeight: 700, textTransform: 'capitalize'}]}>{item.title}</Text></View>
+                            <View style={{marginBottom: 14}}><Text style={[theme.listNavSubtitle, {color: theme.colors.black, fontWeight: 700, textTransform: 'capitalize'}]}>{item.title}</Text></View>
                             <View style={{flexDirection: 'row',alignItems: 'center',gap: 10,width: '100%'}}>
-                                <View style={{flexGrow: 1,width: '45%',borderRadius: 6,borderWidth: 1,borderColor: theme.colors.lightgray,backgroundColor: theme.colors.successlight,paddingVertical: 3,paddingHorizontal: 6,minHeight: 70}}>
+                                <View style={{flexGrow: 1,width: '45%',borderRadius: 6,borderWidth: 1,borderColor: theme.colors.lightgray,backgroundColor: theme.colors.successlight,paddingVertical: 6,paddingHorizontal: 6,minHeight: 72}}>
                                     <Text numberOfLines={4} ellipsizeMode='tail' style={[theme.small, {fontSize: 10,lineHeight: 13,color: '#000'}]}>{item.message}</Text>
                                 </View>
                                 <View style={{width: '50%',flexShrink: 0,height: '100%'}}>
-                                    <View style={{flexDirection: 'row',alignItems: 'center', marginTop: 1}}>
+                                    <View style={{flexDirection: 'row',alignItems: 'center', marginTop: 4}}>
                                         <View style={{width: 62,marginRight: 10}}><Text style={[theme.small]}>Estado</Text></View>
                                         <View style={{flex: 1,flexDirection: 'row',alignItems: 'center'}}>
                                             <Icon code={currentSendStatus.icon} size={15} style={{color: theme.colors[currentSendStatus.color],marginRight: 4}}/>

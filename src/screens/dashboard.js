@@ -240,7 +240,7 @@ export function DashboardScreen() {
                                                 <Icon code="837" size={48} />
                                             </View>
                                             <View>
-                                                <Text style={theme.small}>NÃ£o temos resultados para lhe mostrar</Text>
+                                                <Text style={theme.small}>Não temos resultados para lhe mostrar</Text>
                                             </View>
                                         </View>
                                     )}
