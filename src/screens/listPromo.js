@@ -114,8 +114,10 @@ export function ListPromo() {
             <>
                 <View style={{height: 6,backgroundColor: theme.colors.background}}></View>
 
-                {index == 0 && (
-                    <View style={{height: theme.containerPadding,backgroundColor: theme.colors.white}}></View>
+                {index == 0 ? (
+                    <View style={{height: 19,backgroundColor: theme.colors.white}}></View>
+                ) : (
+                    <View style={{height: 2,backgroundColor: theme.colors.white}}></View>
                 )}
                 
                 <TouchableOpacity key={item.index} onPress={() => {
@@ -129,18 +131,18 @@ export function ListPromo() {
                         })
                     }}
                 >
-                    <View style={[theme.cardItem, {flexDirection: 'row',alignItems: 'center'}]}>
-                        <View style={{flexGrow: 1,width: 1}}>
-                            <View style={{marginBottom: 4}}>
-                                <View style={{flexDirection: 'row',alignItems: 'flex-start',gap: 6,marginBottom: 2}}>
-                                    <Text style={[theme.secondarySubtitle, {position: 'relative'}]}>{item.title}</Text>
+                    <View style={[theme.cardItem, {flexDirection: 'row',alignItems: 'center', marginBottom: 3}]}>
+                        <View style={{flexGrow: 1,width: 1, rowGap: 10}}>
+                            <View style={{marginBottom: 2}}>
+                                <View style={{flexDirection: 'row',alignItems: 'flex-start',gap: 6,marginBottom: 0}}>
+                                    <Text style={[theme.listNavSubtitle, {position: 'relative', color: theme.colors.black, }]}>{item.title}</Text>
                                     {item.active == 1 && (
                                         <Badge type="dot" style={{marginRight: 'auto',marginTop: 4}}/>
                                     )}
                                 </View>
 
                                 {item.description && (
-                                    <Text style={[theme.paragraph, {lineHeight: 22}]}>{item.description}</Text>
+                                    <Text style={[theme.small, {color: theme.colors.black, lineHeight: 12}]}>{item.description}</Text>
                                 )}
 
                                 {(item.multiLanguageContent && item.multiLanguageContent.pt.name) && (
@@ -148,36 +150,36 @@ export function ListPromo() {
                                 )}
                             </View>
                             <View style={{flexDirection: 'row',gap: 10,justifyContent: 'space-between',alignItems: 'center'}}>
-                                <View style={{gap: 4}}>
+                                <View style={{gap: 3}}>
                                     <View style={{flexDirection: 'row',alignItems: 'center'}}>
                                         <View style={{width: 70,marginRight: 10}}>
-                                            <Text style={[theme.listNavSubtitle, {color: theme.colors.gray,lineHeight: 15}]}>Ativo de:</Text>
+                                            <Text style={[theme.small, {lineHeight: 14}]}>Ativo de:</Text>
                                         </View>
                                         <View style={{width: 150}}>
-                                            <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{startDate} <Text style={{color: theme.colors.darkgray}}>{startTime}</Text></Text>
+                                            <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black, lineHeight: 14}]} numberOfLines={1} ellipsizeMode='tail'>{startDate} <Text style={{color: theme.colors.darkgray}}>{startTime}</Text></Text>
                                         </View>
                                     </View>
 
                                     <View style={{flexDirection: 'row'}}>
                                         <View style={{width: 70,marginRight: 10}}>
-                                            <Text style={[theme.listNavSubtitle, {color: theme.colors.gray,lineHeight: 15}]}>até:</Text>
+                                            <Text style={[theme.small, {lineHeight: 14}]}>até:</Text>
                                         </View>
                                         <View style={{width: 150}}>
-                                            <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{endDate} <Text style={{color: theme.colors.darkgray}}>{endTime}</Text></Text>
+                                            <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black, lineHeight: 14}]} numberOfLines={1} ellipsizeMode='tail'>{endDate} <Text style={{color: theme.colors.darkgray}}>{endTime}</Text></Text>
                                         </View>
                                     </View>
                                 </View>
                                 {flags.length > 0 ? (
                                     <View style={{flexDirection: 'row',gap: 6}}>
                                         {flags.map((flag, index) => (
-                                            <Badge text={flag.title} style={{ marginLeft: 'auto' }} key={index} />
+                                            <Badge text={flag.title} style={{ marginLeft: 'auto', paddingHorizontal: 6 }} key={index} />
                                         ))}
                                     </View>
                                 ) : null}
                             </View>
                         </View>
-                        <View style={{marginLeft: 10,marginRight: -6}}>
-                            <Icon code="818" size={22} style={{color: theme.colors.darkgray}}/>
+                        <View style={{marginLeft: 18,marginRight: -6}}>
+                            <Icon code="818" size={24} style={{color: theme.colors.black}}/>
                         </View>
                     </View>
                 </TouchableOpacity>
