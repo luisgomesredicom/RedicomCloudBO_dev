@@ -145,7 +145,7 @@ export function DetCampaignEmail() {
                                     />
                                 </View>
                                 
-                                <View style={{flexDirection: 'row',alignItems: 'stretch',gap: 10,marginBottom: 30}}>
+                                <View style={{flexDirection: 'row',alignItems: 'stretch',gap: 12,marginBottom: 30}}>
                                     <View style={{width: 122,flexShrink: 0}}>
                                         <View style={{height: 122,flexShrink: 0,backgroundColor: 'whitesmoke',marginBottom: 4}}>
                                             <Image source={{uri: campaign.image.src}} style={{resizeMode: 'contain',flex: 1,width: 122,height: 122}} />
@@ -160,20 +160,20 @@ export function DetCampaignEmail() {
                                                     <View style={statistics.bottom}>
                                                         <Text style={[statistics.text2, {textAlign: 'center'}]}>{numberFormat(campaign.stats.totalRecipients)}</Text>
                                                     </View>
-                                                    <Badge text={campaign.stats.recipientsType} style={{backgroundColor: theme.colors.infolight,color: theme.colors.info,marginTop: 3,minWidth: 70,marginHorizontal: 'auto'}}></Badge>
+                                                    <Badge text={campaign.stats.recipientsType} style={{backgroundColor: theme.colors.infolight,color: theme.colors.info,marginTop: 2,paddingVertical: 2,minWidth: 0,marginHorizontal: 'auto', paddingHorizontal: 6}}></Badge>
                                                 </View>
                                             </View>
                                         </View>
                                     </View>
                                     
                                     <View style={{flexGrow: 1}}>
-                                        <View style={{height: 122,justifyContent: 'space-between',paddingTop: 2,paddingBottom: 12,marginBottom: 4}}>
+                                        <View style={{height: 122,justifyContent: 'space-between',paddingTop: 22,paddingBottom: 0,marginBottom: 4}}>
                                             <View>
                                                 <Text style={[theme.listNavSubtitle, {color: theme.colors.black}]}>{campaign.title}</Text>
                                             </View>
             
-                                            <View style={{flexDirection: 'row', alignItems: 'center',marginTop: 12}}>
-                                                <View style={{width: 80, marginRight: 10}}>
+                                            <View style={{flexDirection: 'row', alignItems: 'center',marginTop: 14}}>
+                                                <View style={{width: 80, marginRight: 5}}>
                                                     <Text style={theme.small}>Iniciado</Text>
                                                 </View>
                                                 <View style={{flex: 1}}>
@@ -181,8 +181,8 @@ export function DetCampaignEmail() {
                                                 </View>
                                             </View>
             
-                                            <View style={{flexDirection: 'row'}}>
-                                                <View style={{width: 80, marginRight: 10}}>
+                                            <View style={{flexDirection: 'row',marginTop: 1}}>
+                                                <View style={{width: 80, marginRight: 5}}>
                                                     <Text style={theme.small}>Encomendas</Text>
                                                 </View>
                                                 <View style={{flex: 1}}>
@@ -190,8 +190,8 @@ export function DetCampaignEmail() {
                                                 </View>
                                             </View>
             
-                                            <View style={{flexDirection: 'row'}}>
-                                                <View style={{width: 80, marginRight: 10}}>
+                                            <View style={{flexDirection: 'row',marginTop: 1}}>
+                                                <View style={{width: 80, marginRight: 5}}>
                                                     <Text style={theme.small}>Conversão</Text>
                                                 </View>
                                                 <View style={{flex: 1}}>
@@ -199,8 +199,8 @@ export function DetCampaignEmail() {
                                                 </View>
                                             </View>
             
-                                            <View style={{flexDirection: 'row'}}>
-                                                <View style={{width: 80, marginRight: 10}}>
+                                            <View style={{flexDirection: 'row',marginTop: 1}}>
+                                                <View style={{width: 80, marginRight: 5}}>
                                                     <Text style={theme.small}>Vendas</Text>
                                                 </View>
                                                 <View style={{flex: 1}}>
@@ -217,7 +217,7 @@ export function DetCampaignEmail() {
                                                     </View>
                                                     <View style={statistics.columnRight}>
                                                         <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{campaign.stats.totalOpeningsPercent}%</Text></View>
-                                                        <Badge text={campaign.stats.totalOpenings} style={{backgroundColor: theme.colors.successlight,color: theme.colors.success,marginTop: 3,width: '100%'}}></Badge>
+                                                        <Badge text={campaign.stats.totalOpenings} style={{backgroundColor: theme.colors.successlight,color: theme.colors.success,marginTop: 3,paddingVertical: 1,width: '100%'}}></Badge>
                                                     </View>
                                                 </View>
                                                 <View style={statistics.item}>
@@ -227,7 +227,7 @@ export function DetCampaignEmail() {
                                                     </View>
                                                     <View style={statistics.columnRight}>
                                                         <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{campaign.stats.totalClicksPercent}%</Text></View>
-                                                        <Badge text={campaign.stats.totalClicks} style={{backgroundColor: theme.colors.successlight,color: theme.colors.success,marginTop: 3,width: '100%'}}></Badge>
+                                                        <Badge text={campaign.stats.totalClicks} style={{backgroundColor: theme.colors.successlight,color: theme.colors.success,marginTop: 3,paddingVertical: 1,width: '100%'}}></Badge>
                                                     </View>
                                                 </View>
                                             </View>
@@ -237,20 +237,23 @@ export function DetCampaignEmail() {
                                 
                                 {
                                     campaign.status != 0 ? (
-                                        <View style={{flexDirection: 'row',gap: 10,justifyContent: 'space-between',marginTop: 8}}>
-                                            <View style={{flexDirection: 'column'}}>
-                                                <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2}]}>{campaign.stats.bounceRate}</Text>
-                                                <Text style={[theme.small, {textAlign: 'center'}]}>Taxa de rejeição</Text>
+                                        <>
+                                            <View style={{height: 6,backgroundColor: theme.colors.background,marginHorizontal: theme.ncontainerPadding,}}></View>
+                                            <View style={{flexDirection: 'row',gap: 10,justifyContent: 'space-between',marginTop: 32}}>
+                                                <View style={{flexDirection: 'column'}}>
+                                                    <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2}]}>{campaign.stats.bounceRate}</Text>
+                                                    <Text style={[theme.small, {textAlign: 'center'}]}>Taxa de rejeição</Text>
+                                                </View>
+                                                <View>
+                                                    <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2}]}>{campaign.stats.complaintRate}</Text>
+                                                    <Text style={[theme.small, {textAlign: 'center'}]}>Taxa de reclamação</Text>
+                                                </View>
+                                                <View>
+                                                    <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2}]}>{campaign.stats.unsubscribes}</Text>
+                                                    <Text style={[theme.small, {textAlign: 'center'}]}>Remoções</Text>
+                                                </View>
                                             </View>
-                                            <View>
-                                                <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2}]}>{campaign.stats.complaintRate}</Text>
-                                                <Text style={[theme.small, {textAlign: 'center'}]}>Taxa de reclamação</Text>
-                                            </View>
-                                            <View>
-                                                <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 2}]}>{campaign.stats.unsubscribes}</Text>
-                                                <Text style={[theme.small, {textAlign: 'center'}]}>Remoções</Text>
-                                            </View>
-                                        </View>
+                                        </>
                                     ) : (
                                         <>
                                             <View style={{height: 6,backgroundColor: theme.colors.background,marginHorizontal: theme.ncontainerPadding,}}></View>
@@ -301,5 +304,5 @@ const statistics = StyleSheet.create({
     columnRight: {width: 42},
     text1: [theme.small, {textAlign: 'right'}],
     text2: [theme.small, {fontWeight: '500',color: theme.colors.black}],
-    bottom: {marginTop: 5}
+    bottom: {marginTop: 4}
 });

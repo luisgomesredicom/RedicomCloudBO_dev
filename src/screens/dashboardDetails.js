@@ -31,14 +31,14 @@ export function DashboardDetails() {
         return (
             <>
                 {index > 0 ? (
-                    <View style={{height: 6,backgroundColor: theme.colors.background}}></View>
+                    <View style={{height: 6,backgroundColor: theme.colors.background, marginBottom: 2}}></View>
                 ) : ''}
-                <View style={[theme.cardItem, {paddingBottom: 30}]}>
-                    <View style={{marginBottom: 20}}><Text style={[theme.listNavSubtitle]}>{item.title}</Text></View>
+                <View style={[theme.cardItem, {paddingBottom: 32}]}>
+                    <View style={{marginBottom: 25}}><Text style={[theme.listNavSubtitle, {fontSize: 16}]}>{item.title}</Text></View>
                     <View style={{flexDirection: 'row',alignItems: 'stretch'}}>
                         {item.list.map((itemList) => (
                             <View style={{width: '33.33333%'}}>
-                                <View style={{flexDirection: 'row',alignItems: 'flex-end',justifyContent: 'center'}}><Text style={theme.listNavTitle}>{itemList.value}</Text>{itemList.subtitle != '' && (<Text> {itemList.subtitle}</Text>)}</View>
+                                <View style={{flexDirection: 'row',alignItems: 'baseline',justifyContent: 'center'}}><Text style={[theme.listNavTitle, {fontSize: 18}]}>{itemList.value}</Text>{itemList.subtitle != '' && (<Text style={{fontSize: 12}}> {itemList.subtitle}</Text>)}</View>
                                 <Text style={[theme.small, {fontSize: 12,textAlign: 'center'}]}>{itemList.title}</Text>
                             </View>
                         ))}
@@ -78,6 +78,12 @@ export function DashboardDetails() {
         await fetchData();
         setRefreshing(false);
     }, []);
+
+    const HeaderList = ({ style }) => (
+        <View style={{backgroundColor: theme.colors.background,paddingTop: 23,paddingBottom: 16,paddingHorizontal: 30,marginBottom: 17,zIndex: 50}}>
+            <Text style={{textAlign: 'center',marginVertical: 0, fontSize: 16, lineHeight: 22}}>{formatDate(dataDash.lastUpdate)}</Text>
+        </View>
+    );
   
 	return (
 		<SafeAreaView style={theme.safeAreaView} edges={['right','left']}>
@@ -93,9 +99,6 @@ export function DashboardDetails() {
                                 </View>
                             ) : (
                                 <>
-                                    {<View style={{backgroundColor: theme.colors.background,paddingVertical: theme.containerPadding,paddingHorizontal: 30,marginBottom: theme.containerPadding,position: 'absolute',top: 50,zIndex: 50}}>
-                                        <Text style={{textAlign: 'center',marginVertical: 6}}>{formatDate(dataDash.lastUpdate)}</Text>
-                                    </View>}
                                     
                                     <TabsProvider defaultIndex={0} onChangeIndex={(index) => {setTab(index)}}>
                                         <Tabs disableSwipe={true} style={theme.tabs} tabLabelStyle={theme.tabsLabel}>
@@ -103,7 +106,10 @@ export function DashboardDetails() {
                                                 <View style={theme.tabsContent}>
                                                     {dataDash.today.length > 0 ? (
                                                         <FlatList 
-                                                            style={[theme.cardList, {paddingBottom: Math.max(insets.bottom),marginTop: infoUpdateHeight}]}
+                                                            ListHeaderComponent={
+                                                                <HeaderList/>
+                                                            }
+                                                            style={[theme.cardList, {paddingBottom: Math.max(insets.bottom)}]} 
                                                             data={dataDash.today}
                                                             keyExtractor={ item => item.id }
                                                             renderItem={ ({item, index}) => <CardItem index={index} item={item}/> }
@@ -121,7 +127,10 @@ export function DashboardDetails() {
                                                 <View style={theme.tabsContent}>
                                                     {dataDash.lastWeek.length > 0 ? (
                                                         <FlatList 
-                                                            style={[theme.cardList, {paddingBottom: Math.max(insets.bottom),marginTop: infoUpdateHeight}]}
+                                                            ListHeaderComponent={
+                                                                <HeaderList/>
+                                                            }
+                                                            style={[theme.cardList, {paddingBottom: Math.max(insets.bottom)}]}
                                                             data={dataDash.lastWeek}
                                                             keyExtractor={ item => item.id }
                                                             renderItem={ ({item, index}) => <CardItem index={index} item={item}/> }

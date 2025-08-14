@@ -166,7 +166,7 @@ export function ListCampaignEmail() {
                         })
                     }}
                 >
-                    <View style={[theme.cardItem, {flexDirection: 'row',alignItems: 'stretch',flexGrow: 1,gap: 10}]}>
+                    <View style={[theme.cardItem, {flexDirection: 'row',alignItems: 'stretch',flexGrow: 1,gap: 12}]}>
                         <View style={{width: 122,flexShrink: 0}}>
                             <View style={{height: 122,flexShrink: 0,backgroundColor: 'whitesmoke',marginBottom: 4}}>
                                 <Image source={{uri: item.image.src}} style={{resizeMode: 'contain',flex: 1,width: 122,height: 122}} />
@@ -177,19 +177,19 @@ export function ListCampaignEmail() {
                                     <View>
                                         <View><Text style={[statistics.text1, {textAlign: 'center'}]}>Destinatários</Text></View>
                                         <View style={statistics.bottom}><Text style={[statistics.text2, {textAlign: 'center'}]}>{numberFormat(item.stats.totalRecipients)}</Text></View>
-                                        <Badge text={item.stats.recipientsType} style={{backgroundColor: theme.colors.infolight,color: theme.colors.info,marginTop: 3,minWidth: 70,marginHorizontal: 'auto'}}></Badge>
+                                        <Badge text={item.stats.recipientsType} style={{backgroundColor: theme.colors.infolight,color: theme.colors.info,marginTop: 2,paddingVertical: 2,minWidth: 0,marginHorizontal: 'auto', paddingHorizontal: 6}}></Badge>
                                     </View>
                                 </View>
                             </View>
                         </View>
                         
                         <View style={{flexGrow: 1,width: 1}}>
-                            <View style={{height: 122,justifyContent: 'space-between',paddingTop: 2,paddingBottom: 12,marginBottom: 4}}>
+                            <View style={{height: 122,justifyContent: 'space-between',paddingTop: 12,paddingBottom: 8,marginBottom: 4}}>
                                 <View>
                                     <Text numberOfLines={1} ellipsizeMode='tail' style={[theme.listNavSubtitle, {color: theme.colors.black,paddingRight: 30}]}>{item.title}</Text>
                                 </View>
 
-                                <View style={{flexDirection: 'row', alignItems: 'center',marginTop: 12}}>
+                                <View style={{flexDirection: 'row', alignItems: 'center',marginTop: 18}}>
                                     <View style={{width: 80, marginRight: 10}}>
                                         <Text style={theme.small}>Iniciado</Text>
                                     </View>
@@ -198,7 +198,7 @@ export function ListCampaignEmail() {
                                     </View>
                                 </View>
 
-                                <View style={{flexDirection: 'row'}}>
+                                <View style={{flexDirection: 'row',marginTop: 1}}>
                                     <View style={{width: 80, marginRight: 10}}>
                                         <Text style={theme.small}>Encomendas</Text>
                                     </View>
@@ -207,7 +207,7 @@ export function ListCampaignEmail() {
                                     </View>
                                 </View>
 
-                                <View style={{flexDirection: 'row'}}>
+                                <View style={{flexDirection: 'row',marginTop: 1}}>
                                     <View style={{width: 80, marginRight: 10}}>
                                         <Text style={theme.small}>Conversão</Text>
                                     </View>
@@ -216,7 +216,7 @@ export function ListCampaignEmail() {
                                     </View>
                                 </View>
 
-                                <View style={{flexDirection: 'row'}}>
+                                <View style={{flexDirection: 'row',marginTop: 1}}>
                                     <View style={{width: 80, marginRight: 10}}>
                                         <Text style={theme.small}>Vendas</Text>
                                     </View>
@@ -234,7 +234,7 @@ export function ListCampaignEmail() {
                                         </View>
                                         <View style={statistics.columnRight}>
                                             <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{item.stats.totalOpeningsPercent}%</Text></View>
-                                            <Badge text={item.stats.totalOpenings} style={{backgroundColor: theme.colors.successlight,color: theme.colors.success,marginTop: 3,width: '100%'}}></Badge>
+                                            <Badge text={item.stats.totalOpenings} style={{backgroundColor: theme.colors.successlight,color: theme.colors.success,marginTop: 3,paddingVertical: 1,width: '100%'}}></Badge>
                                         </View>
                                     </View>
                                     <View style={statistics.item}>
@@ -244,7 +244,7 @@ export function ListCampaignEmail() {
                                         </View>
                                         <View style={statistics.columnRight}>
                                             <View><Text style={[statistics.text2, {textAlign: 'center'}]}>{item.stats.totalClicksPercent}%</Text></View>
-                                            <Badge text={item.stats.totalClicks} style={{backgroundColor: theme.colors.successlight,color: theme.colors.success,marginTop: 3,width: '100%'}}></Badge>
+                                            <Badge text={item.stats.totalClicks} style={{backgroundColor: theme.colors.successlight,color: theme.colors.success,marginTop: 3,paddingVertical: 1,width: '100%'}}></Badge>
                                         </View>
                                     </View>
                                 </View>
@@ -260,7 +260,7 @@ export function ListCampaignEmail() {
                                     <SwitchItem item={item} status={item.status}/>
                                 </View>
                             )}
-                            <Icon code="818" size={22} style={{color: theme.colors.darkgray}}/>
+                            <Icon code="818" size={24} style={{color: theme.colors.black}}/>
                         </View>
                     </View>
                 </TouchableOpacity>
@@ -449,10 +449,10 @@ export function ListCampaignEmail() {
 }
 
 const statistics = StyleSheet.create({
-    container: {flexDirection: 'row',gap: 10,justifyContent: 'space-between',marginTop: 4},
+    container: {flexDirection: 'row',gap: 10,justifyContent: 'space-between',marginTop: 6},
     item: {flexDirection: 'row',gap: 10},
     columnRight: {width: 42},
     text1: [theme.small, {textAlign: 'right'}],
     text2: [theme.small, {fontWeight: '500',color: theme.colors.black}],
-    bottom: {marginTop: 5}
+    bottom: {marginTop: 4}
 });

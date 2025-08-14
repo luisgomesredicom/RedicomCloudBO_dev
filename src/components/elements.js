@@ -260,7 +260,7 @@ export const ProgressBar = ({percentage}) => {
         percentage = 0;
 
     return (
-        <View style={{height: 6,borderRadius: 6,overflow: 'hidden',backgroundColor: theme.colors.lightgray}}>
+        <View style={{height: 7,borderRadius: 6,overflow: 'hidden',backgroundColor: theme.colors.lightgray}}>
             <View style={{width: percentage + '%',backgroundColor: theme.colors.success,height: '100%',borderRadius: 6}}></View>
         </View>
     )

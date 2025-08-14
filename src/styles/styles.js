@@ -41,7 +41,7 @@ const secondaryTitle = {fontWeight: 700,fontSize: 24,lineHeight: 33,color: color
 const subtitle = {fontWeight: 700,fontSize: 20,lineHeight: 27,color: colors.dark}
 const secondarySubtitle = {fontWeight: 700,fontSize: 18,lineHeight: 24,color: colors.dark}
 const listNavTitle = {fontWeight: 700,fontSize: 16,lineHeight: 22,color: colors.darktheme}
-const listNavSubtitle = {fontWeight: 600,fontSize: 15,lineHeight: 20,color: colors.darkgray}
+const listNavSubtitle = {fontWeight: 700,fontSize: 15,lineHeight: 20,color: colors.darkgray}
 const paragraph = {fontWeight: 400,fontSize: 15,lineHeight: 20,color: colors.black}
 const small = {fontWeight: 400,fontSize: 12,lineHeight: 16,color: colors.darkgray}
 
