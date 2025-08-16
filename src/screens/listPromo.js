@@ -3,7 +3,7 @@ import { StatusBar, View, FlatList, TouchableOpacity, StyleSheet, Image, Refresh
 import { useNavigation } from '@react-navigation/native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { remoteAPI, dateFormatter } from '../core/utils';
-import { LoadingFullscreen, Noresults, FooterList, Icon, ProgressBar, Badge } from '../components/elements';
+import { LoadingFullscreen, Noresults, FooterList, Icon, Badge } from '../components/elements';
 import { theme } from '../styles/styles'
 import { Text, ActivityIndicator } from 'react-native-paper';
 import {TabsProvider, Tabs, TabScreen} from '../components/paperTabs';
@@ -134,7 +134,7 @@ export function ListPromo() {
                     <View style={[theme.cardItem, {flexDirection: 'row',alignItems: 'center', marginBottom: 3}]}>
                         <View style={{flexGrow: 1,width: 1, rowGap: 10}}>
                             <View style={{marginBottom: 2}}>
-                                <View style={{flexDirection: 'row',alignItems: 'flex-start',gap: 6,marginBottom: 0}}>
+                                <View style={{flexDirection: 'row',alignItems: 'flex-start',gap: 6,marginBottom: 3}}>
                                     <Text style={[theme.listNavSubtitle, {position: 'relative', color: theme.colors.black, }]}>{item.title}</Text>
                                     {item.active == 1 && (
                                         <Badge type="dot" style={{marginRight: 'auto',marginTop: 4}}/>

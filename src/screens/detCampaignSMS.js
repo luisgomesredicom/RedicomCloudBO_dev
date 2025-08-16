@@ -15,7 +15,7 @@ export function DetCampaignSMS() {
         0  - Agendada
         1  - A enviar
         3  - Parada
-        5  - Em preparaÃ§Ã£o
+        5  - Em preparação
         9  - Finalizada
         10 - Cancelada
     */
@@ -193,7 +193,7 @@ export function DetCampaignSMS() {
                                     <View style={statistics.container}>
                                         <View style={statistics.item}>
                                             <View>
-                                                <View><Text style={statistics.text1}>DestinatÃ¡rios</Text></View>
+                                                <View><Text style={statistics.text1}>Destinatários</Text></View>
                                                 <Badge text={campaign.stats.totalRecipients} style={{backgroundColor: theme.colors.white,color: theme.colors.black,marginTop: 2,marginLeft: 'auto',paddingHorizontal: 0}}></Badge>
                                             </View>
                                         </View>
@@ -232,14 +232,14 @@ export function DetCampaignSMS() {
                                                 </View>
                                                 <View>
                                                     <Text style={[theme.listNavTitle, {fontSize: 18,textAlign: 'center',marginBottom: 1}]}>{campaign.stats.bounceRate}<Text style={theme.small}> %</Text></Text>
-                                                    <Text style={[theme.small, {textAlign: 'center'}]}>Taxa de rejeiÃ§Ã£o</Text>
+                                                    <Text style={[theme.small, {textAlign: 'center'}]}>Taxa de rejeição</Text>
                                                 </View>
                                             </View>
                                         </>
                                     ) : (
                                         <>
                                             <View style={{height: 6,backgroundColor: theme.colors.background,marginHorizontal: theme.ncontainerPadding,}}></View>
-                                            <Text style={[theme.listNavSubtitle, {marginTop: theme.containerPadding,marginBottom: 20}]}>O envio comeÃ§a...</Text>
+                                            <Text style={[theme.listNavSubtitle, {marginTop: theme.containerPadding,marginBottom: 20}]}>O envio começa...</Text>
                                             <View style={{marginHorizontal: 'auto'}}>
                                                 <CountDown targetDate={campaign.startDate} onComplete={() => {
                                                     refreshCampaign();

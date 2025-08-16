@@ -190,7 +190,7 @@ export const ModalFilters = (params) => {
         <Modal animationType="slide" transparent={true} visible={data.active}>
             <SafeAreaView style={theme.safeAreaView} edges={['right','left','bottom']}>
                 <StatusBar barStyle='light-content'/>
-                <View style={{backgroundColor: theme.colors.darktheme}}> {/*paddingTop: Math.max(insets.top)*/}
+                <View style={{backgroundColor: theme.colors.darktheme, paddingTop: Math.max(insets.top)}}> {/*paddingTop: Math.max(insets.top)*/}
                     <View style={{flexDirection: 'row',justifyContent: 'space-between',alignItems: 'center',height: 46}}>
                         <View style={{width: 80}}>
                             <TouchableOpacity style={{paddingHorizontal: theme.containerPadding,height: 50,justifyContent: 'center'}} onPress={CloseFilters}>
@@ -307,7 +307,7 @@ export const ModalFilters = (params) => {
 
                                                     if (Platform.OS === 'android') {
                                                         if (dateSelected) {
-                                                            // Limpar data se j· estiver selecionada
+                                                            // Limpar data se j√° estiver selecionada
                                                             if (isStart) setDateStart(null);
                                                             else setDateEnd(null);
 
@@ -315,7 +315,7 @@ export const ModalFilters = (params) => {
                                                             return;
                                                         }
 
-                                                        // Abrir o DatePicker se ainda n„o h· data
+                                                        // Abrir o DatePicker se ainda n√£o h√° data
                                                         DateTimePickerAndroid.open({
                                                             value: currentDate,
                                                             mode: 'date',
@@ -338,7 +338,7 @@ export const ModalFilters = (params) => {
 
                                                     // iOS
                                                     if (dateSelected) {
-                                                        // Limpar data se j· houver
+                                                        // Limpar data se h√° houver
                                                         if (isStart) setDateStart(null);
                                                         else setDateEnd(null);
 
@@ -354,7 +354,7 @@ export const ModalFilters = (params) => {
                                                     return;
                                                 }
 
-                                                // Outros tipos de filtro (n„o data)
+                                                // Outros tipos de filtro (n√£o data)
                                                 handleFilterToggle(
                                                     data.filters[filterCatrgoryActiveIndex].field ||
                                                     data.filters[filterCatrgoryActiveIndex].type,

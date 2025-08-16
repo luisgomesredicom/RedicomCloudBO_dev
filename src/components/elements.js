@@ -283,8 +283,7 @@ export const HalfDonutChart = (props) => {
 
     return (
         <View style={{width: viewWidth,height: viewWidth / 2}}>
-          {/* ERRO DE NÂO ABRIR O DETALHE DOS SMS E EMAILS ESTÁ AQUI */}
-            {/*<Canvas style={{width: viewWidth,height: viewWidth,marginTop: -10}}>
+            <Canvas style={{width: viewWidth,height: viewWidth,marginTop: -10}}>
                 <Path path={path} color="transparent">
                     <Paint style="stroke" strokeWidth={strokeWidth} strokeCap="round" color={lightgray} />
                 </Path>
@@ -292,18 +291,20 @@ export const HalfDonutChart = (props) => {
                     <Paint style="stroke" strokeWidth={strokeWidth} strokeCap="round">
                         <SweepGradient 
                             c={vec(viewWidth / 2, viewWidth / 2 + strokeWidth)}
-                            colors={[gradientColor]}
+                            colors={[gradientColor, gradientColor, gradientColor, gradientColor]}
                             start={180}
                             end={180 + (180 * percentage)}
                         />
                     </Paint>
                 </Path>
-            </Canvas>*/}
+            </Canvas>
             <View style={{position: 'absolute',bottom: 0,width: '100%',alignItems: 'center'}}>
                 <Text style={{fontWeight: '700',fontSize: 28,color: theme.colors.white,marginBottom: 4}}>{percentage * 100}%</Text>
-                <Text style={[theme.small, {fontSize: 12,color: theme.colors.gray}]}>{numberFormat(props.value1value)}{props.value1title && props.value1title != '' ? ' ' + props.value1title : ''}</Text>
-                {props.value2value && (
-                  <Text style={[theme.small, {fontSize: 12,color: theme.colors.gray,marginTop: -2}]}>{numberFormat(props.value2value)}{props.value2title && props.value2title != '' ? ' ' + props.value2title : ''}</Text>
+                <Text style={[theme.small, {fontSize: 12,color: theme.colors.gray,maxWidth: '70%',textAlign: 'center'}]}>{numberFormat(props.value1value)}{props.value1title && props.value1title != '' ? ' ' + props.value1title : ''}</Text>
+                {props.value2value || props.value2title != '' && (
+                  <Text style={[theme.small, {fontSize: 12,color: theme.colors.gray,marginTop: -2}]}>
+                    {numberFormat(props.value2value)}
+                    {props.value2title && props.value2title != '' ? (props.value2value && props.value2value != '' ? ' ' + props.value2title : props.value2title) : ''}</Text>
                 )}
             </View>
         </View>
@@ -411,6 +412,6 @@ export const CountryFlag = ({ code, size = 80 }) => {
 
 const stylesBadge = StyleSheet.create({
     dot: {alignSelf: 'flex-start',borderRadius: 100,backgroundColor: theme.colors.success,width: 9,height: 9,borderWidth: 1,borderColor: theme.colors.white},
-    tag: {borderRadius: 2,paddingVertical: 2,paddingHorizontal: 0,backgroundColor: theme.colors.infolight},
+    tag: {borderRadius: 2,paddingVertical: 2,paddingHorizontal: 4,backgroundColor: theme.colors.infolight},
     tagText: [{fontWeight: '500',fontSize: 12,color: theme.colors.info,textAlign: 'center'}]
 });

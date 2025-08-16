@@ -259,7 +259,24 @@ export function dateFormatter(dateTime) {
         date: formattedDate,
         time: hasTime ? `${hour}:${minute}H` : ''
     };
-}  
+}
+
+export function splitDateTime(dateTimeString) {
+    if (!dateTimeString) return { date: '', time: '' };
+
+    const [datePart, timePart] = dateTimeString.split(' ');
+
+    // Garantir que temos sempre partes válidas
+    if (!datePart || !timePart) return { date: '', time: '' };
+
+    const [year, month, day] = datePart.split('-');
+    const [hour, minute] = timePart.split(':');
+
+    return {
+        date: `${day}/${month}/${year}`,  // dd/mm/yyyy
+        time: `${hour}:${minute}`         // hh:mm
+    };
+}
 
 export function textEntity(text) {
   const return_text = text.replace(/&euro;/g, '€');
