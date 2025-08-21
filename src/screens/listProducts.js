@@ -4,7 +4,7 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Octicons } from '@expo/vector-icons';
 import { remoteAPI } from '../core/utils';
 import { ProductItem } from '../components/productItem';
-import { Badge, LoadingFullscreen, Noresults } from '../components/elements';
+import { Icon, LoadingFullscreen, Noresults } from '../components/elements';
 import { SearchBar } from '../components/searchBar';
 import { theme } from '../styles/styles'
 import { ActivityIndicator, Text } from 'react-native-paper';
@@ -208,8 +208,7 @@ export function ListProducts() {
                     justifyContent: 'space-between',                    
                     paddingHorizontal: theme.containerPadding,
                     paddingTop: 0
-                },
-                style
+                }
             ]}
         >
             <View>
@@ -241,8 +240,16 @@ export function ListProducts() {
             </ModalFiltersContext.Provider>
 
             <View style={{flex: 1,backgroundColor: theme.colors.darktheme}}>
-                <View style={{paddingHorizontal: 15,paddingVertical: 10}}>
-                    <SearchBar onChangeText={onChangeSearch}/>
+                <View style={{paddingHorizontal: 15,paddingVertical: 10,flexDirection: 'row',alignItems: 'center',gap: 8}}>
+                    <View style={{flexGrow: 1}}>
+                        <SearchBar onChangeText={onChangeSearch}></SearchBar>
+                    </View>
+                    <TouchableOpacity onPress={() => modalFiltersDispatch({ type: "toggleFilters" })} style={{width: 36,height: 36,alignItems: 'center',justifyContent: 'center',borderRadius: 7}}>
+                        <Icon code='80f' size={28} color={theme.colors.white} />
+                        {totalFilters > 0 && (
+                            <View style={{width: 5,height: 5,backgroundColor: theme.colors.white,position: 'absolute',top: 3,right: 3,zIndex: 1,borderRadius: 10}}></View>
+                        )}
+                    </TouchableOpacity>
                 </View>
 
                 <View style={[theme.wrapperPage]}>
@@ -252,20 +259,20 @@ export function ListProducts() {
                         <>
                             {isEmpty && !isLoading && (
                                 <>
-                                    <HeaderList style={{ marginTop: 33 }} totalFilters={totalFilters} modalFiltersDispatch={modalFiltersDispatch} />
+                                    {/*<HeaderList style={{ marginTop: 33 }} totalFilters={totalFilters} modalFiltersDispatch={modalFiltersDispatch} />*/}
                                     <Noresults />
                                 </>
                             )}
 
                             {!isEmpty && !isLoading && (
                                 <FlatList
-                                    ListHeaderComponent={
+                                    /*ListHeaderComponent={
                                         <HeaderList
                                             style={{ gap: 10, marginBottom: 10, marginTop: 10 }}
                                             totalFilters={totalFilters}
                                             modalFiltersDispatch={modalFiltersDispatch}
                                         />
-                                    }
+                                    }*/
                                     style={theme.wrapperContainerList}
                                     contentContainerStyle={{ paddingBottom: Math.max(insets.bottom) }}
                                     data={items}

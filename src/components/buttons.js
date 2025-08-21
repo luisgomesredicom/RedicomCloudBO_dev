@@ -10,7 +10,7 @@ export default function Button({ mode, style, ...props }) {
         button: {
             width: '100%',
             borderRadius: 7,
-            borderWidth: (mode == 'contained') ? 0 : 1
+            borderWidth: 0
         },
         text: {
             fontWeight: 500,

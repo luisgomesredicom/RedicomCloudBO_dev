@@ -34,25 +34,22 @@ export function DetProduct() {
         setRefreshing(false);
     }, []);
 
-    const SwitchGlobal = (item) => {
-        const toggleSwitch = (...dataSwitch) => {
-            dataSwitch = dataSwitch[0];
-            const active = dataSwitch.active;
-            remoteAPI({request: `catalog/products/`, method: 'PUT', body: {active: active ? 1 : 0, skuGroup: item.skuGroup}});
+    const switchGlobal = (active) => {
+        remoteAPI({
+            request: `catalog/products/`,
+            method: 'PUT',
+            body: {active: active ? 1 : 0, skuGroup: product.skuGroup}
+        });
             
-            const productUpdated = {...product, active: active};
-            setProduct(productUpdated);
-            route.params.update(productUpdated);
+        const productUpdated = {...product, active: active};
+        setProduct(productUpdated);
+        route.params.update(productUpdated);
 
-            /* Update Matiz */
-            const updatedMatriz = dataMatiz.map((value) => {
-                return { ...value, active: active };
-            });
-            setDataMatiz(updatedMatriz);
-        };
-        return (
-            <Switch value={product.active == true || product.active == 1 ? true : false} onValueChange={(active) => toggleSwitch({active: active})} color={theme.colors.success} style={{ transform: [{ scaleX: .85 }, { scaleY: .85 }] }}/>
-        );
+        /* Update Matiz */
+        const updatedMatriz = dataMatiz.map((value) => {
+            return { ...value, active: active };
+        });
+        setDataMatiz(updatedMatriz);
     }
 
     const SwitchItem = (item) => {
@@ -101,16 +98,14 @@ export function DetProduct() {
                             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                         }
                         >
-                            <View style={{marginBottom: 30}}><Text style={[theme.listNavSubtitle, {fontWeight: 700}]}>Detalhe de Produto</Text></View>
+                            {/*<View style={{marginBottom: 30}}><Text style={[theme.listNavSubtitle, {fontWeight: 700}]}>Detalhe de Produto</Text></View>*/}
 
                             <View style={{flexDirection: 'row',gap: 10,alignItems: 'center'}}>
-                                <View style={{position: 'relative',width: 82,height: 120,flexShrink: 0}}>
+                                <View style={{position: 'relative',width: 112,height: 154,flexShrink: 0}}>
                                     <View style={theme.productMaskImage}></View>
                                     <Image source={{uri: product.image.default}} style={{resizeMode: 'cover',flex: 1}} />
 
-                                    {product.active == 1 && (
-                                        <Badge type="dot" style={{position: 'absolute',top: 4,right: 4,zIndex: 1}} />
-                                    )}
+                                    <Badge type="dot" style={{backgroundColor: product.active == 1 ? theme.colors.success : theme.colors.error,position: 'absolute',top: 4,right: 4,zIndex: 1}} />
                                 </View>
 
                                 <View style={{flex: 1}}>
@@ -154,9 +149,6 @@ export function DetProduct() {
                                             </View>*/}
                                         </View>
                                     </View>
-                                </View>
-                                <View>
-                                    <SwitchGlobal active={product.active} skuGroup={product.skuGroup}/>
                                 </View>
                             </View>
 
@@ -203,7 +195,11 @@ export function DetProduct() {
                         </ScrollView>
 
                         <View style={[theme.wrapperPageFooter, {paddingBottom: theme.containerPadding + Math.max(insets.bottom)}]}>
-                            <Button mode="contained" onPress={() => navigation.goBack()}>Gravar</Button>
+                            {product.active == 1 ? (
+                                <Button mode="outlined" onPress={() => switchGlobal(false)}>Desativar Todos</Button>
+                            ) : (
+                                <Button mode="contained" onPress={() => switchGlobal(true)}>Ativar Todos</Button>
+                            )}
                         </View>
                     </>
                 ) : <LoadingFullscreen />

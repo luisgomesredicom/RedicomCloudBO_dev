@@ -30,7 +30,10 @@ export const ProductItem = ({ index, item, updateItem, linkAction, totalFilters 
 
     return (
         <>            
-            <View style={styles.separator} />
+            
+            {index > 0 && (
+                <View style={{height: 6,backgroundColor: theme.colors.background,marginVertical: theme.containerPadding}}></View>
+            )}
 
             <TouchableOpacity
                 style={styles.itemContainer}
@@ -48,9 +51,7 @@ export const ProductItem = ({ index, item, updateItem, linkAction, totalFilters 
                             source={{ uri: item.image.default }} 
                             style={{ resizeMode: 'cover', flex: 1 }} 
                         />
-                        {item.active == 1 && (
-                            <Badge type="dot" style={styles.badge} />
-                        )}
+                        <Badge type="dot" style={[styles.badge, {backgroundColor: item.active == 1 ? theme.colors.success : theme.colors.error}]} />
                     </View>
 
                     <View style={{ flex: 1 }}>

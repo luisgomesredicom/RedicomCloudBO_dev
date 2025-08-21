@@ -78,9 +78,9 @@ export function ListOrders() {
         const image = `https://www.redicom.pt/checkout${src.split("/checkout")[1]}`;
 
         return (
-            <View style={{width: 34,minHeight: 22}}>
+            <View style={{width: 22,minHeight: 22}}>
                 {/*<SvgXml xml={svgXmlData} width="100%" />*/}
-                <Image source={{uri: image}} style={{resizeMode: 'contain',flex: 1,width: 34,height: 22}} />
+                <Image source={{uri: image}} style={{resizeMode: 'contain',flex: 1,width: 22,height: 22}} />
             </View>
         );
     }
@@ -91,9 +91,9 @@ export function ListOrders() {
         const image = `https://www.redicom.pt/checkout${src.split("/checkout")[1]}`;
 
         return (
-            <View style={{width: 34,minHeight: 22}}>
+            <View style={{width: 22,minHeight: 22}}>
                 {/*<SvgXml xml={svgXmlData} width="100%" />*/}
-                <Image source={{uri: image}} style={{resizeMode: 'contain',flex: 1,width: 34,height: 22}} />
+                <Image source={{uri: image}} style={{resizeMode: 'contain',flex: 1,width: 22,height: 22}} />
             </View>
         );
     }
@@ -140,7 +140,7 @@ export function ListOrders() {
 
         return (
             <>
-                {index == 0 ? (() => {
+                {index > 0 ? (() => {
                     <View style={{height: 0,backgroundColor: theme.colors.background}}></View>
                 })() : (
                     <View style={statistics.separator} />
@@ -379,8 +379,16 @@ export function ListOrders() {
             </ModalFiltersContext.Provider>
 
             <View style={{flex: 1,backgroundColor: theme.colors.darktheme}}>
-                <View style={{paddingHorizontal: 15,paddingVertical: 10}}>
-                    <SearchBar onChangeText={onChangeSearch}/>
+                <View style={{paddingHorizontal: 15,paddingVertical: 10,flexDirection: 'row',alignItems: 'center',gap: 8}}>
+                    <View style={{flexGrow: 1}}>
+                        <SearchBar onChangeText={onChangeSearch}></SearchBar>
+                    </View>
+                    <TouchableOpacity onPress={() => modalFiltersDispatch({ type: "toggleFilters" })} style={{width: 36,height: 36,alignItems: 'center',justifyContent: 'center',borderRadius: 7}}>
+                        <Icon code='80f' size={28} color={theme.colors.white} />
+                        {totalFilters > 0 && (
+                            <View style={{width: 5,height: 5,backgroundColor: theme.colors.white,position: 'absolute',top: 3,right: 3,zIndex: 1,borderRadius: 10}}></View>
+                        )}
+                    </TouchableOpacity>
                 </View>
 
                 <View style={[theme.wrapperPage]}>
@@ -390,20 +398,20 @@ export function ListOrders() {
                         <>
                             {isEmpty && !isLoading && (
                                 <>
-                                    <HeaderList style={{ marginTop: 33 }} totalFilters={totalFilters} modalFiltersDispatch={modalFiltersDispatch} />
+                                    {/*<HeaderList style={{ marginTop: 33 }} totalFilters={totalFilters} modalFiltersDispatch={modalFiltersDispatch} />*/}
                                     <Noresults />
                                 </>
                             )}
 
                             {!isEmpty && !isLoading && (
                                 <FlatList 
-                                    ListHeaderComponent={
+                                    /*ListHeaderComponent={
                                         <HeaderList
                                             style={{ gap: 10, marginBottom: 15, marginTop: 10 }}
                                             totalFilters={totalFilters}
                                             modalFiltersDispatch={modalFiltersDispatch}
                                         />
-                                    }
+                                    }*/
                                     style={[theme.cardList, theme.wrapperContainerList]}
                                     contentContainerStyle={{paddingBottom: Math.max(insets.bottom)}}
                                     data={items}
@@ -440,5 +448,5 @@ const statistics = StyleSheet.create({
     value: {marginTop: 3,borderRadius: 2,backgroundColor: theme.colors.successlight,padding: 2,width: '100%'},
     valueText: [theme.small, {fontWeight: '500',color: theme.colors.success,textAlign: 'center'}],
     bottom: {marginTop: 5},
-    separator: {height: 6,backgroundColor: theme.colors.background}
+    separator: {marginBottom: -15}
 });
