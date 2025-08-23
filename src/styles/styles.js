@@ -16,7 +16,7 @@ const colors = {
     lightgray: '#CCCCCC',
     white: '#FFFFFF',
     overlay: 'rgba(0, 0, 0, 0.4)',
-    background: '#F5F5F5',
+    background: '#F7F7F7',
     lines: '#DDDDDD',
     link: '#E79601',
     linklight: '#FFA500',
@@ -49,9 +49,9 @@ const small = {fontWeight: 400,fontSize: 12,lineHeight: 16,color: colors.darkgra
  * Container
 */
 const safeAreaView = {flex: 1,backgroundColor: 'white'}
-const wrapperPage = {flex: 1,backgroundColor: 'white'}
+const wrapperPage = {flexGrow: 1,backgroundColor: 'white'}
 const wrapperContainerPage = {paddingTop: 8}
-const wrapperContainerList = {paddingTop: 23}
+const wrapperContainerList = {paddingTop: 15}
 const containerPadding = 15
 const ncontainerPadding = -15
 const wrapperContentStyle = {padding: containerPadding,paddingBottom: 0}
@@ -152,11 +152,11 @@ export const theme = {
      * Form & form elements
     */
     formWrapper: {gap: 22,width: '100%'},
-    formField: {},
+    formField: {flexGrow: 1},
     formFieldFooter: {marginTop: 15},
-    formLabelWrap: {marginBottom: 8},
+    formLabelWrap: {marginBottom: 15},
     formLabel: {...listNavSubtitle, fontWeight: '500'},
-    formContent: {gap: 15,flexDirection: 'row'},
+    formContent: {flexDirection: 'row', flexWrap: 'wrap',justifyContent: 'space-between'},
     formElement: {flexGrow: 1,flexBasis: 0,position: 'relative'},
     bulletPassword: {width: 14,height: 14,borderRadius: '100%',backgroundColor: 'white',borderWidth: 1,borderColor: colors.black},
     wrapperSecondaryButtons: {marginTop: 30,gap: 10},

@@ -140,10 +140,8 @@ export function ListOrders() {
 
         return (
             <>
-                {index > 0 ? (() => {
-                    <View style={{height: 0,backgroundColor: theme.colors.background}}></View>
-                })() : (
-                    <View style={statistics.separator} />
+                {index > 0 && (
+                    <View style={{height: 6,backgroundColor: theme.colors.background}}></View>
                 )}
                 
                 <View style={[theme.cardItem, {flexDirection: 'column',flexGrow: 1,gap: 8}]}>
@@ -447,6 +445,5 @@ const statistics = StyleSheet.create({
     text2: [theme.small, {fontWeight: '500',color: theme.colors.black}],
     value: {marginTop: 3,borderRadius: 2,backgroundColor: theme.colors.successlight,padding: 2,width: '100%'},
     valueText: [theme.small, {fontWeight: '500',color: theme.colors.success,textAlign: 'center'}],
-    bottom: {marginTop: 5},
-    separator: {marginBottom: -15}
+    bottom: {marginTop: 5}
 });

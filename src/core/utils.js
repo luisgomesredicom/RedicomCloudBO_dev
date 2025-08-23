@@ -148,30 +148,15 @@ export const GlobalState = {
 
 //Toast
 export async function showToast(data) {
-    //var toastVisible = GlobalState.getValue({field: 'toastVisible'});
-    const toastVisible = await GlobalState.getValue({ field: 'toastVisible', getStorage: true });
     var popupDefaults = {
         text: 'Ocorreu um erro. Tente novamente.',
-        duration: data.duration ? data.duration : 500,
+        duration: data.duration ? data.duration : 1000,
         backgroundColor: theme.colors.error,
         containerStyle: {width: screenWidth - (theme.containerPadding * 2)},
         opacity: 1,
         shadow: false,
-        position: -50,
-        onShow: function(){
-            //GlobalState.setValue({field: 'toastVisible', value: true});
-            GlobalState.setValue({ field: 'toastVisible', value: true, setStorage: true });
-        },
-        onHidden: function() {
-            //GlobalState.setValue({field: 'toastVisible', value: false});
-            GlobalState.setValue({ field: 'toastVisible', value: false, setStorage: true });
-        }
+        position: -50
     };
-    
-    if(toastVisible) {
-        //Toast.hide();
-        return;
-    }
     
     var popupData = Utils.extend(popupDefaults, data);
     Toast.show(popupDefaults.text, popupData);

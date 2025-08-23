@@ -252,7 +252,7 @@ export function ListProducts() {
                     </TouchableOpacity>
                 </View>
 
-                <View style={[theme.wrapperPage]}>
+                <View style={theme.wrapperPage}>
                     {!hasStarted && <LoadingFullscreen />}
 
                     {hasStarted && (
@@ -273,7 +273,7 @@ export function ListProducts() {
                                             modalFiltersDispatch={modalFiltersDispatch}
                                         />
                                     }*/
-                                    style={theme.wrapperContainerList}
+                                    style={[theme.cardList, theme.wrapperContainerList]}
                                     contentContainerStyle={{ paddingBottom: Math.max(insets.bottom) }}
                                     data={items}
                                     keyExtractor={item => item.id}

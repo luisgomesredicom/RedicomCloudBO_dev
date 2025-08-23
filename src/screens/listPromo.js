@@ -115,7 +115,7 @@ export function ListPromo() {
                 <View style={{height: 6,backgroundColor: theme.colors.background}}></View>
 
                 {index == 0 ? (
-                    <View style={{height: 19,backgroundColor: theme.colors.white}}></View>
+                    <View style={{height: 15,backgroundColor: theme.colors.white}}></View>
                 ) : (
                     <View style={{height: 2,backgroundColor: theme.colors.white}}></View>
                 )}
@@ -162,21 +162,21 @@ export function ListPromo() {
 
                                     <View style={{flexDirection: 'row'}}>
                                         <View style={{width: 70,marginRight: 10}}>
-                                            <Text style={[theme.small, {lineHeight: 14}]}>até:</Text>
+                                            <Text style={[theme.small, {lineHeight: 14}]}>Até:</Text>
                                         </View>
                                         <View style={{width: 150}}>
                                             <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black, lineHeight: 14}]} numberOfLines={1} ellipsizeMode='tail'>{endDate} <Text style={{color: theme.colors.darkgray}}>{endTime}</Text></Text>
                                         </View>
                                     </View>
                                 </View>
-                                {flags.length > 0 ? (
-                                    <View style={{flexDirection: 'row',gap: 6}}>
-                                        {flags.map((flag, index) => (
-                                            <Badge text={flag.title} style={{ marginLeft: 'auto', paddingHorizontal: 6 }} key={index} />
-                                        ))}
-                                    </View>
-                                ) : null}
                             </View>
+                            {flags.length > 0 ? (
+                                <View style={{flexDirection: 'row',gap: 6}}>
+                                    {flags.map((flag, index) => (
+                                        <Badge text={flag.title} style={{paddingHorizontal: 6}} key={index} />
+                                    ))}
+                                </View>
+                            ) : null}
                         </View>
                         <View style={{marginLeft: 18,marginRight: -6}}>
                             <Icon code="818" size={24} style={{color: theme.colors.black}}/>

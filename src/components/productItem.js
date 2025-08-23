@@ -29,14 +29,13 @@ export const ProductItem = ({ index, item, updateItem, linkAction, totalFilters 
     );
 
     return (
-        <>            
-            
+        <>
             {index > 0 && (
-                <View style={{height: 6,backgroundColor: theme.colors.background,marginVertical: theme.containerPadding}}></View>
+                <View style={{height: 6,backgroundColor: theme.colors.background}}></View>
             )}
 
             <TouchableOpacity
-                style={styles.itemContainer}
+                style={theme.cardItem}
                 onPress={() => navigation.navigate('DetProductsScreen', {
                     title: item.multiLanguageContent?.pt?.nameListing,
                     product: item,
@@ -88,23 +87,6 @@ export const ProductItem = ({ index, item, updateItem, linkAction, totalFilters 
 };
 
 const styles = {
-    headerContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: 10,
-        marginBottom: 32,
-        paddingHorizontal: theme.containerPadding,
-        paddingTop: 8,
-    },
-    separator: {
-        height: 0,
-        backgroundColor: theme.colors.background,
-        marginVertical: 10,
-    },
-    itemContainer: {
-        marginHorizontal: theme.containerPadding,
-    },
     imageWrapper: {
         position: 'relative',
         width: 64,
