@@ -194,7 +194,7 @@ export function ListOrders() {
                         <View style={{flexDirection: 'row',gap: 4,alignItems: 'center'}}>
                             {trackingStatusActive == false && item.status.map((value, index) => {
                                 return (
-                                    <Badge text={value.name} style={{backgroundColor: value.color,color: theme.colors.white}}/>
+                                    <Badge text={value.name} style={{color: value.color}}/>
                                 )
                             })}
 

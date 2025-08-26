@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback, useMemo} from 'react';
-import { ScrollView, StatusBar, View, StyleSheet, Modal, RefreshControl, Platform, Pressable } from 'react-native';
+import { ScrollView, StatusBar, View, Modal, RefreshControl, Platform, Pressable } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { Portal } from "react-native-paper";
@@ -237,9 +237,7 @@ export function DetPromo() {
                                         <View style={{marginBottom: 2}}>
                                             <View style={{flexDirection: 'row',alignItems: 'flex-start',gap: 6,marginBottom: 3}}>
                                                 <Text style={[theme.listNavSubtitle, {position: 'relative', color: theme.colors.black, }]}>{campaign.title}</Text>
-                                                {campaign.active == 1 && (
-                                                    <Badge type="dot" style={{marginRight: 'auto',marginTop: 4}}/>
-                                                )}
+                                                <Badge type="dot" style={{backgroundColor: campaign.active == 1 ? theme.colors.success : theme.colors.error,marginTop: 4}} />
                                             </View>
             
                                             {campaign.description && (
@@ -308,7 +306,7 @@ export function DetPromo() {
                                                     {flags.length > 0 ? (
                                                         <View style={{flexDirection: 'row',gap: 6}}>
                                                             {flags.map((flag, index) => (
-                                                                <Badge text={flag.title} style={{paddingHorizontal: 6}} key={index} />
+                                                                <Badge text={flag.title} style={{paddingHorizontal: 6,color: theme.colors.info}} key={index} />
                                                             ))}
                                                         </View>
                                                     ) : null}
@@ -343,7 +341,7 @@ export function DetPromo() {
                                                     disabled={campaign.editableStartDate == 0 ? true : false}
                                                 />
 
-                                                {campaign.editableStartDate == 1 && (
+                                                {campaign.editableStartDate != 0 && (
                                                     Platform.OS === 'ios' ? (
                                                         <View 
                                                             style={{
@@ -410,7 +408,7 @@ export function DetPromo() {
                                                     disabled={campaign.editableStartDate == 0 ? true : false}
                                                 />
 
-                                                {campaign.editableStartDate == 1 && (
+                                                {campaign.editableStartDate != 0 && (
                                                     Platform.OS === 'ios' ? (
                                                         <View 
                                                             style={{
@@ -480,7 +478,7 @@ export function DetPromo() {
                                                     disabled={campaign.editableEndDate == 0 ? true : false}
                                                 />
 
-                                                {campaign.editableEndDate == 1 && (
+                                                {campaign.editableEndDate != 0 && (
                                                     Platform.OS === 'ios' ? (
                                                         <View 
                                                             style={{
@@ -547,7 +545,7 @@ export function DetPromo() {
                                                     disabled={campaign.editableEndDate == 0 ? true : false}
                                                 />
 
-                                                {campaign.editableEndDate == 1 && (
+                                                {campaign.editableEndDate != 0 && (
                                                     Platform.OS === 'ios' ? (
                                                         <View 
                                                             style={{
@@ -637,12 +635,3 @@ export function DetPromo() {
         </SafeAreaView>
     );
 }
-
-const statistics = StyleSheet.create({
-    container: {flexDirection: 'row',gap: 10,justifyContent: 'space-between',marginTop: 8},
-    item: {flexDirection: 'row',gap: 10},
-    columnRight: {width: 42},
-    text1: [theme.small, {textAlign: 'right'}],
-    text2: [theme.small, {fontWeight: '500',color: theme.colors.black}],
-    bottom: {marginTop: 4}
-});

@@ -136,9 +136,7 @@ export function ListPromo() {
                             <View style={{marginBottom: 2}}>
                                 <View style={{flexDirection: 'row',alignItems: 'flex-start',gap: 6,marginBottom: 3}}>
                                     <Text style={[theme.listNavSubtitle, {position: 'relative', color: theme.colors.black, }]}>{item.title}</Text>
-                                    {item.active == 1 && (
-                                        <Badge type="dot" style={{marginRight: 'auto',marginTop: 4}}/>
-                                    )}
+                                    <Badge type="dot" style={{backgroundColor: item.active == 1 ? theme.colors.success : theme.colors.error,marginTop: 4}} />
                                 </View>
 
                                 {item.description && (
@@ -173,7 +171,7 @@ export function ListPromo() {
                             {flags.length > 0 ? (
                                 <View style={{flexDirection: 'row',gap: 6}}>
                                     {flags.map((flag, index) => (
-                                        <Badge text={flag.title} style={{paddingHorizontal: 6}} key={index} />
+                                        <Badge text={flag.title} style={{paddingHorizontal: 6,color: theme.colors.info}} key={index} />
                                     ))}
                                 </View>
                             ) : null}

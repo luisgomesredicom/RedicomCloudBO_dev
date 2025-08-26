@@ -1,305 +1,629 @@
-import React, {useState, useEffect} from 'react';
-import { ScrollView, StatusBar, View, TouchableOpacity} from 'react-native';
+import React, {useState, useEffect, useCallback, useMemo} from 'react';
+import { ScrollView, StatusBar, View, Modal, RefreshControl, Platform, Pressable } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRoute, useNavigation } from "@react-navigation/native";
-import RNPickerSelect from 'react-native-picker-select';
-import { Badge, LoadingFullscreen } from '../components/elements';
+import { Portal } from "react-native-paper";
+import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import { LoadingFullscreen, LoadingRefreshFullscreen, Badge } from '../components/elements';
+import {TextInput} from "../components/inputs";
 import { theme } from '../styles/styles'
 import { Text } from 'react-native-paper';
-import { Octicons } from '@expo/vector-icons';
 import Button from '../components/buttons'
-import { TextInput } from "../components/inputs";
-import { DateInput, DatePicker } from "../components/modalDatePicker";
-import { showToast, formValidator, remoteAPI } from '../core/utils'
-
-const fromHoursList = [
-    {label: '00:00', value: '00:00:00'},
-    {label: '01:00', value: '01:00:00'},
-    {label: '02:00', value: '02:00:00'},
-    {label: '03:00', value: '03:00:00'},
-    {label: '04:00', value: '04:00:00'},
-    {label: '05:00', value: '05:00:00'},
-    {label: '06:00', value: '06:00:00'},
-    {label: '07:00', value: '07:00:00'},
-    {label: '08:00', value: '08:00:00'},
-    {label: '09:00', value: '09:00:00'},
-    {label: '10:00', value: '10:00:00'},
-    {label: '11:00', value: '11:00:00'},
-    {label: '12:00', value: '12:00:00'},
-    {label: '13:00', value: '13:00:00'},
-    {label: '14:00', value: '14:00:00'},
-    {label: '15:00', value: '15:00:00'},
-    {label: '16:00', value: '16:00:00'},
-    {label: '17:00', value: '17:00:00'},
-    {label: '18:00', value: '18:00:00'},
-    {label: '19:00', value: '19:00:00'},
-    {label: '20:00', value: '20:00:00'},
-    {label: '21:00', value: '21:00:00'},
-    {label: '22:00', value: '22:00:00'},
-    {label: '23:00', value: '23:00:00'}
-]
-
-const toHoursList = [
-    {label: '00:59', value: '00:59:59'},
-    {label: '01:59', value: '01:59:59'},
-    {label: '02:59', value: '02:59:59'},
-    {label: '03:59', value: '03:59:59'},
-    {label: '04:59', value: '04:59:59'},
-    {label: '05:59', value: '05:59:59'},
-    {label: '06:59', value: '06:59:59'},
-    {label: '07:59', value: '07:59:59'},
-    {label: '08:59', value: '08:59:59'},
-    {label: '09:59', value: '09:59:59'},
-    {label: '10:59', value: '10:59:59'},
-    {label: '11:59', value: '11:59:59'},
-    {label: '12:59', value: '12:59:59'},
-    {label: '13:59', value: '13:59:59'},
-    {label: '14:59', value: '14:59:59'},
-    {label: '15:59', value: '15:59:59'},
-    {label: '16:59', value: '16:59:59'},
-    {label: '17:59', value: '17:59:59'},
-    {label: '18:59', value: '18:59:59'},
-    {label: '19:59', value: '19:59:59'},
-    {label: '20:59', value: '20:59:59'},
-    {label: '21:59', value: '21:59:59'},
-    {label: '22:59', value: '22:59:59'},
-    {label: '23:59', value: '23:59:59'}
-]
+import { remoteAPI, dateFormatter, splitDateTime, showToast, formValidator } from '../core/utils'
 
 export function DetCampaign() {
+    /*
+    Estados das campanhas (campaign.status)
+    */
+    const navigation = useNavigation();
     const [pageIsReady, setPageIsReady] = useState(false);
+    const [pageStatus, setPageStatus] = useState(0);
     const route = useRoute();
     const insets = useSafeAreaInsets();
     const [campaign, setCampaign] = useState(route.params.item);
-    const navigation = useNavigation();
+    const [isRefreshLoading, setRefreshLoading] = useState(false);
+    const [isModalConfirm, setModalConfirm] = useState(false);
+    const [optionSubmit, setOptionSubmit] = useState(null);
+    const [refreshing, setRefreshing] = useState(false);
     
-    const [startDate, setStartDate] = useState({value: new Date(campaign.startDate),error: false,errorText: '',open: false});
-    const [startDateDatePart, startDateTimePart] = campaign.startDate.split(' ');
-    const [startDateHour, startDateMinute] = startDateTimePart.split(':');
-    const startHourItem = fromHoursList.filter(item => item.label === startDateHour + ':' + startDateMinute);
-    const [fromHour, setFromHour] = useState({value: startHourItem[0].value, required: true, showtoast: true});
-    const setStartDateVisible = React.useCallback((open) => {
-        setStartDate((params) => {
-            return { ...params, open: open || false };
-        });
-    }, [setStartDate]);
+    const flags = useMemo(() => {
+    return (campaign?.flags ?? [])
+        .map(f => ({ title: (f?.title ?? '').trim() }))
+        .filter(f => f.title.length > 0);
+    }, [campaign]);
+
+    const { date: campaignStartDate, time: campaignStartTime } = dateFormatter(campaign.startDate);
+    const { date: campaignEndDate, time: campaignEndTime } = dateFormatter(campaign.endDate);
     
-    const setStartDateConfirm = React.useCallback((data) => {
-        setStartDate((params) => {
-            return { ...params, open: false, value: data.date };
-        });
-    }, [setStartDate]);
+    const [showPickerStartDate, setShowPickerStartDate] = useState(true);
+    const [showPickerStartTime, setShowPickerStartTime] = useState(true);
+    const [showPickerEndDate, setShowPickerEndDate] = useState(true);
+    const [showPickerEndTime, setShowPickerEndTime] = useState(true);
 
-    const [endDate, setEndDate] = useState({ value: new Date(campaign.endDate), error: false, errorText: '',open: false });
-    const [endDateDatePart, endDateTimePart] = campaign.endDate.split(' ');
-    const [endDateHour, endDateMinute] = endDateTimePart.split(':');
-    const endHourItem = toHoursList.filter(item => item.label === endDateHour + ':' + endDateMinute);
-    const [toHour, setToHour] = useState({value: endHourItem[0].value, required: true, showtoast: true});
-    const setEndDateVisible = React.useCallback((open) => {
-        setEndDate((params) => {
-            return { ...params, open: open || false };
-        });
-    }, [setEndDate]);
+    const { date: startDateFormatter, time: startTimeFormatter } = splitDateTime(campaign.startDate);
+    const { date: endDateFormatter, time: endTimeFormatter } = splitDateTime(campaign.endDate);
     
-    const setEndDateConfirm = React.useCallback((data) => {
-        setEndDate((params) => {
-            return { ...params, open: false, value: data.date };
-        });
-    }, [setEndDate]);
-
-    const onSubmit = () => {
-        const startDateError = formValidator({value: startDate.value, required: true, showtoast: true});
-        const endDateError = formValidator({value: endDate.value, required: true, showtoast: true});
-        const fromHourError = formValidator({value: fromHour.value, required: true, showtoast: true});
-        const toHourError = formValidator({value: toHour.value, required: true, showtoast: true});
-
-        if(startDateError.error) {setStartDate({ ...startDate, error: true, errorText: '' }); return;}
-        if(endDateError.error) {setEndDate({ ...endDate, error: true, errorText: '' }); return;}
-        if(fromHourError.error) {setFromHour({ ...fromHour, error: true, errorText: '' }); return;}
-        if(toHourError.error) {setToHour({ ...toHour, error: true, errorText: '' }); return;}
-
-        (async () => {
-            const startDateValue = new Date(startDate.value).toISOString().split('T')[0] + ' ' + fromHour.value;
-            const endDateValue = new Date(endDate.value).toISOString().split('T')[0] + ' ' + toHour.value;
-
-            //console.log('startDate: ', startDateValue);
-            //console.log('endDate: ', endDateValue);
-            
-            const data = await remoteAPI({
-                request: `marketing/campaigns/`,
-                method: 'PUT',
-                body: {
-                    id: campaign.id,
-                    startDate: startDateValue,
-                    endDate: endDateValue
-                }
-            });
-            
-            if(!data || data.status === 'false') {
-                showToast({text: 'Ocorreu um erro na submissão, por favor reveja o formulário.'});
-                return false;
-            }
-            
-            const campaignUpdated = {...campaign, ...data.response};
-            setCampaign(campaignUpdated);
-            
-            route.params.update(campaignUpdated);
-            navigation.goBack();
-        })();
-    }
+    const [startDay, startMonth, startYear] = startDateFormatter.split('/').map(Number);
+    const [startDatePicker, setStartDatePicker] = useState(() => {
+        const [hours, minutes] = startTimeFormatter.split(':').map(Number);
+        return new Date(startYear, startMonth - 1, startDay, hours, minutes);
+    });
+    
+    const [endDay, endMonth, endYear] = endDateFormatter.split('/').map(Number);
+    const [endDatePicker, setEndDatePicker] = useState(() => {
+        const [hours, minutes] = endTimeFormatter.split(':').map(Number);
+        return new Date(endYear, endMonth - 1, endDay, hours, minutes);
+    });
+    
+    const [startDate, setStartDate] = useState({ value: startDateFormatter, error: false, errorText: '' });
+    const [startTime, setStartTime] = useState({ value: startTimeFormatter, error: false, errorText: '' });
+    const [endDate, setEndDate] = useState({ value: endDateFormatter, error: false, errorText: '' });
+    const [endTime, setEndTime] = useState({ value: endTimeFormatter, error: false, errorText: '' });
 
     useEffect(() => {
         setPageIsReady(true);
     }, []);
 
+    useEffect(() => {
+        if(optionSubmit) {
+            if(String(optionSubmit.confirmPopup).trim() === 'true') {
+                setModalConfirm(true);
+                return;
+            }
+            
+            onSubmit();
+        }
+    }, [optionSubmit]);
+
+    const onSubmit = async () => {
+        setRefreshLoading(true);
+
+        var valid = true;
+        const fields = [
+            { state: startDate.value, setter: setStartDate },
+            { state: startTime.value, setter: setStartTime },
+            { state: endDate.value, setter: setEndDate },
+            { state: endTime.value, setter: setEndTime }
+        ];
+
+        for (const { state, setter } of fields) {
+            const error = formValidator(state);
+            if (error.error) {
+                valid = false;
+                setter({ ...state, error: true, errorText: '' });
+                break;
+            }
+        }
+
+        if(!valid) {
+            setRefreshLoading(false);
+            return;
+        }
+
+        const [startDay, startMonth, startYear] = startDate.value.split('/');
+        const [startHour, startMinute] = startTime.value.split(':');
+        const [endDay, endMonth, endYear] = endDate.value.split('/');
+        const [endHour, endMinute] = endTime.value.split(':');
+
+        const startD = new Date(startYear, startMonth - 1, startDay, startHour, startMinute);
+        const endD = new Date(endYear, endMonth - 1, endDay, endHour, endMinute);
+
+        const newStartDate = `${startD.getFullYear()}-${String(startD.getMonth() + 1).padStart(2,'0')}-${String(startD.getDate()).padStart(2,'0')} ${String(startD.getHours()).padStart(2,'0')}:${String(startD.getMinutes()).padStart(2,'0')}:${String(startD.getSeconds()).padStart(2,'0')}`;
+        const newEndDate = `${endD.getFullYear()}-${String(endD.getMonth() + 1).padStart(2,'0')}-${String(endD.getDate()).padStart(2,'0')} ${String(endD.getHours()).padStart(2,'0')}:${String(endD.getMinutes()).padStart(2,'0')}:${String(endD.getSeconds()).padStart(2,'0')}`;
+
+        try {
+            const data = await remoteAPI({
+                request: `marketing/campaigns/`,
+                method: 'PUT',
+                body: {
+                    id: campaign.id,
+                    startDate: newStartDate,
+                    endDate: newEndDate
+                }
+            });
+
+            if (!data || data.status === 'false') {
+                showToast({ text: 'Ocorreu um erro na submissão, por favor reveja o formulário.' });
+                return;
+            }
+    
+            updateCampaign(data);
+
+        } catch (error) {
+            console.error('Erro ao chamar a API:', error);
+        } finally {
+            setTimeout(() => {
+                setRefreshLoading(false);
+                setOptionSubmit(null);
+            }, 500);
+        }
+    }
+
+    const updateCampaign = (data) => {
+        if(data && JSON.stringify(data.response)) {
+            setCampaign(data.response);
+            route.params.update(data.response);
+        }
+    }
+
+    const refreshCampaign = async () => {
+        const data = await remoteAPI({
+            request: `marketing/promotions/${campaign.id}`,
+            method: 'GET'
+        });
+
+        updateCampaign(data);
+    }
+
+    const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+        await refreshCampaign();
+        setRefreshing(false);
+    }, []);
+
+    const ModalConfirm = () => {
+        return (
+            <View style={{flex: 1,justifyContent: 'center',alignItems: 'center'}}>
+                <Modal animationType="fade" transparent={true} visible={isModalConfirm} onRequestClose={() => {
+                    setModalConfirm(!isModalConfirm);
+                    setOptionSubmit(null);
+                }}>
+                    <View style={{flex: 1,justifyContent: 'center',alignItems: 'center',backgroundColor: 'rgba(255, 255, 255, 0.8)'}}>
+                        <View style={theme.modalView}>
+                            {/*<View style={{marginBottom: 12}}><Icon code="820" size={42} /></View>*/}
+                            <Text style={[theme.listNavTitle, {textAlign: 'center',marginBottom: 10}]}>Deseja continuar?</Text>
+                            <Text style={[theme.paragraph, {textAlign: 'center',color: theme.colors.darkgray}]}>{optionSubmit ? optionSubmit.confirmPopupText : ''}</Text>
+                            <View style={{flexDirection: 'row',justifyContent: 'space-between',gap: 14,marginTop: 20}}>
+                                <View style={{width: '50%'}}>
+                                    <Button mode="outlined" onPress={() => {
+                                        setModalConfirm(!isModalConfirm);
+                                        setOptionSubmit(null);
+                                    }}>Cancelar</Button>
+                                </View>
+                                <View style={{width: '50%'}}>
+                                    <Button mode="contained" onPress={() => {
+                                        setModalConfirm(!isModalConfirm);
+                                        onSubmit();
+                                    }}>Continuar</Button>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
+            </View>
+        )
+    }
+
+    const openAndroidDatePicker = (date, onChange) => {
+        DateTimePickerAndroid.open({
+            value: date,
+            mode: 'date',
+            is24Hour: true,
+            onChange: (event, selectedDate) => {
+                if (event.type === 'set' && selectedDate) {
+                    onChange(selectedDate);
+                }
+            },
+        });
+    };
+
+    const openAndroidTimePicker = (date, onChange) => {
+        DateTimePickerAndroid.open({
+            value: date,
+            mode: 'time',
+            is24Hour: true,
+            onChange: (event, selectedDate) => {
+                if (event.type === 'set' && selectedDate) {
+                    onChange(selectedDate);
+                }
+            },
+        });
+    };
     return (
         <SafeAreaView style={theme.safeAreaView} edges={['right','left']}>
             <StatusBar barStyle='default'/>
-            <View style={{flex: 1,backgroundColor: theme.colors.lighttheme}}>
-                <View style={[theme.wrapperPage, {marginTop: theme.containerPadding}]}>
-                    {
-                        pageIsReady ? (
-                            <>
-                                <ScrollView style={theme.wrapperPage} contentContainerStyle={theme.wrapperContentStyle}>
-                                    <View style={[theme.cardItem, {marginTop: 0,marginBottom: 0,borderWidth: 0,backgroundColor: theme.colors.background}]}>
-                                        <View style={{flex: 1,gap: 5}}>
-                                            {campaign.active == 1 && (
-                                                <Badge type="dot" style={{position: 'absolute',top: -4,right: -4,zIndex: 1}} />
-                                            )}
-                                            
-                                            <View>
-                                                <Text style={[theme.secondarySubtitle, {paddingRight: 35}]}>{campaign.title}</Text>
-                                                <Text style={theme.paragraph}>ID: {campaign.id}</Text>
+            <View style={[theme.wrapperPage]}>
+                {
+                    pageIsReady ? (
+                        <>
+                            <ScrollView style={theme.wrapperPage} contentContainerStyle={[theme.wrapperContentStyle, {paddingTop: 30}]}
+                            refreshControl={
+                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                            }
+                            >
+
+                                <View style={[{flexDirection: 'row',alignItems: 'center'}]}>
+                                    <View style={{flexGrow: 1,width: 1, rowGap: 10}}>
+                                        <View style={{marginBottom: 2}}>
+                                            <View style={{flexDirection: 'row',alignItems: 'flex-start',gap: 6,marginBottom: 3}}>
+                                                <Text style={[theme.listNavSubtitle, {position: 'relative', color: theme.colors.black, }]}>{campaign.title}</Text>
+                                                <Badge type="dot" style={{backgroundColor: campaign.active == 1 ? theme.colors.success : theme.colors.error,marginTop: 4}} />
                                             </View>
-
-                                            <View style={{height: 2}}></View>
-
+            
                                             {campaign.description && (
-                                                <Text style={theme.paragraph}>{campaign.description}</Text>
+                                                <Text style={[theme.small, {color: theme.colors.black, lineHeight: 12}]}>{campaign.description}</Text>
+                                            )}
+            
+                                            {(campaign.multiLanguageContent && campaign.multiLanguageContent.pt.name) && (
+                                                <Text style={[theme.paragraph, {lineHeight: 22}]}>{campaign.multiLanguageContent.pt.name}</Text>
                                             )}
                                         </View>
-
-                                        <View style={{flexDirection: 'row',alignItems: 'center',gap: 10,borderTopWidth: 1,borderColor: theme.colors.lines,paddingTop: 11,marginTop: 15}}>
-                                            {campaign.flags.map((flag, index) => (
-                                                flag.title && flag.title != '' && (
-                                                    <Badge type="dot" text={flag.title} style={flag.style > 0 && flag.style < 5 ? theme[`stats_${flag.style}`] : {}} key={index} />
-                                                )
-                                            ))}
-                                        </View>
-                                    </View>
-
-                                    <View style={{marginTop: 28,marginBottom: 28}}>
-                                        <Text style={theme.subtitle}>Regras de Ativação</Text>
-                                    </View>
-                                    
-                                    <View style={theme.formWrapper}>
-                                        <View style={theme.formField}>
-                                            <View style={theme.formLabelWrap}>
-                                                <Text style={[theme.formLabel, theme.listNavTitle]}>Ativo de</Text>
-                                            </View>
-                                            <View style={theme.formContent}>
-                                                <View style={{flexGrow: 1,flexBasis: 0,position: 'relative'}}>
-                                                    <DateInput
-                                                        value={startDate.value}
-                                                        error={startDate.error}
-                                                        errorText={startDate.errorText}
-                                                        disabled={campaign.editableStartDate == 0}
-                                                    />
-                                                    {campaign.editableStartDate != 0 && (
-                                                        <>
-                                                            <DatePicker
-                                                                visible={startDate.open}
-                                                                onDismiss={setStartDateVisible}
-                                                                onConfirm={setStartDateConfirm}
-                                                                date={startDate.value}
-                                                            />
-                                                            <TouchableOpacity onPress={() => setStartDateVisible(true)} style={theme.buttonDateModal}></TouchableOpacity>
-                                                        </>
-                                                    )}
-                                                </View>
-
-                                                <View style={{flexGrow: 1,flexBasis: 0,position: 'relative'}}>
-                                                    <TextInput
-                                                        value=' '
-                                                        rightIcon="calendar-clock"
-                                                        disabled={campaign.editableStartDate == 0}
-                                                    />
-                                                    
-                                                    <View style={theme.buttonTimeModal}>
-                                                        <RNPickerSelect
-                                                            onValueChange={(text) => setFromHour({ value: text, error: false, errorText: '' })}
-                                                            items={fromHoursList}
-                                                            value={fromHour.value}
-                                                            error={fromHour.error}
-                                                            errorText={fromHour.errorText}
-                                                            style={campaign.editableStartDate == 0 ? theme.pickerSelectStylesDisabled : theme.pickerSelectStyles}
-                                                            disabled={campaign.editableStartDate == 0 ? true : false}
-                                                            placeholder={{}}
-                                                        />
+                                        <View style={{flexDirection: 'row',gap: 10,justifyContent: 'space-between',alignItems: 'center'}}>
+                                            <View style={{gap: 3}}>
+                                                {/*<View style={{flexDirection: 'row',alignItems: 'center'}}>
+                                                    <View style={{width: 70,marginRight: 10}}>
+                                                        <Text style={[theme.small, {lineHeight: 14}]}>Ativo de:</Text>
+                                                    </View>
+                                                    <View>
+                                                        <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black, lineHeight: 14}]} numberOfLines={1} ellipsizeMode='tail'>{campaignStartDate} <Text style={{color: theme.colors.darkgray}}>{campaignStartTime}</Text></Text>
                                                     </View>
                                                 </View>
+            
+                                                <View style={{flexDirection: 'row'}}>
+                                                    <View style={{width: 70,marginRight: 10}}>
+                                                        <Text style={[theme.small, {lineHeight: 14}]}>Até:</Text>
+                                                    </View>
+                                                    <View>
+                                                        <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black, lineHeight: 14}]} numberOfLines={1} ellipsizeMode='tail'>{campaignEndDate} <Text style={{color: theme.colors.darkgray}}>{campaignEndTime}</Text></Text>
+                                                    </View>
+                                                </View>*/}
+                                                
+                                                {campaign.applicableTo == 'allUsers' && 
+                                                    <View style={{flexDirection: 'row'}}>
+                                                        <View style={{width: 70,marginRight: 10}}>
+                                                            <Text style={[theme.small, {lineHeight: 14}]}>Aplicável a:</Text>
+                                                        </View>
+                                                        <View style={{width: 150}}>
+                                                            <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black, lineHeight: 14}]} numberOfLines={1} ellipsizeMode='tail'>Todos os utilizadores</Text>
+                                                        </View>
+                                                    </View>
+                                                }
+            
+                                                {campaign.amountType == 'discount' && (
+                                                    <View style={{flexDirection: 'row'}}>
+                                                        <View style={{width: 70,marginRight: 10}}>
+                                                            <Text style={[theme.small, {lineHeight: 14}]}>Desconto:</Text>
+                                                        </View>
+                                                        <View style={{width: 150}}>
+                                                            <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black, lineHeight: 14}]} numberOfLines={1} ellipsizeMode='tail'>{campaign.amount}%</Text>
+                                                        </View>
+                                                    </View>
+                                                )}
                                             </View>
+                                        </View>
+                                        {/*
+                                        <View style={{flexDirection: 'row',gap: 10,justifyContent: 'space-between',alignItems: 'center'}}>
+                                            <View style={{flexDirection: 'row',alignItems: 'center'}}>
+                                                <View>
+                                                    {flags.length > 0 ? (
+                                                        <View style={{flexDirection: 'row',gap: 6}}>
+                                                            {flags.map((flag, index) => (
+                                                                <Badge text={flag.title} style={{paddingHorizontal: 6,color: theme.colors.info}} key={index} />
+                                                            ))}
+                                                        </View>
+                                                    ) : null}
+                                                </View>
+                                            </View>
+                                        </View>*/}
+                                        
+                                    </View>
+                                </View>
+
+                                <View style={{height: 6,backgroundColor: theme.colors.background,marginHorizontal: theme.ncontainerPadding,marginVertical: 30}}></View>
+                                
+                                <View style={theme.formWrapper}>
+                                    <View style={theme.formField}>
+                                        <View style={theme.formLabelWrap}>
+                                            <Text style={[theme.formLabel, theme.listNavSubtitle]}>Ativo de</Text>
                                         </View>
                                         
-                                        <View style={theme.formField}>
-                                            <View style={theme.formLabelWrap}>
-                                                <Text style={[theme.formLabel, theme.listNavTitle]}>Até</Text>
+                                        <View style={theme.formContent}>
+                                            <View style={{width: '48%',position: 'relative',overflow: 'hidden'}}>
+                                                <TextInput
+                                                    returnKeyType="next"
+                                                    autoCapitalize="none"
+                                                    autoCorrect={false}
+                                                    autoComplete="off"
+                                                    importantForAutofill="off"
+                                                    onChangeText={(date) => setStartDate({ value: date, error: false, errorText: '' })}
+                                                    value={startDate.value}
+                                                    error={startDate.error}
+                                                    errorText={startDate.errorText}
+                                                    rightIcon="803"
+                                                    disabled={campaign.editableStartDate == 0 ? true : false}
+                                                />
+
+                                                {campaign.editableStartDate != 0 && (
+                                                    Platform.OS === 'ios' ? (
+                                                        <View 
+                                                            style={{
+                                                                transform: [{ scale: 6.5 }, { translateY: -13 }, { translateX: 0}],
+                                                                opacity: .1,
+                                                                position: 'absolute',
+                                                                zIndex: 1,
+                                                            }}>
+                                                            {showPickerStartDate && (
+                                                                <DateTimePicker
+                                                                    value={startDatePicker}
+                                                                    mode="date"
+                                                                    display="compact"
+                                                                    locale="pt-PT"
+                                                                    onChange={(event, selectedDate) => {
+                                                                        if (selectedDate) {
+                                                                            const year = selectedDate.getFullYear();
+                                                                            const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+                                                                            const day = String(selectedDate.getDate()).padStart(2, '0');
+                                                                            const formattedDate = `${day}/${month}/${year}`;
+
+                                                                            //console.log('selectedDate local:', selectedDate);
+                                                                            //console.log('formattedDate local:', formattedDate);
+
+                                                                            setStartDatePicker(selectedDate);
+                                                                            setStartTime({ value: formattedDate, error: false, errorText: '' })
+                                                                        }
+
+                                                                        setShowPickerStartDate(false);
+                                                                        setTimeout(() => setShowPickerStartDate(true), 1);
+                                                                    }}
+                                                                />
+
+                                                            )}
+                                                        </View>
+                                                    ) : (
+                                                        <Pressable style={{position: 'absolute',top: 0,left: 0,width: '100%',height: '100%',zIndex: 1}} onPress={() => {
+                                                            openAndroidDatePicker(startDatePicker, (selectedDate) => {
+                                                                const year = selectedDate.getFullYear();
+                                                                const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+                                                                const day = String(selectedDate.getDate()).padStart(2, '0');
+                                                                const formattedDate = `${day}/${month}/${year}`;
+                                                                setStartDatePicker(selectedDate);
+                                                                setStartDate({ value: formattedDate, error: false, errorText: '' });
+                                                            });
+                                                        }}>
+                                                        </Pressable>
+                                                    )
+                                                )}
                                             </View>
-                                            <View style={theme.formContent}>
-                                                <View style={theme.formElement}>
-                                                    <DateInput
-                                                        value={endDate.value}
-                                                        error={endDate.error}
-                                                        errorText={endDate.errorText}
-                                                        disabled={campaign.editableEndDate == 0}
-                                                        inputMode="end"
-                                                    />
-                                                    {campaign.editableEndDate != 0 && (
-                                                        <>
-                                                            <DatePicker
-                                                                visible={endDate.open}
-                                                                onDismiss={setEndDateVisible}
-                                                                onConfirm={setEndDateConfirm}
-                                                                date={endDate.value}
-                                                            />
-                                                            <TouchableOpacity onPress={() => setEndDateVisible(true)} style={theme.buttonDateModal}></TouchableOpacity>
-                                                        </>
-                                                    )}
-                                                </View>
 
-                                                <View style={theme.formElement}>
-                                                    <TextInput
-                                                        value=' '
-                                                        rightIcon="calendar-clock"
-                                                        disabled={campaign.editableEndDate == 0}
-                                                    />
+                                            <View style={{width: '48%',position: 'relative',overflow: 'hidden'}}>
+                                                <TextInput
+                                                    returnKeyType="next"
+                                                    autoCapitalize="none"
+                                                    autoCorrect={false}
+                                                    autoComplete="off"
+                                                    importantForAutofill="off"
+                                                    onChangeText={(time) => setStartTime({ value: time, error: false, errorText: '' })}
+                                                    value={startTime.value}
+                                                    error={startTime.error}
+                                                    errorText={startTime.errorText}
+                                                    rightIcon="81e"
+                                                    disabled={campaign.editableStartDate == 0 ? true : false}
+                                                />
 
-                                                    <View style={theme.buttonTimeModal}>
-                                                        <RNPickerSelect
-                                                            onValueChange={(text) => setToHour({ value: text, error: false, errorText: '' })}
-                                                            items={toHoursList}
-                                                            value={toHour.value}
-                                                            error={toHour.error}
-                                                            errorText={toHour.errorText}
-                                                            style={campaign.editableEndDate == 0 ? theme.pickerSelectStylesDisabled : theme.pickerSelectStyles}
-                                                            disabled={campaign.editableEndDate == 0 ? true : false}
-                                                            placeholder={{}}
-                                                        />
-                                                    </View>
-                                                </View>
+                                                {campaign.editableStartDate != 0 && (
+                                                    Platform.OS === 'ios' ? (
+                                                        <View 
+                                                            style={{
+                                                                transform: [{ scale: 6.5 }, { translateY: -13 }, { translateX: 0}],
+                                                                opacity: .1,
+                                                                position: 'absolute',
+                                                                zIndex: 1,
+                                                            }}>
+                                                            {showPickerStartTime && Platform.OS === 'ios' && (
+                                                                <DateTimePicker
+                                                                    value={startDatePicker}
+                                                                    mode="time"
+                                                                    is24Hour={true}
+                                                                    onChange={(event, selectedDate) => {
+                                                                        if (selectedDate) {
+                                                                            const d = new Date(selectedDate);
+
+                                                                            const hours = String(d.getHours()).padStart(2, "0");
+                                                                            const minutes = String(d.getMinutes()).padStart(2, "0");
+                                                                            const formattedTime = `${hours}:${minutes}`;
+
+                                                                            setStartDatePicker(selectedDate);
+                                                                            setEndTime({ value: formattedTime, error: false, errorText: '' })
+                                                                        }
+
+                                                                        //setShowPickerEndTime(false);
+                                                                        //setTimeout(() => setShowPickerEndTime(true), 1);
+                                                                    }}
+                                                                />
+
+                                                            )}
+                                                        </View>
+                                                    ) : (
+                                                        <Pressable style={{position: 'absolute',top: 0,left: 0,width: '100%',height: '100%',zIndex: 1}} onPress={() => {
+                                                            openAndroidTimePicker(startDatePicker, (selectedDate) => {
+                                                                const hours = String(selectedDate.getHours()).padStart(2, '0');
+                                                                const minutes = String(selectedDate.getMinutes()).padStart(2, '0');
+                                                                const formattedTime = `${hours}:${minutes}`;
+                                                                setStartDatePicker(selectedDate);
+                                                                setStartTime({ value: formattedTime, error: false, errorText: '' });
+                                                            });
+                                                        }}>
+                                                        </Pressable>
+                                                    )
+                                                )}
                                             </View>
                                         </View>
                                     </View>
-                                </ScrollView>
+                                    
+                                    <View style={theme.formField}>
+                                        <View style={theme.formLabelWrap}>
+                                            <Text style={[theme.formLabel, theme.listNavSubtitle]}>Ativo até</Text>
+                                        </View>
+                                        <View style={theme.formContent}>
+                                            <View style={{width: '48%',position: 'relative',overflow: 'hidden'}}>
+                                                <TextInput
+                                                    returnKeyType="next"
+                                                    autoCapitalize="none"
+                                                    autoCorrect={false}
+                                                    autoComplete="off"
+                                                    importantForAutofill="off"
+                                                    onChangeText={(date) => setEndDate({ value: date, error: false, errorText: '' })}
+                                                    value={endDate.value}
+                                                    error={endDate.error}
+                                                    errorText={endDate.errorText}
+                                                    rightIcon="803"
+                                                    disabled={campaign.editableEndDate == 0 ? true : false}
+                                                />
 
-                                <View style={[theme.wrapperPageFooter, {paddingBottom: Math.max(insets.bottom)}]}>
-                                    <Button mode="contained" onPress={onSubmit}>Gravar</Button>
+                                                {campaign.editableEndDate != 0 && (
+                                                    Platform.OS === 'ios' ? (
+                                                        <View 
+                                                            style={{
+                                                                transform: [{ scale: 6.5 }, { translateY: -13 }, { translateX: 0}],
+                                                                opacity: .1,
+                                                                position: 'absolute',
+                                                                zIndex: 1,
+                                                            }}>
+                                                            {showPickerEndDate && (
+                                                                <DateTimePicker
+                                                                    value={endDatePicker}
+                                                                    mode="date"
+                                                                    display="compact"
+                                                                    locale="pt-PT"
+                                                                    onChange={(event, selectedDate) => {
+                                                                        if (selectedDate) {
+                                                                            const year = selectedDate.getFullYear();
+                                                                            const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+                                                                            const day = String(selectedDate.getDate()).padStart(2, '0');
+                                                                            const formattedDate = `${day}/${month}/${year}`;
+
+                                                                            //console.log('selectedDate local:', selectedDate);
+                                                                            //console.log('formattedDate local:', formattedDate);
+
+                                                                            setEndDatePicker(selectedDate);
+                                                                            setEndDate({ value: formattedDate, error: false, errorText: '' })
+                                                                        }
+
+                                                                        setShowPickerEndDate(false);
+                                                                        setTimeout(() => setShowPickerEndDate(true), 1);
+                                                                    }}
+                                                                />
+
+                                                            )}
+                                                        </View>
+                                                    ) : (
+                                                        <Pressable style={{position: 'absolute',top: 0,left: 0,width: '100%',height: '100%',zIndex: 1}} onPress={() => {
+                                                            openAndroidDatePicker(endDatePicker, (selectedDate) => {
+                                                                const year = selectedDate.getFullYear();
+                                                                const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+                                                                const day = String(selectedDate.getDate()).padStart(2, '0');
+                                                                const formattedDate = `${day}/${month}/${year}`;
+                                                                setEndDatePicker(selectedDate);
+                                                                setEndDate({ value: formattedDate, error: false, errorText: '' });
+                                                            });
+                                                        }}>
+                                                        </Pressable>
+                                                    )
+                                                )}
+                                            </View>
+
+                                            <View style={{width: '48%',position: 'relative',overflow: 'hidden'}}>
+                                                <TextInput
+                                                    returnKeyType="next"
+                                                    autoCapitalize="none"
+                                                    autoCorrect={false}
+                                                    autoComplete="off"
+                                                    importantForAutofill="off"
+                                                    onChangeText={(time) => setEndTime({ value: time, error: false, errorText: '' })}
+                                                    value={endTime.value}
+                                                    error={endTime.error}
+                                                    errorText={endTime.errorText}
+                                                    rightIcon="81e"
+                                                    disabled={campaign.editableEndDate == 0 ? true : false}
+                                                />
+
+                                                {campaign.editableEndDate != 0 && (
+                                                    Platform.OS === 'ios' ? (
+                                                        <View 
+                                                            style={{
+                                                                transform: [{ scale: 6.5 }, { translateY: -13 }, { translateX: 0}],
+                                                                opacity: .1,
+                                                                position: 'absolute',
+                                                                zIndex: 1,
+                                                            }}>
+                                                            {showPickerEndTime && (
+                                                                <DateTimePicker
+                                                                    value={endDatePicker}
+                                                                    mode="time"
+                                                                    display="compact"
+                                                                    locale="pt-PT"
+                                                                    onChange={(event, selectedDate) => {
+                                                                        if (selectedDate) {
+                                                                            const d = new Date(selectedDate);
+
+                                                                            const hours = String(d.getHours()).padStart(2, "0");
+                                                                            const minutes = String(d.getMinutes()).padStart(2, "0");
+                                                                            const formattedTime = `${hours}:${minutes}`;
+
+                                                                            setEndDatePicker(selectedDate);
+                                                                            setEndTime({ value: formattedTime, error: false, errorText: '' })
+                                                                        }
+
+                                                                        //setShowPickerEndTime(false);
+                                                                        //setTimeout(() => setShowPickerEndTime(true), 1);
+                                                                    }}
+                                                                />
+
+                                                            )}
+                                                        </View>
+                                                    ) : (
+                                                        <Pressable style={{position: 'absolute',top: 0,left: 0,width: '100%',height: '100%',zIndex: 1}} onPress={() => {
+                                                            openAndroidTimePicker(endDatePicker, (selectedDate) => {
+                                                                const hours = String(selectedDate.getHours()).padStart(2, '0');
+                                                                const minutes = String(selectedDate.getMinutes()).padStart(2, '0');
+                                                                const formattedTime = `${hours}:${minutes}`;
+                                                                setEndDatePicker(selectedDate);
+                                                                setEndTime({ value: formattedTime, error: false, errorText: '' });
+                                                            });
+                                                        }}>
+                                                        </Pressable>
+                                                    )
+                                                )}
+                                            </View>
+                                        </View>
+                                    </View>
                                 </View>
-                            </>
-                        ) : <LoadingFullscreen />
-                    }
-                </View>
+                            </ScrollView>
+
+                            <View style={[theme.wrapperPageFooter, {paddingBottom: theme.containerPadding + Math.max(insets.bottom),flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'}]}>
+                                <View style={{width: '48%', marginTop: 2}}>
+                                    <Button mode='outlined' onPress={()=> {showToast({text: 'Temporariamente indisponível'});}}>Cancelar</Button>
+                                </View>
+
+                                <View style={{width: '48%', marginTop: 2}}>
+                                    <Button mode='contained' onPress={onSubmit}>Gravar</Button>
+                                </View>
+
+                                {/*campaign.options.map((item, index) => {
+                                    const mode = item.buttonStyle == 'principal' ? 'contained' : 'outlined';
+                                    var width = '48%';
+
+                                    if(campaign.options.length == 1 || campaign.options.length > 2 && mode == 'contained') {
+                                        width = '100%';
+                                    }
+
+                                    return (
+                                        <View key={index} style={{width: width, marginTop: 2}}>
+                                            <Button mode={mode} onPress={() => setOptionSubmit(item)}>{item.title}</Button>
+                                        </View>
+                                    );
+                                })*/}
+                            </View>
+                        </>
+                    ) : <LoadingFullscreen />
+                }
             </View>
+            
+            <View><ModalConfirm /></View>
+
+            {isRefreshLoading && (
+                <Portal><LoadingRefreshFullscreen /></Portal>
+            )}
         </SafeAreaView>
     );
 }

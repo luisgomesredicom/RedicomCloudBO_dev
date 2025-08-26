@@ -1,5 +1,7 @@
-import { Platform } from 'react-native';
+import { Dimensions } from 'react-native';
 import { MD3LightTheme as DefaultTheme } from 'react-native-paper';
+
+const windowWidth = Dimensions.get('window').width;
 
 /*
  * Colors 
@@ -179,7 +181,7 @@ export const theme = {
      * Modal
     */
     modalView: {
-        margin: 50,
+        margin: windowWidth < 400 ? 30 : 50,
         backgroundColor: 'white',
         borderRadius: 22,
         padding: 14,

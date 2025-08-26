@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createStackNavigator } from '@react-navigation/stack';
 import { useNavigation } from "@react-navigation/native";
-import { View, Text, TouchableOpacity, Alert, Image, Dimensions, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, Image, Dimensions, StyleSheet, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons, Octicons } from '@expo/vector-icons';
 //import { useActionSheet } from '@expo/react-native-action-sheet';
@@ -36,8 +36,9 @@ import { Icon } from "../components/elements";
 
 const HearderLeft = () => {
     const navigation = useNavigation();
+    const paddingHorizontal = Platform.OS == 'android' ? theme.containerPadding : 6;
     return (
-        <TouchableOpacity style={{paddingHorizontal: theme.containerPadding,height: 50,justifyContent: 'center'}} onPress={() => navigation.goBack()}>
+        <TouchableOpacity style={{paddingHorizontal: paddingHorizontal,height: 50,justifyContent: 'center'}} onPress={() => navigation.goBack()}>
             <Icon code="810" size={28} style={{color: theme.colors.white}} />
         </TouchableOpacity>
     );
@@ -176,7 +177,7 @@ export function MainStackRoutes() {
                                     const {signOut} = useContext(AuthContext);
                                     
                                     const Logout = function(){
-                                        const options = ['Terminar sessão', 'Cancelar'];
+                                        const options = ['Terminar sessÃ£o', 'Cancelar'];
                                         const destructiveButtonIndex = 0;
                                         const cancelButtonIndex = 1;
 
@@ -184,7 +185,7 @@ export function MainStackRoutes() {
                                             options,
                                             cancelButtonIndex,
                                             destructiveButtonIndex,
-                                            title: 'Tem a certeza de que queres terminar a sessão?'
+                                            title: 'Tem a certeza de que queres terminar a sessÃ£o?'
                                         }, (selectedIndex) => {
                                         switch (selectedIndex) {
                                             case destructiveButtonIndex:
@@ -198,7 +199,7 @@ export function MainStackRoutes() {
                                     /*return (
                                         <View style={{flexGrow: 1,alignItems: 'center',justifyContent: 'flex-end',marginRight: 6,marginBottom: 2}}>
                                             <TouchableOpacity style={{padding: 9}} onPress={() => {
-                                                navigation.navigate({name: 'SettingsScreen', params: {title: 'Definições'}});
+                                                navigation.navigate({name: 'SettingsScreen', params: {title: 'DefiniÃ§Ãµes'}});
                                             }}>
                                                 <Octicons name="gear" size={24} color='white' />
                                             </TouchableOpacity>

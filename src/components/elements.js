@@ -158,10 +158,6 @@ export const ListMenu = (props) => {
               <TouchableOpacity 
                 style={styles.menuItem} 
                 onPress={() => {
-                  if(item.hrefTemplate == 'ListCampaignScreen') {
-                    showToast({text: 'Página em desenvolvimento'});
-                  }
-                  
                   navigation.navigate({name: item.hrefTemplate, params: {id: item.id, title: item.name}});
                 }}
                 >
@@ -182,33 +178,79 @@ export const ListMenu = (props) => {
   )
 }
 
-export const Badge = (props) => {
-    let badgeText = props.text;
 
-    let styleType = stylesBadge.tag;
-    let styleTextType = stylesBadge.tagText;
+const hexToRgba = (input, alpha = 1) => {
+	if (!input) return undefined;
 
-    if (props.type == 'dot') {
-        badgeText = '';
-        styleType = stylesBadge.dot;
-    }
+	if (typeof input === 'string' && input.trim().startsWith('rgba')) return input;
 
-    const customColor = props.style?.color;
+	if (typeof input === 'string' && input.trim().startsWith('rgb(')) {
+		const nums = input
+			.replace(/[^\d,]/g, '')
+			.split(',')
+			.map(n => parseInt(n.trim(), 10));
+		if (nums.length >= 3) {
+			const [r, g, b] = nums;
+			return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+		}
+	}
 
-    return (
-        <View style={[styleType, props.style && props.style != '' ? props.style : {}]}>
-            {badgeText != '' && (
-                <Text style={[
-                    styleTextType, 
-                    customColor ? { color: customColor } : {}, 
-                    props.styleText && props.styleText != '' ? props.styleText : {}
-                ]}>
-                    {badgeText}
-                </Text>
-            )}
-        </View>
-    );
+	let hex = String(input).replace('#', '');
+	if (hex.length === 3) {
+		hex = hex.split('').map(c => c + c).join('');
+	}
+	const int = parseInt(hex, 16);
+	if (!Number.isFinite(int)) return undefined;
+	const r = (int >> 16) & 255;
+	const g = (int >> 8) & 255;
+	const b = int & 255;
+	return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
+
+export const Badge = (props) => {
+	const { type, style, styleText } = props;
+
+	let badgeText = props.text;
+	let styleType = stylesBadge.tag;
+	let styleTextType = stylesBadge.tagText;
+
+	if (type === 'dot') {
+		badgeText = '';
+		styleType = stylesBadge.dot;
+	}
+
+	const styleObj = (style && typeof style === 'object') ? style : {};
+	const customColor = styleObj?.color;
+	const hasBackground = !!styleObj?.backgroundColor;
+
+	// modo especial → só aplica se tiver color mas NÃO tiver backgroundColor
+	const specialContainer =
+		customColor && !hasBackground && type !== 'dot'
+			? {
+					backgroundColor: hexToRgba(customColor, 0.15),
+					borderWidth: 1,
+					borderColor: customColor,
+					borderRadius: 4
+			  }
+			: {};
+
+	return (
+		<View style={[styleType, specialContainer, styleObj]}>
+			{badgeText !== '' && badgeText !== undefined && badgeText !== null && (
+				<Text
+					style={[
+						styleTextType,
+						customColor ? { color: customColor } : {},
+						styleText ? styleText : {}
+					]}
+				>
+					{badgeText}
+				</Text>
+			)}
+		</View>
+	);
+};
+
 
 
 export const Icon = ({code, size = 24, color = theme.colors.black, style}) => {

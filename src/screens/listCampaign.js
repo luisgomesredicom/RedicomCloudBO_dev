@@ -3,7 +3,7 @@ import { StatusBar, View, FlatList, TouchableOpacity, StyleSheet, Image, Refresh
 import { useNavigation } from '@react-navigation/native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { remoteAPI, dateFormatter } from '../core/utils';
-import { LoadingFullscreen, Noresults, FooterList, Icon, ProgressBar, Badge } from '../components/elements';
+import { LoadingFullscreen, Noresults, FooterList, Icon, Badge } from '../components/elements';
 import { theme } from '../styles/styles'
 import { Text, ActivityIndicator } from 'react-native-paper';
 import {TabsProvider, Tabs, TabScreen} from '../components/paperTabs';
@@ -104,7 +104,8 @@ export function ListCampaign() {
             item.flags.forEach(function(flag) {
                 if(flag.title && flag.title != '') {
                     flags.push({
-                        title: flag.title
+                        title: flag.title,
+                        style: flag.style
                     });
                 }
             });
@@ -114,8 +115,10 @@ export function ListCampaign() {
             <>
                 <View style={{height: 6,backgroundColor: theme.colors.background}}></View>
 
-                {index == 0 && (
-                    <View style={{height: theme.containerPadding,backgroundColor: theme.colors.white}}></View>
+                {index == 0 ? (
+                    <View style={{height: 15,backgroundColor: theme.colors.white}}></View>
+                ) : (
+                    <View style={{height: 2,backgroundColor: theme.colors.white}}></View>
                 )}
                 
                 <TouchableOpacity key={item.index} onPress={() => {
@@ -129,18 +132,16 @@ export function ListCampaign() {
                         })
                     }}
                 >
-                    <View style={[theme.cardItem, {flexDirection: 'row',alignItems: 'center'}]}>
-                        <View style={{flexGrow: 1,width: 1}}>
-                            <View style={{marginBottom: 4}}>
-                                <View style={{flexDirection: 'row',alignItems: 'flex-start',gap: 6,marginBottom: 2}}>
-                                    <Text style={[theme.secondarySubtitle, {position: 'relative'}]}>{item.title}</Text>
-                                    {item.active == 1 && (
-                                        <Badge type="dot" style={{marginRight: 'auto',marginTop: 4}}/>
-                                    )}
+                    <View style={[theme.cardItem, {flexDirection: 'row',alignItems: 'center', marginBottom: 3}]}>
+                        <View style={{flexGrow: 1,width: 1, rowGap: 10}}>
+                            <View style={{marginBottom: 2}}>
+                                <View style={{flexDirection: 'row',alignItems: 'flex-start',gap: 6,marginBottom: 3}}>
+                                    <Text style={[theme.listNavSubtitle, {position: 'relative', color: theme.colors.black, }]}>{item.title}</Text>
+                                    <Badge type="dot" style={{backgroundColor: item.active == 1 ? theme.colors.success : theme.colors.error,marginTop: 4}} />
                                 </View>
 
                                 {item.description && (
-                                    <Text style={[theme.paragraph, {lineHeight: 22}]}>{item.description}</Text>
+                                    <Text style={[theme.small, {color: theme.colors.black, lineHeight: 12}]}>{item.description}</Text>
                                 )}
 
                                 {(item.multiLanguageContent && item.multiLanguageContent.pt.name) && (
@@ -148,41 +149,62 @@ export function ListCampaign() {
                                 )}
                             </View>
                             <View style={{flexDirection: 'row',gap: 10,justifyContent: 'space-between',alignItems: 'center'}}>
-                                <View style={{gap: 4}}>
+                                <View style={{gap: 3}}>
                                     <View style={{flexDirection: 'row',alignItems: 'center'}}>
                                         <View style={{width: 70,marginRight: 10}}>
-                                            <Text style={[theme.listNavSubtitle, {color: theme.colors.gray,lineHeight: 15}]}>Ativo de:</Text>
+                                            <Text style={[theme.small, {lineHeight: 14}]}>Ativo de:</Text>
                                         </View>
                                         <View style={{width: 150}}>
-                                            <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{startDate} <Text style={{color: theme.colors.darkgray}}>{startTime}</Text></Text>
+                                            <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black, lineHeight: 14}]} numberOfLines={1} ellipsizeMode='tail'>{startDate} <Text style={{color: theme.colors.darkgray}}>{startTime}</Text></Text>
                                         </View>
                                     </View>
 
                                     <View style={{flexDirection: 'row'}}>
                                         <View style={{width: 70,marginRight: 10}}>
-                                            <Text style={[theme.listNavSubtitle, {color: theme.colors.gray,lineHeight: 15}]}>até:</Text>
+                                            <Text style={[theme.small, {lineHeight: 14}]}>Até:</Text>
                                         </View>
                                         <View style={{width: 150}}>
-                                            <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black}]} numberOfLines={1} ellipsizeMode='tail'>{endDate} <Text style={{color: theme.colors.darkgray}}>{endTime}</Text></Text>
+                                            <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black, lineHeight: 14}]} numberOfLines={1} ellipsizeMode='tail'>{endDate} <Text style={{color: theme.colors.darkgray}}>{endTime}</Text></Text>
                                         </View>
                                     </View>
+
+                                    {item.applicableTo == 'allUsers' && 
+                                        <View style={{flexDirection: 'row'}}>
+                                            <View style={{width: 70,marginRight: 10}}>
+                                                <Text style={[theme.small, {lineHeight: 14}]}>Aplicável a:</Text>
+                                            </View>
+                                            <View style={{width: 150}}>
+                                                <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black, lineHeight: 14}]} numberOfLines={1} ellipsizeMode='tail'>Todos os utilizadores</Text>
+                                            </View>
+                                        </View>
+                                    }
+
+                                    {item.amountType == 'discount' && (
+                                        <View style={{flexDirection: 'row'}}>
+                                            <View style={{width: 70,marginRight: 10}}>
+                                                <Text style={[theme.small, {lineHeight: 14}]}>Desconto:</Text>
+                                            </View>
+                                            <View style={{width: 150}}>
+                                                <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black, lineHeight: 14}]} numberOfLines={1} ellipsizeMode='tail'>{item.amount}%</Text>
+                                            </View>
+                                        </View>
+                                    )}
                                 </View>
                             </View>
+                            {/*flags.length > 0 ? (
+                                <View style={{flexDirection: 'row',gap: 6}}>
+                                    {flags.map((flag, index) =>
+                                        flag.style != 1 ? (
+                                            <Badge text={flag.title} style={{paddingHorizontal: 6,color: theme.colors.info}} key={index} />
+                                        ) : null
+                                    )}
+                                </View>
+                            ) : null*/}
                         </View>
-                        <View style={{marginLeft: 10,marginRight: -6}}>
-                            <Icon code="818" size={22} style={{color: theme.colors.darkgray}}/>
+                        <View style={{marginLeft: 18,marginRight: -6}}>
+                            <Icon code="818" size={24} style={{color: theme.colors.black}}/>
                         </View>
                     </View>
-
-					{flags.length > 0 ? (
-						<View style={{paddingBottom: 10,paddingHorizontal: theme.containerPadding}}>
-							<View style={{flexDirection: 'row',gap: 6,justifyContent: 'flex-start',marginRight: 'auto'}}>
-								{flags.map((flag, index) => (
-									<Badge text={flag.title} style={{ marginLeft: 'auto' }} key={index} />
-								))}
-							</View>
-						</View>
-					) : null}
                 </TouchableOpacity>
             </>
         )
