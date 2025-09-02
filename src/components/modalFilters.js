@@ -187,241 +187,256 @@ export const ModalFilters = (params) => {
     if(status == 0) return null;
 
     return (
-        <Modal animationType="slide" transparent={true} visible={data.active}>
-            <SafeAreaView style={theme.safeAreaView} edges={['right','left','bottom']}>
-                <StatusBar barStyle='light-content'/>
-                <View style={{backgroundColor: theme.colors.darktheme, paddingTop: Math.max(insets.top)}}> {/*paddingTop: Math.max(insets.top)*/}
-                    <View style={{flexDirection: 'row',justifyContent: 'space-between',alignItems: 'center',height: 46}}>
-                        <View style={{width: 80}}>
-                            <TouchableOpacity style={{paddingHorizontal: theme.containerPadding,height: 50,justifyContent: 'center'}} onPress={CloseFilters}>
-                                <Icon code="807" size={28} style={{color: theme.colors.white}} />
-                            </TouchableOpacity>
-                        </View>
+        <Modal animationType="slide"
+               transparent={true}
+               visible={data.active}
+               statusBarTranslucent
+               presentationStyle="overFullScreen">
 
-                        <Text style={[theme.subtitle, {color: theme.colors.white,fontSize: 20}]}>{params.title}</Text>
+            <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+                    <SafeAreaView  style={[theme.safeAreaView, {
+                                            flex: 1,
+                                            backgroundColor: 'white', // aqui pode ser o teu tema
+                                            borderTopLeftRadius: 16,
+                                            borderTopRightRadius: 16,
+                                            overflow: 'hidden',
+                                            }]} edges={['right','left','bottom']}>
+                        <StatusBar barStyle='light-content'/>
+                        <View style={{backgroundColor: theme.colors.darktheme, paddingTop: Math.max(insets.top)}}> {/*paddingTop: Math.max(insets.top)*/}
+                            <View style={{flexDirection: 'row',justifyContent: 'space-between',alignItems: 'center',height: 46}}>
+                                <View style={{width: 80}}>
+                                    <TouchableOpacity style={{paddingHorizontal: theme.containerPadding,height: 50,justifyContent: 'center'}} onPress={CloseFilters}>
+                                        <Icon code="807" size={28} style={{color: theme.colors.white}} />
+                                    </TouchableOpacity>
+                                </View>
 
-                        <View style={{width: 80}}>
-                            <View style={{marginLeft: 'auto',paddingRight: theme.containerPadding}}>
-                                <Link text="Limpar" onPress={ClearFilters}/>{/*ShowResults*/}
+                                <Text style={[theme.subtitle, {color: theme.colors.white,fontSize: 20}]}>{params.title}</Text>
+
+                                <View style={{width: 80}}>
+                                    <View style={{marginLeft: 'auto',paddingRight: theme.containerPadding}}>
+                                        <Link text="Limpar" onPress={ClearFilters}/>{/*ShowResults*/}
+                                    </View>
+                                </View>
                             </View>
                         </View>
-                    </View>
-                </View>
 
-                <View style={{flex: 1,display: 'flex',flexDirection: 'row'}}>
-                    <View style={{width: 160,backgroundColor: 'white'}}>
-                        <ScrollView>
-                            {
-                                data.filters.map((filter, index) => {
-                                    const keyField = filter.field ?? filter.type;
-                                    const options = filterStates?.[keyField]?.options ?? {};
+                        <View style={{flex: 1,display: 'flex',flexDirection: 'row'}}>
+                            <View style={{width: 160,backgroundColor: 'white'}}>
+                                <ScrollView>
+                                    {
+                                        data.filters.map((filter, index) => {
+                                            const keyField = filter.field ?? filter.type;
+                                            const options = filterStates?.[keyField]?.options ?? {};
 
-                                    // Total de filtros ativos
-                                    const activeCount = filter.type == 'date' ? (dateStart || dateEnd ? 1 : 0) : Object.values(options).filter(v => v == true).length;
+                                            // Total de filtros ativos
+                                            const activeCount = filter.type == 'date' ? (dateStart || dateEnd ? 1 : 0) : Object.values(options).filter(v => v == true).length;
 
-                                    return (
-                                        <TouchableOpacity
-                                            key={filter.field ?? filter.type}
-                                            activeOpacity={1}
-                                            onPress={() => { sFilterCatrgoryActiveIndex(index); }}
-                                            style={[stylesFilters.categoryButton, filterCatrgoryActiveIndex == index ? stylesFilters.categoryButtonActive : '']}
-                                        >
-                                            <View style={{flexDirection: 'row',gap: 10,justifyContent: 'space-between', alignItems: 'center'}}>
-                                                <Text style={[stylesFilters.categoryButtonText, filterCatrgoryActiveIndex == index ? stylesFilters.categoryButtonActiveText : '', {width: '75%', fontSize: 16}]}>
-                                                    {filter.name}
-                                                </Text>
-                                                <Text style={[theme.paragraph, {color: theme.colors.darkgray, fontSize: 16}]}>
-                                                    {activeCount > 0 ? activeCount : ''}
-                                                </Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    );
-                                })
-                            }
-
-                        </ScrollView>
-                    </View>
-                    <View style={{flex: 1}}>
-                        <ScrollView contentContainerStyle={{padding: theme.containerPadding}} style={{backgroundColor: theme.colors.background}}>
-                            <View style={{flexDirection: 'column',flexWrap: 'wrap',gap: 8}}>
-                                {data.filters[filterCatrgoryActiveIndex].options.map((option, index) => {
-                                    const filter = data.filters[filterCatrgoryActiveIndex];
-                                    const fieldSelected = filterStates?.[filter.field]?.options?.[option.id] === true;
-                                    const typeSelected = filterStates?.[filter.type]?.options?.[option.value] === true;
-                                    var isSelected = fieldSelected || typeSelected;
-
-                                    if(data.filters[filterCatrgoryActiveIndex].type == 'date') {
-                                        isSelected = false;
-
-                                        if(index == 0) {
-                                            if(dateStart != null)
-                                                isSelected = true;
-                                        } else {
-                                            if(dateEnd != null)
-                                                isSelected = true;
-                                        }
-                                    }
-                                    
-                                    return (
-                                        <Chip
-                                            mode="flat"
-                                            key={option.id ?? option.value}
-                                            style={[
-                                                stylesFilters.optionButton,
-                                                {
-                                                backgroundColor: 'white',
-                                                borderColor: isSelected ? theme.colors.linklight : theme.colors.lines,
-                                                },
-                                            ]}
-                                            icon={() => {
-                                                if (isSelected)
-                                                return (
-                                                    <View
-                                                    style={{
-                                                        width: 22,
-                                                        height: 22,
-                                                        alignItems: 'center',
-                                                        justifyContent: 'center',
-                                                        backgroundColor: theme.colors.background,
-                                                        borderRadius: 50,
-                                                    }}
-                                                    >
-                                                    <Icon code="807" size={16} />
+                                            return (
+                                                <TouchableOpacity
+                                                    key={filter.field ?? filter.type}
+                                                    activeOpacity={1}
+                                                    onPress={() => { sFilterCatrgoryActiveIndex(index); }}
+                                                    style={[stylesFilters.categoryButton, filterCatrgoryActiveIndex == index ? stylesFilters.categoryButtonActive : '']}
+                                                >
+                                                    <View style={{flexDirection: 'row',gap: 10,justifyContent: 'space-between', alignItems: 'center'}}>
+                                                        <Text style={[stylesFilters.categoryButtonText, filterCatrgoryActiveIndex == index ? stylesFilters.categoryButtonActiveText : '', {width: '75%', fontSize: 16}]}>
+                                                            {filter.name}
+                                                        </Text>
+                                                        <Text style={[theme.paragraph, {color: theme.colors.darkgray, fontSize: 16}]}>
+                                                            {activeCount > 0 ? activeCount : ''}
+                                                        </Text>
                                                     </View>
-                                                );
-                                                return null;
-                                            }}
-                                            textStyle={{
-                                                color: theme.colors.black,
-                                                allowFontScaling: false,
-                                                fontSize: 16,
-                                            }}
-                                            selected={isSelected}
-                                            onPress={() => {
-                                                const isDate = data.filters[filterCatrgoryActiveIndex].type === 'date';
-                                                const isStart = option.id === 'dateStart';
+                                                </TouchableOpacity>
+                                            );
+                                        })
+                                    }
 
-                                                if (isDate) {
-                                                    const dateSelected = isStart ? dateStart : dateEnd;
-                                                    const currentDate = new Date();
+                                </ScrollView>
+                            </View>
+                            <View style={{flex: 1}}>
+                                <ScrollView contentContainerStyle={{padding: theme.containerPadding}} style={{backgroundColor: theme.colors.background}}>
+                                    <View style={{flexDirection: 'column',flexWrap: 'wrap',gap: 8}}>
+                                        {data.filters[filterCatrgoryActiveIndex].options.map((option, index) => {
+                                            const filter = data.filters[filterCatrgoryActiveIndex];
+                                            const fieldSelected = filterStates?.[filter.field]?.options?.[option.id] === true;
+                                            const typeSelected = filterStates?.[filter.type]?.options?.[option.value] === true;
+                                            var isSelected = fieldSelected || typeSelected;
 
-                                                    if (Platform.OS === 'android') {
-                                                        if (dateSelected) {
-                                                            // Limpar data se já estiver selecionada
-                                                            if (isStart) setDateStart(null);
-                                                            else setDateEnd(null);
+                                            if(data.filters[filterCatrgoryActiveIndex].type == 'date') {
+                                                isSelected = false;
 
-                                                            handleFilterToggle(option.id, '');
+                                                if(index == 0) {
+                                                    if(dateStart != null)
+                                                        isSelected = true;
+                                                } else {
+                                                    if(dateEnd != null)
+                                                        isSelected = true;
+                                                }
+                                            }
+                                            
+                                            return (
+                                                <Chip
+                                                    mode="flat"
+                                                    key={option.id ?? option.value}
+                                                    style={[
+                                                        stylesFilters.optionButton,
+                                                        {
+                                                        backgroundColor: 'white',
+                                                        borderColor: isSelected ? theme.colors.linklight : theme.colors.lines,
+                                                        },
+                                                    ]}
+                                                    icon={() => {
+                                                        if (isSelected)
+                                                        return (
+                                                            <View
+                                                            style={{
+                                                                width: 22,
+                                                                height: 22,
+                                                                alignItems: 'center',
+                                                                justifyContent: 'center',
+                                                                backgroundColor: theme.colors.background,
+                                                                borderRadius: 50,
+                                                            }}
+                                                            >
+                                                            <Icon code="807" size={16} />
+                                                            </View>
+                                                        );
+                                                        return null;
+                                                    }}
+                                                    textStyle={{
+                                                        color: theme.colors.black,
+                                                        allowFontScaling: false,
+                                                        fontSize: 16,
+                                                    }}
+                                                    selected={isSelected}
+                                                    onPress={() => {
+                                                        const isDate = data.filters[filterCatrgoryActiveIndex].type === 'date';
+                                                        const isStart = option.id === 'dateStart';
+
+                                                        if (isDate) {
+                                                            const dateSelected = isStart ? dateStart : dateEnd;
+                                                            const currentDate = new Date();
+
+                                                            if (Platform.OS === 'android') {
+                                                                if (dateSelected) {
+                                                                    // Limpar data se já estiver selecionada
+                                                                    if (isStart) setDateStart(null);
+                                                                    else setDateEnd(null);
+
+                                                                    handleFilterToggle(option.id, '');
+                                                                    return;
+                                                                }
+
+                                                                // Abrir o DatePicker se ainda não há data
+                                                                DateTimePickerAndroid.open({
+                                                                    value: currentDate,
+                                                                    mode: 'date',
+                                                                    is24Hour: true,
+                                                                    onChange: (event, selectedDate) => {
+                                                                    if (event.type === 'set' && selectedDate) {
+                                                                        const newDate = new Date(selectedDate);
+                                                                        const formattedDate = newDate.toISOString().split('T')[0];
+
+                                                                        if (isStart) setDateStart(newDate);
+                                                                        else setDateEnd(newDate);
+
+                                                                        handleFilterToggle(option.id, formattedDate);
+                                                                    }
+                                                                    },
+                                                                });
+
+                                                                return;
+                                                            }
+
+                                                            // iOS
+                                                            if (dateSelected) {
+                                                                // Limpar data se há houver
+                                                                if (isStart) setDateStart(null);
+                                                                else setDateEnd(null);
+
+                                                                handleFilterToggle(option.id, '');
+                                                            } else {
+                                                                if (isStart) setDateStart(currentDate);
+                                                                else setDateEnd(currentDate);
+
+                                                                const formattedDate = currentDate.toISOString().split('T')[0];
+                                                                handleFilterToggle(option.id, formattedDate);
+                                                            }
+
                                                             return;
                                                         }
 
-                                                        // Abrir o DatePicker se ainda não há data
-                                                        DateTimePickerAndroid.open({
-                                                            value: currentDate,
-                                                            mode: 'date',
-                                                            is24Hour: true,
-                                                            onChange: (event, selectedDate) => {
-                                                            if (event.type === 'set' && selectedDate) {
-                                                                const newDate = new Date(selectedDate);
-                                                                const formattedDate = newDate.toISOString().split('T')[0];
+                                                        // Outros tipos de filtro (não data)
+                                                        handleFilterToggle(
+                                                            data.filters[filterCatrgoryActiveIndex].field ||
+                                                            data.filters[filterCatrgoryActiveIndex].type,
+                                                            option.id ?? option.value
+                                                        );
+                                                    }}>
+                                                    {(() => {
+                                                        const isDate = data.filters[filterCatrgoryActiveIndex].type === 'date';
+                                                        const isStart = option.id === 'dateStart';
 
-                                                                if (isStart) setDateStart(newDate);
-                                                                else setDateEnd(newDate);
+                                                        if (isDate) {
+                                                        const date = isStart ? dateStart : dateEnd;
 
-                                                                handleFilterToggle(option.id, formattedDate);
-                                                            }
-                                                            },
-                                                        });
+                                                        return (
+                                                            <>
+                                                            {date ? date.toLocaleDateString('pt-PT') : option.name}
+                                                            {Platform.OS === 'ios' && date && (
+                                                                <View
+                                                                style={{
+                                                                    transform: [{ scale: 999 }, { translateX: 20 }],
+                                                                    opacity: 0.1,
+                                                                    position: 'absolute',
+                                                                    zIndex: 1,
+                                                                }}
+                                                                >
+                                                                <DateTimePicker
+                                                                    value={date}
+                                                                    mode="date"
+                                                                    display="compact"
+                                                                    locale="pt-PT"
+                                                                    onChange={(event, selectedDate) => {
+                                                                    if (selectedDate) {
+                                                                        const newDate = new Date(selectedDate);
+                                                                        const formattedDate = newDate.toISOString().split('T')[0];
 
-                                                        return;
-                                                    }
+                                                                        if (isStart) {
+                                                                        setDateStart(newDate);
+                                                                        } else {
+                                                                        setDateEnd(newDate);
+                                                                        }
 
-                                                    // iOS
-                                                    if (dateSelected) {
-                                                        // Limpar data se há houver
-                                                        if (isStart) setDateStart(null);
-                                                        else setDateEnd(null);
+                                                                        handleFilterToggle(option.id, formattedDate);
+                                                                    }
+                                                                    }}
+                                                                />
+                                                                </View>
+                                                            )}
+                                                            </>
+                                                        );
+                                                        }
 
-                                                        handleFilterToggle(option.id, '');
-                                                    } else {
-                                                        if (isStart) setDateStart(currentDate);
-                                                        else setDateEnd(currentDate);
+                                                        return option.name;
+                                                    })()}
+                                                </Chip>
 
-                                                        const formattedDate = currentDate.toISOString().split('T')[0];
-                                                        handleFilterToggle(option.id, formattedDate);
-                                                    }
+                                            )
+                                        })}
+                                    </View>
 
-                                                    return;
-                                                }
-
-                                                // Outros tipos de filtro (não data)
-                                                handleFilterToggle(
-                                                    data.filters[filterCatrgoryActiveIndex].field ||
-                                                    data.filters[filterCatrgoryActiveIndex].type,
-                                                    option.id ?? option.value
-                                                );
-                                            }}>
-                                            {(() => {
-                                                const isDate = data.filters[filterCatrgoryActiveIndex].type === 'date';
-                                                const isStart = option.id === 'dateStart';
-
-                                                if (isDate) {
-                                                const date = isStart ? dateStart : dateEnd;
-
-                                                return (
-                                                    <>
-                                                    {date ? date.toLocaleDateString('pt-PT') : option.name}
-                                                    {Platform.OS === 'ios' && date && (
-                                                        <View
-                                                        style={{
-                                                            transform: [{ scale: 999 }, { translateX: 20 }],
-                                                            opacity: 0.1,
-                                                            position: 'absolute',
-                                                            zIndex: 1,
-                                                        }}
-                                                        >
-                                                        <DateTimePicker
-                                                            value={date}
-                                                            mode="date"
-                                                            display="compact"
-                                                            locale="pt-PT"
-                                                            onChange={(event, selectedDate) => {
-                                                            if (selectedDate) {
-                                                                const newDate = new Date(selectedDate);
-                                                                const formattedDate = newDate.toISOString().split('T')[0];
-
-                                                                if (isStart) {
-                                                                setDateStart(newDate);
-                                                                } else {
-                                                                setDateEnd(newDate);
-                                                                }
-
-                                                                handleFilterToggle(option.id, formattedDate);
-                                                            }
-                                                            }}
-                                                        />
-                                                        </View>
-                                                    )}
-                                                    </>
-                                                );
-                                                }
-
-                                                return option.name;
-                                            })()}
-                                        </Chip>
-
-                                    )
-                                })}
+                                </ScrollView>
                             </View>
-
-                        </ScrollView>
-                    </View>
+                        </View>
+                    
+                        <View style={{justifyContent: 'center',alignItems: 'center',marginTop: 'auto',padding: theme.containerPadding,paddingBottom: Math.max(insets.bottom)}}>
+                            <Button mode='contained' onPress={ShowResults}>Mostrar resultados</Button>
+                        </View>
+                    </SafeAreaView>
                 </View>
-            
-                <View style={{justifyContent: 'center',alignItems: 'center',marginTop: 'auto',padding: theme.containerPadding,paddingBottom: Math.max(insets.bottom)}}>
-                    <Button mode='contained' onPress={ShowResults}>Mostrar resultados</Button>
-                </View>
-          </SafeAreaView>
+            </View>
         </Modal>
     )
 }
