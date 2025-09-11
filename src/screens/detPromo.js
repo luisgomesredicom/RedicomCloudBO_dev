@@ -250,32 +250,39 @@ export function DetPromo() {
                                         </View>
                                         <View style={{flexDirection: 'row',gap: 10,justifyContent: 'space-between',alignItems: 'center'}}>
                                             <View style={{gap: 3}}>
+                                                
+                                                {campaign.catalog ? (
                                                 <View style={{flexDirection: 'row',alignItems: 'center'}}>
                                                     <View style={{width: 70,marginRight: 10}}>
-                                                        <Text style={[theme.small, {lineHeight: 14,color: theme.colors.error}]}>Catálogo:</Text>
+                                                        <Text style={[theme.small, {lineHeight: 14,color: theme.colors.black}]}>Catálogo:</Text>
                                                     </View>
                                                     <View>
-                                                        <Text style={[theme.small, {fontWeight: 500, color: theme.colors.error, lineHeight: 14}]} numberOfLines={1} ellipsizeMode='tail'>Catálogo Geral (desenvolvimento)</Text>
+                                                        <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black, lineHeight: 14}]} numberOfLines={1} ellipsizeMode='tail'>{campaign.catalog} </Text>
                                                     </View>
                                                 </View>
-
-                                                <View style={{flexDirection: 'row',alignItems: 'center'}}>
-                                                    <View style={{width: 70,marginRight: 10}}>
-                                                        <Text style={[theme.small, {lineHeight: 14,color: theme.colors.error}]}>Desconto:</Text>
+                                                ) : null} 
+                                                
+                                                {campaign.amount>0 ? (
+                                                  <View style={{flexDirection: 'row',alignItems: 'center'}}>
+                                                      <View style={{width: 70,marginRight: 10}}>
+                                                          <Text style={[theme.small, {lineHeight: 14,color: theme.colors.black}]}>Desconto:</Text>
+                                                      </View>
+                                                      <View>
+                                                          <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black, lineHeight: 14}]} numberOfLines={1} ellipsizeMode='tail'>{campaign.amount}%</Text>
+                                                      </View>
+                                                  </View>
+                                                ) : null}
+                                                
+                                                {campaign.list_price ? (
+                                                    <View style={{flexDirection: 'row',alignItems: 'center'}}     >
+                                                        <View style={{width: 70,marginRight: 10}}>
+                                                            <Text style={[theme.small, {lineHeight: 14,color: theme.colors.black}]}>Lista:</Text>
+                                                        </View>
+                                                        <View>
+                                                            <Text style={[theme.small, {fontWeight: 500, color: theme.colors.black, lineHeight: 14}]} numberOfLines={1} ellipsizeMode='tail'>{campaign.list_price}</Text>
+                                                        </View>
                                                     </View>
-                                                    <View>
-                                                        <Text style={[theme.small, {fontWeight: 500, color: theme.colors.error, lineHeight: 14}]} numberOfLines={1} ellipsizeMode='tail'>10% (desenvolvimento)</Text>
-                                                    </View>
-                                                </View>
-
-                                                <View style={{flexDirection: 'row',alignItems: 'center'}}>
-                                                    <View style={{width: 70,marginRight: 10}}>
-                                                        <Text style={[theme.small, {lineHeight: 14,color: theme.colors.error}]}>Lista:</Text>
-                                                    </View>
-                                                    <View>
-                                                        <Text style={[theme.small, {fontWeight: 500, color: theme.colors.error, lineHeight: 14}]} numberOfLines={1} ellipsizeMode='tail'>Lista 1 - EUR (desenvolvimento)</Text>
-                                                    </View>
-                                                </View>
+                                                ) : null}
 
                                                 {/*<View style={{flexDirection: 'row',alignItems: 'center'}}>
                                                     <View style={{width: 70,marginRight: 10}}>
