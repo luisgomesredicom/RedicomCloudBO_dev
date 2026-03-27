@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { StatusBar, View, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, Modal, Dimensions } from 'react-native';
+import { StatusBar, View, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, Modal, useWindowDimensions } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text } from 'react-native-paper'
 import { theme } from '../styles/styles'
@@ -10,7 +10,7 @@ import { AuthContext, UserContext, formValidator, remoteAPI } from '../core/util
 import Logo from '../images/logo.svg';
 
 export function LoginRegisterScreen({ navigation }) {
-    const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+    const { width: screenWidth, height: screenHeight } = useWindowDimensions();
     const [pageStatus, setPageStatus] = useState(0);
     const userState = useContext(UserContext);
     const [remoteToken, setRemoteToken] = useState({ value: userState.domain || '', error: false, errorText: '' });

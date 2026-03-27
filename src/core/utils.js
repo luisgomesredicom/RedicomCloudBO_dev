@@ -15,29 +15,27 @@ export const AuthContext = createContext();
 export const UserContext = createContext();
 
 //Validate form
-export function formValidator(data){
-    const fv = {
-        email: function(value) {
-            const re = /\S+@\S+\.\S+/
-            if (!value) return {error: true, errorText: 'Introduza o e-mail.'}
-            if (!re.test(value)) return {error: true, errorText: 'E-mail inválido.'}
-            return {error: false}
-        },
-        required: function(value) {
-            if (!value) return {error: true, errorText: 'Preenchimento obrigatório.'}
-            return {error: false}
+export function formValidator(data) {
+    const value = data.value;
+    let retorno = { error: false, errorText: '' };
+
+    // 1. Validação de campo obrigatório
+    if (data.required && !value) {
+        retorno = { error: true, errorText: 'Preenchimento obrigatório.' };
+    } 
+    // 2. Validação de formato de e-mail (se houver valor ou se for obrigatório)
+    else if (data.email && value) {
+        const re = /\S+@\S+\.\S+/;
+        if (!re.test(value)) {
+            retorno = { error: true, errorText: 'E-mail inválido.' };
         }
     }
 
-    var retorno = {error: false};
-    
-    if(!retorno.error && data.required) retorno = fv.required(data.value);
-    else if(!retorno.error && data.required) retorno = fv.email(data.value);
-
-    if(retorno.error && retorno.errorText != '' && data.showtoast) {
-        showToast({text: retorno.errorText, duration: 2000});
+    // Exibição de toast se configurado
+    if (retorno.error && retorno.errorText !== '' && data.showtoast) {
+        showToast({ text: retorno.errorText, duration: 2000 });
     }
-    
+
     return retorno;
 }
 
@@ -59,35 +57,42 @@ export async function remoteAPI(data) {
             ...(data.header || {})
         };
 
-        if(userToken && data.request && data.request !== 'login') {
+        // Enviar token apenas se não for login e existir token
+        if (userToken && data.request && data.request !== 'login') {
             headers.token = userToken;
         }
 
-        //Configuração Axios
         const axiosConfig = {
             method: data.method || 'GET',
             url,
-            headers
+            headers,
+            timeout: 15000 // Timeout de 15 segundos para evitar esperas infinitas
         };
 
-        if(data.body) {
+        if (data.body) {
             axiosConfig.data = data.body;
         }
 
         const response = await axios(axiosConfig);
 
-        if(response.data.status == 'false') {
-            if(mostrarToast) {
-                showToast({ text: response.data.response.error, duration: 2000 });
+        if (response.data.status === 'false' || response.data.status === false) {
+            const errorMsg = response.data.response?.error || 'Ocorreu um erro no servidor.';
+            if (mostrarToast) {
+                showToast({ text: errorMsg, duration: 2000 });
             }
             return false;
         }
 
         return response.data;
     } catch (error) {
-        console.error('remoteAPI error:', error);
-        if(data.showToast !== false) {
-            showToast({ text: 'Erro na comunicação com o servidor.', duration: 2000 });
+        // Tratamento centralizado de erros
+        const isNetworkError = !error.response;
+        
+        if (data.showToast !== false) {
+            const userMsg = isNetworkError 
+                ? 'Sem ligação à internet.' 
+                : 'Erro na comunicação com o servidor.';
+            showToast({ text: userMsg, duration: 2000 });
         }
         return false;
     }
@@ -148,7 +153,7 @@ export const GlobalState = {
 
 //Toast
 export async function showToast(data) {
-    var popupDefaults = {
+    const popupDefaults = {
         text: 'Ocorreu um erro. Tente novamente.',
         duration: data.duration ? data.duration : 1000,
         backgroundColor: theme.colors.error,
@@ -158,18 +163,15 @@ export async function showToast(data) {
         position: -50
     };
     
-    var popupData = Utils.extend(popupDefaults, data);
-    Toast.show(popupDefaults.text, popupData);
+    const popupData = { ...popupDefaults, ...data };
+    Toast.show(popupData.text, popupData);
 }
 
 var Utils = {};
 
-//Extend object
+//Extend object (Mantido para compatibilidade se usado noutros locais, mas preferir spread operator)
 Utils.extend = function(a, b) {
-    for(var key in b)
-        if(b.hasOwnProperty(key))
-            a[key] = b[key];
-    return a;
+    return { ...a, ...b };
 }
 
 //Price format
@@ -206,13 +208,13 @@ export function priceFormat(number, decimals, decPoint, thousandsSep, prefix, su
 }
 
 //Number format
-export function numberFormat(number){
+export function numberFormat(number) {
+    if (number === null || number === undefined) return '0';
     /*if(number.toLocaleString('en-US').split(',').length > 1) {
         return number.toLocaleString('en-US').replace(/,/g, ' ')
-    }
+    }*/
 
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');*/
-    return number;
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 }
 
 export function dateFormatter(dateTime) {

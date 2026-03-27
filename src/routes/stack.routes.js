@@ -34,7 +34,7 @@ import { DetCampaignEmail } from "../screens/detCampaignEmail";
 import { theme } from "../styles/styles";
 import { Icon } from "../components/elements";
 
-const HearderLeft = () => {
+const HearderLeft = React.memo(() => {
     const navigation = useNavigation();
     const paddingHorizontal = Platform.OS == 'android' ? theme.containerPadding : 6;
     return (
@@ -42,15 +42,15 @@ const HearderLeft = () => {
             <Icon code="810" size={28} style={{color: theme.colors.white}} />
         </TouchableOpacity>
     );
-}
+});
 
-const HearderTitle = (props) => {
+const HearderTitle = React.memo((props) => {
     return (
         <Text style={[theme.subtitle, {color: theme.colors.white,fontSize: 20}]} numberOfLines={1} ellipsizeMode='tail'>
             {props.title}
         </Text>
     );
-}
+});
 
 export function MainStackRoutes() {
     const [pageIsReady, setPageIsReady] = useState(null);

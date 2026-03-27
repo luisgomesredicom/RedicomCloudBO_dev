@@ -8,9 +8,78 @@ import { ListMenu, LoadingFullscreen, Icon, LoadingRefreshFullscreen, LoadingRef
 import { theme } from '../styles/styles'
 import { Link } from '../components/buttons';
 
+const GraphInformationItem = React.memo(({ item, index }) => {
+    if (item.status == '') {
+        return (
+            <View key={index} style={{ gap: 2, justifyContent: 'space-between' }}>
+                <Text style={[theme.listNavTitle, { color: theme.colors.dark, fontSize: 18 }]}>{item.value} <Text style={theme.small}>{item.subtitle}</Text></Text>
+                <Text style={theme.small}>{item.title}</Text>
+            </View>
+        )
+    } else {
+        return (
+            <View key={index} style={{ gap: 2 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                        <Text style={[theme.subtitle, { color: theme.colors.dark }]}>{item.value} <Text style={theme.small}>{item.subtitle}</Text></Text>
+                    </View>
+                    <View style={{ marginLeft: 2, marginTop: 7 }}>
+                        {item.status == 'down' ? (
+                            <Icon code="80a" size={11} />
+                        ) : (
+                            <Icon code="822" size={11} />
+                        )}
+                    </View>
+                </View>
+                <Text style={[theme.small, { color: theme.colors.gray }]}>{item.title}</Text>
+            </View>
+        )
+    }
+});
+
+const RenderGraph = React.memo(({ data }) => {
+    const styles = StyleSheet.create({
+        column: {
+            minWidth: '11.8%'
+        },
+        bar: {
+            height: 120
+        },
+        value: {
+            backgroundColor: theme.colors.brandtheme,
+            marginTop: 'auto',
+            borderRadius: 3
+        },
+        text: {
+            ...theme.small,
+            textAlign: 'center',
+            fontSize: 11
+        },
+    });
+
+    const maxValue = Math.max(...data.stats.graphDays.list.map(item => parseInt(item.value)));
+
+    return (
+        <View style={{ flexDirection: 'row', gap: 8, justifyContent: 'center', marginTop: 30 }}>
+            {data.stats.graphDays.list.map((item, index) => {
+                const value = parseInt(item.value);
+                const percentage = (value / maxValue) * 100;
+
+                return (
+                    <View key={index} style={styles.column}>
+                        <View style={styles.bar}>
+                            <View style={[styles.value, { height: percentage + '%', opacity: item.belowAverage ? 0.5 : 1 }]}></View>
+                        </View>
+                        <View><Text style={styles.text}>{item.title}</Text></View>
+                    </View>);
+            })}
+        </View>
+    );
+});
+
 export function DashboardScreen() {
     const navigation = useNavigation();
-    const {signOut} = useContext(AuthContext);
+    const { signOut } = useContext(AuthContext);
     const [pageIsReady, setPageIsReady] = useState(null);
     const [dataDash, setDataDash] = useState(null);
     const [visible, setVisible] = useState(true);
@@ -21,20 +90,20 @@ export function DashboardScreen() {
 
     const fetchData = async () => {
         try {
-            const dataDash = await remoteAPI({request: 'dashboard', method: 'GET'});
-            
-            if(dataDash == false) {
+            const dataDash = await remoteAPI({ request: 'dashboard', method: 'GET' });
+
+            if (dataDash == false) {
                 signOut();
                 return false;
             }
-            
+
             dataDash.response.stats.graphDays.totalValues = 0;
             dataDash.response.stats.graphDays.list.map((item) => (
                 dataDash.response.stats.graphDays.totalValues += parseInt(item.value)
             ));
 
             setDataDash(dataDash.response);
-            
+
             setPageIsReady(true);
         } catch (e) {
             console.warn(e);
@@ -53,7 +122,7 @@ export function DashboardScreen() {
     }, []);
 
     const onPressRefresh = useCallback(async () => {
-        if(isRefreshLoading) return;
+        if (isRefreshLoading) return;
         setRefreshLoading(true);
 
         startRotation();
@@ -80,9 +149,9 @@ export function DashboardScreen() {
                 easing: Easing.linear,
                 useNativeDriver: true,
             });
-        
+
             rotationLoopRef.current.start(({ finished }) => {
-                if(finished && isRefreshLoading) {
+                if (finished && isRefreshLoading) {
                     spin();
                 }
             });
@@ -102,75 +171,6 @@ export function DashboardScreen() {
             });
         });
     };
-
-    const renderGraphInformation = (item, index) => {
-        if (item.status == '') {
-            return  (
-                <View key={index} style={{gap: 2,justifyContent: 'space-between'}}>
-                    <Text style={[theme.listNavTitle, {color: theme.colors.dark, fontSize: 18}]}>{item.value} <Text style={theme.small}>{item.subtitle}</Text></Text>
-                    <Text style={theme.small}>{item.title}</Text>
-                </View>
-            )
-        } else {
-            return (
-                <View key={index} style={{gap: 2}}>
-                    <View style={{flexDirection: 'row',alignItems: 'center'}}>
-                        <View style={{display: 'flex',flexDirection: 'row',alignItems: 'center'}}>
-                            <Text style={[theme.subtitle, {color: theme.colors.dark}]}>{item.value} <Text style={theme.small}>{item.subtitle}</Text></Text>
-                        </View>
-                        <View style={{marginLeft: 2,marginTop: 7}}>
-                            {item.status == 'down' ? (
-                                <Icon code="80a" size={11} />
-                            ) : (
-                                <Icon code="822" size={11} />
-                            )}
-                        </View>
-                    </View>
-                    <Text style={[theme.small, {color: theme.colors.gray}]}>{item.title}</Text>
-                </View>
-            )
-        }
-    }
-
-    const RenderGraph = () => {
-        const styles = StyleSheet.create({
-            column: {
-                minWidth: '11.8%'
-            },
-            bar: {
-                height: 120
-            },
-            value: {
-                backgroundColor: theme.colors.brandtheme,
-                marginTop: 'auto',
-                borderRadius: 3
-            },
-            text: {
-                ...theme.small,
-                textAlign: 'center',
-                fontSize: 11
-            },
-        });
-
-        const maxValue = Math.max(...dataDash.stats.graphDays.list.map(item => parseInt(item.value)));
-
-        return (
-            <View style={{flexDirection: 'row',gap: 8,justifyContent: 'center',marginTop: 30}}>
-                {dataDash.stats.graphDays.list.map((item, index) => {
-                    const value = parseInt(item.value);
-                    const percentage = (value / maxValue) * 100;
-                    
-                    return (
-                    <View style={styles.column}>
-                        <View style={styles.bar}>
-                            <View style={[styles.value, {height: percentage + '%', opacity: item.belowAverage ? 0.5 : 1}]}></View>
-                        </View>
-                        <View><Text style={styles.text}>{item.title}</Text></View>
-                    </View>);
-                })}
-            </View>
-        );
-    }
 
     return (
         <SafeAreaView style={theme.safeAreaView} edges={['right','left']}>
@@ -226,13 +226,13 @@ export function DashboardScreen() {
                                 <View style={{minHeight: 210}}>
                                     {dataDash.stats.graphDays.totalValues > 0 ? (
                                         <>
-                                            <View style={{display: 'flex',flexDirection: 'row',justifyContent: 'space-between'}}>
+                                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                                                 {dataDash.stats.informations.list.map((item, index) => (
-                                                    renderGraphInformation(item, index)
+                                                    <GraphInformationItem key={index} item={item} index={index} />
                                                 ))}
                                             </View>
-                                            
-                                            <RenderGraph />
+
+                                            <RenderGraph data={dataDash} />
                                         </>
                                     ) : (
                                         <View style={{alignItems: 'center',justifyContent: 'center',gap: 20,flexGrow: 1,paddingTop: 15}}>
