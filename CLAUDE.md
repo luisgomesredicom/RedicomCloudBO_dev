@@ -410,3 +410,7 @@ git sparse-checkout add common/plugins/nova_pasta
     3.  **Prioridade à Segurança**: Tratar configurações sensíveis (chaves de API, IDs de APP) com a máxima prioridade de segurança.
     4.  **Não Assumir Valores Padrão**: Sempre referenciar o valor atual no ficheiro.
     5.  **Questionamento Proativo**: Procurar esclarecimentos em caso de incerteza.
+    6.  **Variável `site_version` (Crítica)**:
+        - **Propósito**: Esta variável (`response.shop.TEMPLATES_PARAMS.site_version`) é um mecanismo de controlo de compatibilidade e evolução de templates no frontend.
+        - **Lógica**: Condiciona o comportamento do HTML/templates. Por exemplo, `site_version >= 31` pode ativar um novo HTML/comportamento, enquanto `site_version < 31` mantém o comportamento antigo.
+        - **Regra**: **NUNCA alterar o valor de `site_version` sem validação explícita e compreensão total do impacto na retrocompatibilidade.** Sempre respeitar as condicionais baseadas nesta variável e não remover o suporte a versões anteriores.

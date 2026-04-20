@@ -10,6 +10,11 @@ Este documento fornece uma referência detalhada para o ficheiro `api_config.php
 
 ### 1. Núcleo e Versão
 - **`$API_VERSION`**: `202505` - Define a versão base da API para controlo de compatibilidade.
+- **`site_version` (dentro de `$CONFIG_TEMPLATES_PARAMS`)**: `31` - **Variável Crítica de Compatibilidade de Templates.**
+  - **Propósito**: Controla a compatibilidade e evolução das templates HTML no frontend.
+  - **Funcionamento**: O frontend lê este valor (`response.shop.TEMPLATES_PARAMS.site_version`) e condiciona o comportamento do HTML/templates. Por exemplo, `site_version >= 31` pode ativar um novo HTML/comportamento, enquanto `site_version < 31` mantém o comportamento antigo.
+  - **Objetivo**: Garante retrocompatibilidade, permite desenvolvimentos apenas para "sites novos", evita que templates customizados deixem de funcionar e controla rollouts de novas estruturas HTML de forma segura.
+  - **Impacto de Alteração**: Alterar este valor sem validação rigorosa pode quebrar a renderização de templates em sites mais antigos ou ativar funcionalidades não testadas em ambientes de produção. **Nunca deve ser alterado sem validação explícita.**
 - **`$VERSAO_TEMPLATES`**: `1` - Ativa o novo funil de estilos.
 - **`$VERSAO_EMAILS_MA`**: `1` - Versão dos emails de Marketing Automation.
 
@@ -51,6 +56,7 @@ Define dimensões e tipo de corte (1: stretch, 2: crop, 3: fit) para diferentes 
 
 ### 8. Parâmetros de Template (`$CONFIG_TEMPLATES_PARAMS`)
 Array extenso que controla componentes visuais:
+- **`site_version`**: Ver secção "1. Núcleo e Versão" para detalhes.
 - **Reviews**: Versão (`2`), permissão (`detail_allow_review`), e se é por cor (`review_by_sku_family_color`).
 - **Banners**: Controlos de `autoplay`, `speed`, `arrows`, `dots` e `draggable` diferenciados por dispositivo.
 - **Detalhe de Produto**: Ativação de `last_viewed`, sliders mobile (`relacionados_slider_mobile`), e versões de zoom (`zoom_detail_version`).
