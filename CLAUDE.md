@@ -400,3 +400,13 @@ git sparse-checkout add common/plugins/nova_pasta
 - Existe um ficheiro `bo_template_settings_v3.md` na raiz do repositório que detalha as configurações de Backoffice que influenciam o comportamento das templates HTML.
 - **É crucial consultar este ficheiro** ao analisar ou modificar templates, pois as configurações do BO podem sobrepor ou alterar o comportamento padrão do código.
 - Em caso de dúvida sobre um comportamento inesperado no frontend, a primeira ação deve ser verificar as configurações relevantes neste ficheiro.
+
+### Configuração da API (`api_config.php`)
+- O ficheiro `api_config.php` contém configurações críticas e sensíveis para o funcionamento da plataforma, incluindo parâmetros de APP, gestão de cache, otimização de imagens e configurações específicas de templates HTML.
+- **É fundamental consultar a documentação `api_config.md`** para entender a finalidade, o impacto e os avisos de segurança de cada parâmetro antes de qualquer intervenção.
+- **Regras para o Agente IA ao lidar com `api_config.php`:**
+    1.  **Análise Abrangente**: Analisar todas as configurações e suas interdependências.
+    2.  **Validação de Impacto**: Considerar o impacto potencial na segurança, desempenho e UX.
+    3.  **Prioridade à Segurança**: Tratar configurações sensíveis (chaves de API, IDs de APP) com a máxima prioridade de segurança.
+    4.  **Não Assumir Valores Padrão**: Sempre referenciar o valor atual no ficheiro.
+    5.  **Questionamento Proativo**: Procurar esclarecimentos em caso de incerteza.
